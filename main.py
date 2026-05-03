@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -135,8 +135,41 @@ def get_stats():
     return stats
 
 @app.post("/create-payment-intent")
-def create_payment_intent(req: PaymentIntentRequest):
-    intent = stripe.PaymentIntent.create(amount=req.amount, currency=req.currency, metadata={"booking": str(req.booking)}, automatic_payment_methods={"enabled": True})
+@limiter.limit("10/minute")
+def create_payment_intent(request: Request, req: PaymentIntentRequest):
+    offer_id = (req.booking or {}).get("offerId") or (req.booking or {}).get("offer_id")
+    if not offer_id:
+        raise HTTPException(status_code=400, detail="Missing offer_id in booking")
+
+    conn = psycopg2.connect(**DB_CONFIG)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT price, expires_at FROM deals WHERE offer_id = %s LIMIT 1", (offer_id,))
+    deal = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not deal:
+        raise HTTPException(status_code=404, detail="Offer not found or expired")
+    if deal["expires_at"] and deal["expires_at"] < datetime.now(deal["expires_at"].tzinfo):
+        raise HTTPException(status_code=410, detail="Offer expired")
+
+    amount_eur = req.amount / 100.0
+    deal_price = float(deal["price"])
+    # Floor: 95% of deal price (5% tolerance for FX). Ceiling: deal + 500€ of legit add-ons (insurance/extras).
+    min_eur = deal_price * 0.95
+    max_eur = deal_price + 500
+    if amount_eur < min_eur or amount_eur > max_eur:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Amount {amount_eur:.2f}€ does not match deal {deal_price:.2f}€ (allowed range {min_eur:.2f}-{max_eur:.2f})",
+        )
+
+    intent = stripe.PaymentIntent.create(
+        amount=req.amount,
+        currency=req.currency,
+        metadata={"offer_id": offer_id, "deal_price": deal_price},
+        automatic_payment_methods={"enabled": True},
+    )
     return {"client_secret": intent.client_secret}
 
 @app.post("/send-confirmation")
