@@ -166,7 +166,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 <script>
 const API = '/api';
-const NAMES = {JFK:'New York',LAX:'Los Angeles',SIN:'Singapour',NRT:'Tokyo',DXB:'Dubaï',HKG:'Hong Kong',BKK:'Bangkok',GRU:'São Paulo'};
+const NAMES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',SIN:'Singapour',NRT:'Tokyo',DXB:'Dubaï',HKG:'Hong Kong',BKK:'Bangkok',GRU:'São Paulo',SYD:'Sydney',DOH:'Doha',ICN:'Séoul',DEL:'Delhi',BOM:'Mumbai',CPT:'Cape Town',NBO:'Nairobi'};
 const CABINS = {full_flat_pod:'Flat Bed Pod',full_flat:'Full Flat',private_suite:'Suite Privée',recliner:'Recliner',standard:'Standard',unknown:'Business'};
 
 function fmtDur(m){const h=Math.floor(m/60),mn=m%60;return mn>0?h+'h '+mn+'min':h+'h';}
@@ -194,7 +194,7 @@ async function load(){
     const dateStr = dep ? dep.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
 
     document.getElementById('b-from').textContent = deal.origin;
-    document.getElementById('b-from-name').textContent = 'Paris';
+    document.getElementById('b-from-name').textContent = NAMES[deal.origin] || deal.origin;
     document.getElementById('b-dep-time').textContent = timeStr;
     document.getElementById('b-to').textContent = deal.destination;
     document.getElementById('b-to-name').textContent = NAMES[deal.destination] || deal.destination;
@@ -203,6 +203,26 @@ async function load(){
     document.getElementById('b-date').textContent = dateStr;
     document.getElementById('b-airline').textContent = deal.airline_name;
     document.getElementById('b-cabin').textContent = CABINS[deal.seat_type] || 'Business';
+
+    // PERSIST BOOKING IN DB
+    if (b.email && deal.offer_id) {
+      try {
+        await fetch(API + '/bookings', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            booking_ref: ref,
+            offer_id: deal.offer_id,
+            user_email: b.email,
+            passenger_name: ((b.prenom || '') + ' ' + (b.nom || '')).trim(),
+            amount_cents: Math.round((b.finalTotal || deal.price) * 100),
+            stripe_payment_intent: params.get('pi') || ''
+          })
+        });
+        // Save email so /mes-voyages.html can fetch this user's bookings later
+        try { localStorage.setItem('ab_email', b.email); } catch(e) {}
+      } catch(e) { console.error('Booking persist error:', e); }
+    }
 
     // ENVOI EMAIL BREVO
     if(b.email) {

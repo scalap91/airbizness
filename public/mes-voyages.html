@@ -230,32 +230,54 @@ function shareVoyage(ref){
   alert('Message copié ! Partagez votre voyage.');
 }
 
-function load(){
-  // Récupère voyages depuis localStorage (sessionStorage pour la démo)
-  const booking=JSON.parse(sessionStorage.getItem('last_booking')||'null');
-  const stored=JSON.parse(localStorage.getItem('ab_voyages')||'[]');
+function fmtMin(m){if(!m)return '—';const h=Math.floor(m/60),mn=m%60;return mn>0?h+'h '+mn+'min':h+'h';}
 
-  // Demo voyages si aucun
-  if(stored.length===0){
-    allVoyages=[
-      {ref:'AB-X7K2M1',origin:'CDG',destination:'DXB',airline:'British Airways',price:1230,departureDate:'2026-06-14',duration:'6h 10min',cancelled:false},
-      {ref:'AB-P3N8Q2',origin:'CDG',destination:'JFK',airline:'Air France',price:1890,departureDate:'2025-12-20',duration:'7h 45min',cancelled:false},
-    ];
-  } else {
-    allVoyages=stored;
-  }
-
-  // Stats
+function showStats(){
   const total=allVoyages.length;
   const eco=allVoyages.reduce((s,v)=>s+Math.max(0,(AVG[v.destination]||4500)-v.price),0);
   const dests=new Set(allVoyages.map(v=>v.destination)).size;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-eco').textContent=fmt(eco);
   document.getElementById('stat-km').textContent=dests;
-  document.getElementById('voyages-sub').textContent=`${total} voyage${total>1?'s':''}`;
+  document.getElementById('voyages-sub').textContent=total?(`${total} voyage${total>1?'s':''}`):'Aucun voyage pour le moment';
   if(total>0)document.getElementById('stats-bar').style.display='grid';
+}
 
-  renderVoyages();
+async function load(){
+  let email=null;
+  try{email=localStorage.getItem('ab_email');}catch(e){}
+  if(!email){
+    document.getElementById('voyages-sub').textContent='Aucun voyage pour le moment';
+    document.getElementById('voyages-list').innerHTML=`
+      <div class="empty-state">
+        <div class="empty-icon">✈️</div>
+        <div class="empty-title">Vous n'avez pas encore voyagé avec nous</div>
+        <div class="empty-sub">Vos réservations effectuées sur AirBizness apparaîtront ici dès votre première réservation.</div>
+        <button class="empty-btn" onclick="location.href='/'">Voir les deals</button>
+      </div>`;
+    return;
+  }
+  try{
+    const r=await fetch('/api/bookings/by-email?email='+encodeURIComponent(email));
+    if(!r.ok)throw new Error('fetch failed');
+    const d=await r.json();
+    allVoyages=(d.bookings||[]).map(b=>({
+      ref:b.booking_ref,
+      origin:b.origin,
+      destination:b.destination,
+      airline:b.airline_name||'—',
+      price:(b.amount_cents||0)/100,
+      departureDate:b.departure_at||b.created_at,
+      duration:fmtMin((b.raw_offer&&b.raw_offer.duration_minutes)||0),
+      cancelled:b.status==='cancelled'
+    }));
+    showStats();
+    renderVoyages();
+  }catch(e){
+    console.error(e);
+    document.getElementById('voyages-sub').textContent='Erreur de chargement';
+    document.getElementById('voyages-list').innerHTML='<div class="empty-state"><div class="empty-title">Erreur</div><div class="empty-sub">Impossible de récupérer vos voyages. Réessayez plus tard.</div></div>';
+  }
 }
 
 load();

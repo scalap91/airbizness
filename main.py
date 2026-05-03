@@ -56,6 +56,15 @@ class AlerteRequest(BaseModel):
     destination: str = Field(default="", max_length=3)
     max_price: int = Field(gt=0, lt=100000)
 
+class BookingRequest(BaseModel):
+    booking_ref: str = Field(min_length=4, max_length=32)
+    offer_id: str = Field(min_length=4, max_length=128)
+    user_email: EmailStr
+    passenger_name: str = Field(default="", max_length=120)
+    amount_cents: int = Field(gt=0, lt=10000000)
+    currency: str = Field(default="eur", max_length=3)
+    stripe_payment_intent: str = Field(default="", max_length=128)
+
 @app.get("/deals")
 @limiter.limit("60/minute")
 def get_deals(request: Request, 
@@ -236,6 +245,66 @@ def delete_alerte(alerte_id: int):
     cur.close()
     conn.close()
     return {"status": "deleted"}
+
+def _serialize_deal(d):
+    out = {}
+    for k, v in d.items():
+        if hasattr(v, "isoformat"):
+            out[k] = v.isoformat()
+        elif type(v).__name__ == "Decimal":
+            out[k] = float(v)
+        else:
+            out[k] = v
+    return out
+
+@app.post("/bookings")
+@limiter.limit("10/minute")
+def create_booking(request: Request, req: BookingRequest):
+    conn = psycopg2.connect(**DB_CONFIG)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM deals WHERE offer_id = %s LIMIT 1", (req.offer_id,))
+    deal = cur.fetchone()
+    if not deal:
+        cur.close(); conn.close()
+        raise HTTPException(status_code=404, detail="Offer not found")
+    try:
+        cur.execute("""
+            INSERT INTO bookings (booking_ref, offer_id, user_email, passenger_name,
+                amount_cents, currency, stripe_payment_intent,
+                origin, destination, airline_name, departure_at, raw_offer)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            ON CONFLICT (booking_ref) DO UPDATE SET
+                stripe_payment_intent = EXCLUDED.stripe_payment_intent,
+                amount_cents = EXCLUDED.amount_cents
+            RETURNING id, booking_ref, created_at
+        """, (
+            req.booking_ref, req.offer_id, req.user_email, req.passenger_name,
+            req.amount_cents, req.currency, req.stripe_payment_intent or None,
+            deal["origin"], deal["destination"], deal["airline_name"],
+            deal["departure_at"], psycopg2.extras.Json(_serialize_deal(dict(deal))),
+        ))
+        row = cur.fetchone()
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        cur.close(); conn.close()
+        raise HTTPException(status_code=500, detail=f"DB error: {e}")
+    cur.close(); conn.close()
+    return {"status": "saved", "id": row["id"], "booking_ref": row["booking_ref"]}
+
+@app.get("/bookings/by-email")
+@limiter.limit("30/minute")
+def list_bookings(request: Request, email: EmailStr):
+    conn = psycopg2.connect(**DB_CONFIG)
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT booking_ref, offer_id, passenger_name, amount_cents, currency, status,
+               origin, destination, airline_name, departure_at, created_at, raw_offer
+        FROM bookings WHERE user_email = %s ORDER BY created_at DESC LIMIT 100
+    """, (email,))
+    rows = cur.fetchall()
+    cur.close(); conn.close()
+    return {"bookings": [dict(r) for r in rows]}
 
 @app.get("/og-image")
 def og_image(from_: str = "CDG", to: str = "JFK", price: int = 1230, pct: int = 68, airline: str = ""):
