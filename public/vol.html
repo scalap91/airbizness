@@ -283,9 +283,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </div>
       </div>
 
-      <!-- PRIX HISTORIQUE -->
+      <!-- COMPARAISON TARIFAIRE -->
       <div class="section">
-        <div class="section-head"><div class="section-title">Historique des prix</div></div>
+        <div class="section-head"><div class="section-title">Comparaison tarifaire</div></div>
         <div class="section-body">
           <div class="chart-wrap" id="chart"></div>
           <div class="chart-note" id="chart-note"></div>
@@ -400,15 +400,9 @@ async function load(){
       `<div class="sf">2 bagages inclus</div>`
     ].join('');
 
-    // CHART
-    const bars=[
-      {v:avg*0.96,l:'Jan'},{v:avg*0.89,l:'Fév'},{v:avg*1.01,l:'Mar'},
-      {v:avg*0.93,l:'Avr 1'},{v:avg*0.97,l:'Avr 2'},{v:avg*0.91,l:'Avr 3'},
-      {v:avg*0.98,l:'Avr 4'},{v:deal.price,l:"Auj.",cur:true}
-    ];
-    const mx=Math.max(...bars.map(b=>b.v));
-    document.getElementById('chart').innerHTML=bars.map(b=>`<div class="bar ${b.cur?'cur':''}" style="height:${Math.round(b.v/mx*100)}%"><div class="bar-v">${Math.round(b.v/100)*100}€</div><div class="bar-l">${b.l}</div></div>`).join('');
-    document.getElementById('chart-note').innerHTML=`Ce tarif est <strong>${pct}% inférieur</strong> à la moyenne des 90 derniers jours sur cette route.`;
+    // PRIX EN TEMPS RÉEL (pas d'historique fabriqué)
+    document.getElementById('chart').style.display='none';
+    document.getElementById('chart-note').innerHTML=`Tarif <strong>actualisé en temps réel</strong> depuis les compagnies aériennes. Le prix moyen affiché (${fmt(avg)}) est calculé sur l'ensemble des offres en cours pour cette destination.`;
 
     // PRICE
     const book=()=>location.href=`/passager.html?id=${deal.offer_id}`;
