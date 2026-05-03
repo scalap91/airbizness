@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AirBizness — Assurance voyage</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --save:#c0392b;--save-dim:rgba(192,57,43,0.1);
+  --green:#27ae60;--green-dim:rgba(39,174,96,0.1);
+  --r:4px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding-bottom:90px;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;flex-shrink:0;}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);}
+.logo-text em{color:var(--gold2);font-style:normal;}
+
+.back{display:flex;align-items:center;gap:6px;padding:12px 16px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);background:var(--bg2);}
+
+.progress{display:flex;align-items:center;padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border);gap:0;overflow-x:auto;}
+.step{display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.step-num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;flex-shrink:0;}
+.step.done .step-num{background:var(--green);color:#fff;}
+.step.active .step-num{background:var(--gold);color:#000;}
+.step.todo .step-num{background:var(--bg4);color:var(--text3);border:1px solid var(--border);}
+.step-label{font-size:11px;}
+.step.active .step-label{color:var(--text);font-weight:500;}
+.step.todo .step-label,.step.done .step-label{color:var(--text3);}
+.step-line{flex:1;height:1px;background:var(--border);margin:0 6px;min-width:12px;}
+
+/* FLIGHT RECAP */
+.flight-recap{margin:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.fr-route{display:flex;align-items:center;gap:8px;}
+.fr-iata{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);}
+.fr-arrow{color:var(--gold2);}
+.fr-info{flex:1;display:flex;flex-direction:column;gap:2px;}
+.fr-airline{font-size:12px;color:var(--text2);}
+.fr-date{font-size:11px;color:var(--text3);}
+.fr-price{text-align:right;flex-shrink:0;}
+.fr-price-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);}
+.fr-price-label{font-size:10px;color:var(--text3);}
+
+/* SECTION TITLE */
+.section-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:16px 16px 10px;}
+
+/* NO INSURANCE */
+.no-insurance{margin:0 16px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s;}
+.no-insurance:hover{border-color:var(--border2);}
+.no-insurance.selected{border-color:var(--gold2);background:var(--gold-dim);}
+.ni-icon{font-size:22px;flex-shrink:0;}
+.ni-info{flex:1;}
+.ni-title{font-size:14px;font-weight:500;margin-bottom:3px;}
+.ni-sub{font-size:11px;color:var(--text3);line-height:1.5;}
+.ni-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:grid;place-items:center;font-size:10px;transition:all .2s;}
+.no-insurance.selected .ni-check{background:var(--gold);border-color:var(--gold);color:#000;}
+
+/* INSURANCE CARDS */
+.insurance-cards{margin:0 16px;display:flex;flex-direction:column;gap:10px;}
+
+.ins-card{background:var(--bg2);border:2px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:border-color .2s;position:relative;}
+.ins-card:hover{border-color:var(--border2);}
+.ins-card.selected{border-color:var(--gold2);}
+.ins-card.recommended{border-color:var(--gold);}
+
+.ins-badge{position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:2px;}
+.ins-badge.popular{background:var(--gold-dim);border:1px solid var(--border2);color:var(--gold2);}
+.ins-badge.best{background:var(--green-dim);border:1px solid rgba(39,174,96,.3);color:var(--green);}
+
+.ins-header{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.ins-icon{font-size:28px;flex-shrink:0;}
+.ins-title-block{flex:1;}
+.ins-name{font-size:15px;font-weight:600;margin-bottom:3px;}
+.ins-desc{font-size:11px;color:var(--text3);}
+.ins-price-block{text-align:right;flex-shrink:0;}
+.ins-price{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);}
+.ins-price-label{font-size:10px;color:var(--text3);}
+.ins-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:11px;margin-top:4px;margin-left:auto;transition:all .2s;}
+.ins-card.selected .ins-check{background:var(--gold);border-color:var(--gold);color:#000;}
+
+.ins-features{padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
+.ins-feat{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);}
+.ins-feat::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.ins-feat.no::before{content:'✗';color:var(--text3);}
+.ins-feat.no{color:var(--text3);}
+
+.ins-limit{padding:0 16px 14px;font-size:11px;color:var(--text3);font-style:italic;}
+
+/* COMPARATIF */
+.compare-section{margin:16px 16px 12px;}
+.compare-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+.compare-table{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.ct-head{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.ct-col{padding:10px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);text-align:center;border-right:1px solid var(--border);}
+.ct-col:last-child{border-right:none;}
+.ct-col.active{color:var(--gold2);}
+.ct-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.ct-row:last-child{border-bottom:none;}
+.ct-cell{padding:10px 8px;font-size:11px;text-align:center;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.ct-cell:last-child{border-right:none;}
+.ct-cell.label{text-align:left;justify-content:flex-start;color:var(--text3);font-size:10px;}
+.ct-cell .ok{color:var(--green);}
+.ct-cell .no{color:var(--text3);}
+
+/* SIDEBAR */
+.sidebar{display:none;}
+
+/* STICKY BOTTOM */
+.sticky-bottom{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px;z-index:100;}
+.sb-row{display:flex;align-items:center;gap:12px;}
+.sb-info{flex:1;}
+.sb-label{font-size:10px;color:var(--text3);}
+.sb-price{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);}
+.sb-btn{flex:1;padding:14px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:var(--r);}
+.sb-btn:hover{background:var(--gold2);}
+
+@media(min-width:768px){
+  .header{padding:0 32px;height:60px;}
+  .back{padding:14px 32px;}
+  .progress{padding:16px 32px;}
+  .content-wrap{display:grid;grid-template-columns:1fr 300px;gap:24px;max-width:1100px;margin:0 auto;padding:0 32px;}
+  .section-title{padding-left:0;}
+  .flight-recap,.no-insurance,.insurance-cards,.compare-section{margin-left:0;margin-right:0;}
+  .flight-recap{margin-top:12px;}
+  .sidebar{display:block;padding-top:12px;}
+  .sidebar-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:sticky;top:80px;}
+  .sc-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+  .sc-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;}
+  .sc-row-label{color:var(--text3);}
+  .sc-divider{height:1px;background:var(--border);margin:12px 0;}
+  .sc-total{display:flex;justify-content:space-between;font-weight:600;align-items:center;}
+  .sc-total-price{font-family:'DM Serif Display',serif;font-size:24px;}
+  .sc-btn{width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r);margin-top:16px;}
+  .sc-btn:hover{background:var(--gold2);}
+  .sc-secure{text-align:center;font-size:10px;color:var(--text3);margin-top:8px;}
+  .sticky-bottom{display:none;}
+  body{padding-bottom:40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/index.html">
+    <div class="logo-hex">✈</div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+</div>
+
+<div class="back" onclick="history.back()">← Retour</div>
+
+<div class="progress">
+  <div class="step done"><div class="step-num">✓</div><div class="step-label">Vol</div></div>
+  <div class="step-line"></div>
+  <div class="step done"><div class="step-num">✓</div><div class="step-label">Passager</div></div>
+  <div class="step-line"></div>
+  <div class="step done"><div class="step-num">✓</div><div class="step-label">Options</div></div>
+  <div class="step-line"></div>
+  <div class="step active"><div class="step-num">4</div><div class="step-label">Assurance</div></div>
+  <div class="step-line"></div>
+  <div class="step todo"><div class="step-num">5</div><div class="step-label">Paiement</div></div>
+</div>
+
+<div class="content-wrap">
+  <div class="left-col">
+
+    <div class="flight-recap" id="flight-recap" style="margin-top:12px;">
+      <div class="fr-route">
+        <div class="fr-iata" id="recap-from">CDG</div>
+        <div class="fr-arrow">→</div>
+        <div class="fr-iata" id="recap-to">JFK</div>
+      </div>
+      <div class="fr-info">
+        <div class="fr-airline" id="recap-airline">—</div>
+        <div class="fr-date" id="recap-date">—</div>
+      </div>
+      <div class="fr-price">
+        <div class="fr-price-label">Vol</div>
+        <div class="fr-price-val" id="recap-price">—</div>
+      </div>
+    </div>
+
+    <div class="section-title">Protégez votre voyage</div>
+
+    <!-- SANS ASSURANCE -->
+    <div class="no-insurance" id="opt-none" onclick="selectInsurance('none', 0)">
+      <div class="ni-icon">🚫</div>
+      <div class="ni-info">
+        <div class="ni-title">Sans assurance</div>
+        <div class="ni-sub">Je voyage sans protection. En cas d'annulation ou de problème, je prends en charge les frais.</div>
+      </div>
+      <div class="ni-check"></div>
+    </div>
+
+    <div class="insurance-cards">
+
+      <!-- ESSENTIEL -->
+      <div class="ins-card" id="ins-essentiel" onclick="selectInsurance('essentiel', 49)">
+        <div class="ins-header">
+          <div class="ins-icon">🛡</div>
+          <div class="ins-title-block">
+            <div class="ins-name">Essentiel</div>
+            <div class="ins-desc">Protection de base pour voyager serein</div>
+          </div>
+          <div class="ins-price-block">
+            <div class="ins-price">49 €</div>
+            <div class="ins-price-label">par personne</div>
+            <div class="ins-check"></div>
+          </div>
+        </div>
+        <div class="ins-features">
+          <div class="ins-feat">Annulation du vol jusqu'à 1 500 €</div>
+          <div class="ins-feat">Assistance médicale d'urgence</div>
+          <div class="ins-feat">Rapatriement médical</div>
+          <div class="ins-feat">Bagages perdus jusqu'à 500 €</div>
+          <div class="ins-feat no">Retard de vol non couvert</div>
+          <div class="ins-feat no">Interruption de séjour non couverte</div>
+        </div>
+        <div class="ins-limit">Plafond : 1 500 € annulation · Franchise : 150 €</div>
+      </div>
+
+      <!-- CONFORT -->
+      <div class="ins-card recommended selected" id="ins-confort" onclick="selectInsurance('confort', 89)">
+        <div class="ins-badge popular">Recommandé</div>
+        <div class="ins-header">
+          <div class="ins-icon">⭐</div>
+          <div class="ins-title-block">
+            <div class="ins-name">Confort</div>
+            <div class="ins-desc">La protection complète pour les voyageurs Business</div>
+          </div>
+          <div class="ins-price-block">
+            <div class="ins-price">89 €</div>
+            <div class="ins-price-label">par personne</div>
+            <div class="ins-check">✓</div>
+          </div>
+        </div>
+        <div class="ins-features">
+          <div class="ins-feat">Annulation du vol jusqu'à 5 000 €</div>
+          <div class="ins-feat">Assistance médicale 24h/24</div>
+          <div class="ins-feat">Rapatriement médical</div>
+          <div class="ins-feat">Bagages perdus jusqu'à 1 500 €</div>
+          <div class="ins-feat">Retard de vol dès 3h (100 €/jour)</div>
+          <div class="ins-feat">Interruption de séjour couverte</div>
+        </div>
+        <div class="ins-limit">Plafond : 5 000 € annulation · Sans franchise</div>
+      </div>
+
+      <!-- PREMIUM -->
+      <div class="ins-card" id="ins-premium" onclick="selectInsurance('premium', 139)">
+        <div class="ins-badge best">Couverture max</div>
+        <div class="ins-header">
+          <div class="ins-icon">💎</div>
+          <div class="ins-title-block">
+            <div class="ins-name">Premium</div>
+            <div class="ins-desc">Couverture maximale tous risques</div>
+          </div>
+          <div class="ins-price-block">
+            <div class="ins-price">139 €</div>
+            <div class="ins-price-label">par personne</div>
+            <div class="ins-check"></div>
+          </div>
+        </div>
+        <div class="ins-features">
+          <div class="ins-feat">Annulation tous motifs jusqu'à 10 000 €</div>
+          <div class="ins-feat">Assistance médicale 24h/24 · VIP</div>
+          <div class="ins-feat">Rapatriement médical · Hélicoptère</div>
+          <div class="ins-feat">Bagages perdus jusqu'à 3 000 €</div>
+          <div class="ins-feat">Retard de vol dès 1h (150 €/jour)</div>
+          <div class="ins-feat">Interruption + modification incluses</div>
+          <div class="ins-feat">Responsabilité civile à l'étranger</div>
+          <div class="ins-feat">Annulation sans justificatif possible</div>
+        </div>
+        <div class="ins-limit">Plafond : 10 000 € annulation · Sans franchise</div>
+      </div>
+
+    </div>
+
+    <!-- COMPARATIF -->
+    <div class="compare-section">
+      <div class="compare-title">Comparatif des formules</div>
+      <div class="compare-table">
+        <div class="ct-head">
+          <div class="ct-col">Garantie</div>
+          <div class="ct-col">Essentiel</div>
+          <div class="ct-col active">Confort ★</div>
+          <div class="ct-col">Premium</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Annulation</div>
+          <div class="ct-cell">1 500 €</div>
+          <div class="ct-cell">5 000 €</div>
+          <div class="ct-cell">10 000 €</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Assistance médicale</div>
+          <div class="ct-cell"><span class="ok">✓</span></div>
+          <div class="ct-cell"><span class="ok">✓</span></div>
+          <div class="ct-cell"><span class="ok">✓ VIP</span></div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Bagages</div>
+          <div class="ct-cell">500 €</div>
+          <div class="ct-cell">1 500 €</div>
+          <div class="ct-cell">3 000 €</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Retard de vol</div>
+          <div class="ct-cell"><span class="no">✗</span></div>
+          <div class="ct-cell">dès 3h</div>
+          <div class="ct-cell">dès 1h</div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Franchise</div>
+          <div class="ct-cell">150 €</div>
+          <div class="ct-cell"><span class="ok">0 €</span></div>
+          <div class="ct-cell"><span class="ok">0 €</span></div>
+        </div>
+        <div class="ct-row">
+          <div class="ct-cell label">Prix</div>
+          <div class="ct-cell">49 €</div>
+          <div class="ct-cell" style="color:var(--gold2);font-weight:600;">89 €</div>
+          <div class="ct-cell">139 €</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR DESKTOP -->
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <div class="sc-title">Récapitulatif</div>
+      <div class="sc-row"><div class="sc-row-label">Vol</div><div id="sc-route">—</div></div>
+      <div class="sc-row"><div class="sc-row-label">Date</div><div id="sc-date">—</div></div>
+      <div class="sc-divider"></div>
+      <div class="sc-row"><div class="sc-row-label">Vol Business</div><div id="sc-flight">—</div></div>
+      <div class="sc-row" id="sc-ins-row"><div class="sc-row-label" id="sc-ins-label">Assurance Confort</div><div id="sc-ins-price">89 €</div></div>
+      <div class="sc-divider"></div>
+      <div class="sc-total"><div>Total</div><div class="sc-total-price" id="sc-total">—</div></div>
+      <button class="sc-btn" id="sc-btn">Continuer →</button>
+      <div class="sc-secure">🔒 Paiement 100% sécurisé</div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY BOTTOM MOBILE -->
+<div class="sticky-bottom">
+  <div class="sb-row">
+    <div class="sb-info">
+      <div class="sb-label">Total</div>
+      <div class="sb-price" id="sb-price">—</div>
+    </div>
+    <button class="sb-btn" id="sb-btn">Continuer →</button>
+  </div>
+</div>
+
+<script>
+const API='/api';
+let basePrice=0;
+let selectedIns={type:'confort',price:89};
+
+function fmt(p){return new Intl.NumberFormat('fr-FR').format(Math.round(p))+' €';}
+
+function selectInsurance(type, price){
+  // Reset all
+  document.querySelectorAll('.ins-card').forEach(c=>{
+    c.classList.remove('selected');
+    c.querySelector('.ins-check').textContent='';
+  });
+  document.getElementById('opt-none').classList.remove('selected');
+  document.getElementById('opt-none').querySelector('.ni-check').textContent='';
+
+  selectedIns={type,price};
+
+  if(type==='none'){
+    document.getElementById('opt-none').classList.add('selected');
+    document.getElementById('opt-none').querySelector('.ni-check').textContent='✓';
+    document.getElementById('sc-ins-row').style.display='none';
+  } else {
+    const card=document.getElementById(`ins-${type}`);
+    card.classList.add('selected');
+    card.querySelector('.ins-check').textContent='✓';
+    document.getElementById('sc-ins-row').style.display='flex';
+    document.getElementById('sc-ins-label').textContent=`Assurance ${type.charAt(0).toUpperCase()+type.slice(1)}`;
+    document.getElementById('sc-ins-price').textContent=fmt(price);
+  }
+  updateTotal();
+}
+
+function updateTotal(){
+  const total=basePrice+selectedIns.price;
+  document.getElementById('sb-price').textContent=fmt(total);
+  document.getElementById('sc-total').textContent=fmt(total);
+  return total;
+}
+
+async function load(){
+  const id=new URLSearchParams(location.search).get('id');
+  const booking=JSON.parse(sessionStorage.getItem('booking')||'{}');
+  try{
+    const r=await fetch(`${API}/deals?limit=100`);
+    const d=await r.json();
+    const deal=d.deals.find(x=>x.offer_id===id)||d.deals[0];
+    if(!deal)return;
+    basePrice=booking.total||deal.price;
+    const dep=deal.departure_at?new Date(deal.departure_at):null;
+    const dateStr=dep?dep.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'—';
+
+    document.getElementById('recap-from').textContent=deal.origin;
+    document.getElementById('recap-to').textContent=deal.destination;
+    document.getElementById('recap-airline').textContent=deal.airline_name+' · Business';
+    document.getElementById('recap-date').textContent=dateStr;
+    document.getElementById('recap-price').textContent=fmt(deal.price);
+    document.getElementById('sc-route').textContent=deal.origin+' → '+deal.destination;
+    document.getElementById('sc-date').textContent=dateStr;
+    document.getElementById('sc-flight').textContent=fmt(basePrice);
+    updateTotal();
+
+    const next=()=>{
+      const data={...booking,insurance:selectedIns,total:updateTotal(),offerId:deal.offer_id};
+      sessionStorage.setItem('booking',JSON.stringify(data));
+      location.href=`/recap.html?id=${deal.offer_id}`;
+    };
+    document.getElementById('sc-btn').onclick=next;
+    document.getElementById('sb-btn').onclick=next;
+  }catch(e){console.error(e);}
+}
+
+load();
+</script>
+</body>
+</html>

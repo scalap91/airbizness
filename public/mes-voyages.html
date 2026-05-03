@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes voyages — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#27ae60;--green-dim:rgba(39,174,96,0.1);
+  --save:#c0392b;--save-dim:rgba(192,57,43,0.1);
+  --r:4px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding-bottom:80px;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;flex-shrink:0;}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);}
+.logo-text em{color:var(--gold2);font-style:normal;}
+
+.page-head{padding:20px 16px 12px;}
+.page-title{font-family:'DM Serif Display',serif;font-size:26px;}
+.page-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+
+/* TABS */
+.tabs{display:flex;padding:0 16px;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.tab{padding:12px 16px;font-size:12px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.tab.active{color:var(--gold2);border-bottom-color:var(--gold2);}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px;}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:20px;}
+.empty-btn{padding:13px 24px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r);}
+
+/* VOYAGE CARDS */
+.voyages-list{margin:0 16px;}
+.voyage-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.voyage-card.upcoming{border-left:3px solid var(--green);}
+.voyage-card.past{border-left:3px solid var(--text3);}
+.voyage-card.cancelled{border-left:3px solid var(--save);opacity:.7;}
+
+.vc-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.vc-ref{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.vc-ref span{color:var(--gold2);font-weight:600;}
+.vc-status{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
+.vc-status.upcoming{background:var(--green-dim);border:1px solid rgba(39,174,96,.3);color:var(--green);}
+.vc-status.past{background:var(--bg3);border:1px solid var(--border);color:var(--text3);}
+.vc-status.cancelled{background:var(--save-dim);border:1px solid rgba(192,57,43,.2);color:#e74c3c;}
+
+.vc-route{padding:16px;display:flex;align-items:center;gap:12px;}
+.vc-iata{font-family:'DM Serif Display',serif;font-size:36px;line-height:1;}
+.vc-arrow{color:var(--gold2);font-size:20px;flex-shrink:0;}
+.vc-conn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.vc-line{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.vc-dur{font-size:10px;color:var(--text3);}
+.vc-info{display:flex;flex-direction:column;gap:2px;}
+.vc-airline{font-size:12px;color:var(--text2);}
+.vc-date{font-size:11px;color:var(--text3);}
+.vc-cabin{font-size:11px;color:var(--gold2);}
+
+.vc-price-row{padding:0 16px 14px;display:flex;align-items:center;justify-content:space-between;}
+.vc-price{font-family:'DM Serif Display',serif;font-size:24px;}
+.vc-saving{font-size:11px;color:var(--green);}
+
+.vc-actions{display:flex;gap:8px;padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);}
+.vc-btn{flex:1;padding:9px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border-radius:var(--r);text-align:center;}
+.vc-btn:hover{border-color:var(--border2);color:var(--gold2);}
+.vc-btn.primary{background:var(--gold);border-color:var(--gold);color:#000;font-weight:600;}
+.vc-btn.primary:hover{background:var(--gold2);}
+
+/* STATS */
+.stats-bar{margin:0 16px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;}
+.sb-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);}
+.sb-label{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.sb-green{color:var(--green);}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;cursor:pointer;color:var(--text3);font-size:10px;gap:3px;text-decoration:none;}
+.bn-item.on{color:var(--gold2);}
+.bn-icon{font-size:18px;}
+
+@media(min-width:768px){
+  .header{padding:0 32px;height:60px;}
+  .page-head{padding:24px 32px 12px;}
+  .tabs{padding:0 32px;}
+  .voyages-list,.stats-bar{max-width:700px;margin-left:auto;margin-right:auto;}
+  .bottom-nav{display:none;}
+  body{padding-bottom:40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/index.html">
+    <div class="logo-hex">✈</div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+</div>
+
+<div class="page-head">
+  <div class="page-title">Mes voyages</div>
+  <div class="page-sub" id="voyages-sub">Chargement...</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="filterVoyages('all', this)">Tous</div>
+  <div class="tab" onclick="filterVoyages('upcoming', this)">À venir</div>
+  <div class="tab" onclick="filterVoyages('past', this)">Passés</div>
+</div>
+
+<div class="stats-bar" id="stats-bar" style="display:none;">
+  <div><div class="sb-val" id="stat-total">0</div><div class="sb-label">Voyages</div></div>
+  <div><div class="sb-val sb-green" id="stat-eco">0 €</div><div class="sb-label">Économisé</div></div>
+  <div><div class="sb-val" id="stat-km">0</div><div class="sb-label">Destinations</div></div>
+</div>
+
+<div class="voyages-list" id="voyages-list"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a class="bn-item" href="/index.html"><div class="bn-icon">✈</div>Deals</a>
+  <a class="bn-item" href="/mes-alertes.html"><div class="bn-icon">🔔</div>Alertes</a>
+  <a class="bn-item" href="/index.html"><div class="bn-icon">📅</div>Calendrier</a>
+  <a class="bn-item" href="/compte.html"><div class="bn-icon">👤</div>Compte</a>
+</div>
+
+<script>
+const CITIES={CDG:'Paris',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',NRT:'Tokyo',HKG:'Hong Kong',SYD:'Sydney',LAX:'Los Angeles',BKK:'Bangkok',GRU:'São Paulo',DOH:'Doha',ICN:'Séoul',DEL:'Delhi',BOM:'Mumbai'};
+const AVG={JFK:4700,LAX:5200,SIN:5800,NRT:5500,DXB:3800,HKG:5600,BKK:5000,GRU:5200,SYD:6000,DEL:4200,BOM:4000};
+
+function fmt(p){return new Intl.NumberFormat('fr-FR').format(Math.round(p))+' €';}
+
+let allVoyages=[];
+let currentFilter='all';
+
+function filterVoyages(filter, tab){
+  currentFilter=filter;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  renderVoyages();
+}
+
+function getStatus(v){
+  const dep=new Date(v.departureDate);
+  const now=new Date();
+  if(v.cancelled)return 'cancelled';
+  if(dep>now)return 'upcoming';
+  return 'past';
+}
+
+function renderVoyages(){
+  const list=document.getElementById('voyages-list');
+  let filtered=allVoyages;
+  if(currentFilter!=='all')filtered=allVoyages.filter(v=>getStatus(v)===currentFilter);
+
+  if(filtered.length===0){
+    list.innerHTML=`
+      <div class="empty-state">
+        <div class="empty-icon">✈️</div>
+        <div class="empty-title">Aucun voyage ${currentFilter==='upcoming'?'à venir':currentFilter==='past'?'passé':''}</div>
+        <div class="empty-sub">Vos réservations effectuées sur AirBizness apparaîtront ici.</div>
+        <button class="empty-btn" onclick="location.href='/index.html'">Voir les deals</button>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML=filtered.map(v=>{
+    const status=getStatus(v);
+    const avg=AVG[v.destination]||4500;
+    const saved=Math.round(avg-v.price);
+    const dep=new Date(v.departureDate);
+    const dateStr=dep.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+    return `
+    <div class="voyage-card ${status}">
+      <div class="vc-head">
+        <div class="vc-ref">Réservation <span>${v.ref}</span></div>
+        <div class="vc-status ${status}">${status==='upcoming'?'À venir':status==='past'?'Effectué':'Annulé'}</div>
+      </div>
+      <div class="vc-route">
+        <div>
+          <div class="vc-iata">${v.origin}</div>
+          <div class="vc-airline">${CITIES[v.origin]||v.origin}</div>
+        </div>
+        <div class="vc-conn">
+          <div class="vc-line"></div>
+          <div class="vc-dur">${v.duration||'—'}</div>
+        </div>
+        <div>
+          <div class="vc-iata">${v.destination}</div>
+          <div class="vc-airline">${CITIES[v.destination]||v.destination}</div>
+        </div>
+        <div class="vc-info" style="margin-left:auto;text-align:right;">
+          <div class="vc-airline">${v.airline}</div>
+          <div class="vc-date">${dateStr}</div>
+          <div class="vc-cabin">🛏 Business</div>
+        </div>
+      </div>
+      <div class="vc-price-row">
+        <div>
+          <div class="vc-price">${fmt(v.price)}</div>
+          ${saved>0?`<div class="vc-saving">Vous avez économisé ${fmt(saved)}</div>`:''}
+        </div>
+      </div>
+      <div class="vc-actions">
+        <button class="vc-btn" onclick="downloadTicket('${v.ref}')">📄 Billet</button>
+        ${status==='upcoming'?`<button class="vc-btn" onclick="shareVoyage('${v.ref}')">📤 Partager</button>`:''}
+        ${status==='upcoming'?`<button class="vc-btn primary" onclick="location.href='/index.html'">Réserver un autre vol →</button>`:'<button class="vc-btn primary" onclick="location.href=\'/index.html\'">Réserver à nouveau →</button>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function downloadTicket(ref){
+  alert(`📄 Votre billet ${ref} vous a été envoyé par email lors de votre réservation.`);
+}
+
+function shareVoyage(ref){
+  navigator.clipboard.writeText(`Je voyage en Business Class grâce à AirBizness ! Réservation ${ref} — airbizness.com`);
+  alert('Message copié ! Partagez votre voyage.');
+}
+
+function load(){
+  // Récupère voyages depuis localStorage (sessionStorage pour la démo)
+  const booking=JSON.parse(sessionStorage.getItem('last_booking')||'null');
+  const stored=JSON.parse(localStorage.getItem('ab_voyages')||'[]');
+
+  // Demo voyages si aucun
+  if(stored.length===0){
+    allVoyages=[
+      {ref:'AB-X7K2M1',origin:'CDG',destination:'DXB',airline:'British Airways',price:1230,departureDate:'2026-06-14',duration:'6h 10min',cancelled:false},
+      {ref:'AB-P3N8Q2',origin:'CDG',destination:'JFK',airline:'Air France',price:1890,departureDate:'2025-12-20',duration:'7h 45min',cancelled:false},
+    ];
+  } else {
+    allVoyages=stored;
+  }
+
+  // Stats
+  const total=allVoyages.length;
+  const eco=allVoyages.reduce((s,v)=>s+Math.max(0,(AVG[v.destination]||4500)-v.price),0);
+  const dests=new Set(allVoyages.map(v=>v.destination)).size;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-eco').textContent=fmt(eco);
+  document.getElementById('stat-km').textContent=dests;
+  document.getElementById('voyages-sub').textContent=`${total} voyage${total>1?'s':''}`;
+  if(total>0)document.getElementById('stats-bar').style.display='grid';
+
+  renderVoyages();
+}
+
+load();
+</script>
+</body>
+</html>

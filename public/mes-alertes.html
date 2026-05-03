@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes alertes — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#27ae60;--green-dim:rgba(39,174,96,0.1);
+  --save:#c0392b;--save-dim:rgba(192,57,43,0.1);
+  --r:4px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding-bottom:80px;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;flex-shrink:0;}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);}
+.logo-text em{color:var(--gold2);font-style:normal;}
+
+.page-head{padding:20px 16px 12px;display:flex;align-items:center;justify-content:space-between;}
+.page-title{font-family:'DM Serif Display',serif;font-size:26px;}
+.page-sub{font-size:12px;color:var(--text3);margin-top:3px;}
+.add-btn{padding:9px 16px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border-radius:var(--r);}
+.add-btn:hover{background:var(--gold2);}
+
+.new-alert-card{margin:0 16px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:16px;display:none;}
+.new-alert-card.open{display:block;}
+.na-title{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--gold2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:11px;color:var(--text3);}
+.form-input,.form-select{padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;transition:border-color .2s;}
+.form-input:focus,.form-select:focus{border-color:var(--border2);}
+.form-input::placeholder{color:var(--text3);}
+.form-select{appearance:none;cursor:pointer;}
+.na-footer{display:flex;gap:8px;margin-top:12px;}
+.na-save{flex:1;padding:11px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r);}
+.na-cancel{padding:11px 16px;background:transparent;border:1px solid var(--border);color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-radius:var(--r);}
+.na-success{background:var(--green-dim);border:1px solid rgba(39,174,96,.3);color:var(--green);border-radius:var(--r);padding:10px 14px;font-size:12px;margin-top:10px;display:none;}
+
+.empty-state{text-align:center;padding:60px 20px;}
+.empty-icon{font-size:48px;margin-bottom:16px;}
+.empty-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--text3);line-height:1.6;margin-bottom:20px;}
+.empty-btn{padding:13px 24px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r);}
+
+.alerts-list{margin:0 16px;}
+.alert-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden;}
+.alert-card.active-alert{border-left:3px solid var(--green);}
+.alert-card.triggered{border-left:3px solid var(--gold);}
+.ac-top{padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.ac-icon{font-size:20px;flex-shrink:0;}
+.ac-info{flex:1;}
+.ac-route{font-size:15px;font-weight:600;margin-bottom:3px;}
+.ac-details{font-size:11px;color:var(--text3);}
+.ac-status{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.ac-badge{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:2px;}
+.ac-badge.on{background:var(--green-dim);border:1px solid rgba(39,174,96,.3);color:var(--green);}
+.ac-badge.hit{background:var(--gold-dim);border:1px solid var(--border2);color:var(--gold2);}
+.ac-price{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);}
+.ac-bot{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);}
+.ac-date{font-size:11px;color:var(--text3);}
+.ac-actions{display:flex;gap:8px;}
+.ac-delete{padding:6px 10px;background:transparent;border:1px solid rgba(192,57,43,.2);color:#e74c3c;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;border-radius:var(--r);}
+
+.info-box{margin:0 16px 16px;background:var(--gold-dim);border:1px solid var(--border2);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.6;}
+.info-box strong{color:var(--gold2);}
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;cursor:pointer;color:var(--text3);font-size:10px;gap:3px;text-decoration:none;}
+.bn-item.on{color:var(--gold2);}
+.bn-icon{font-size:18px;}
+
+@media(min-width:768px){
+  .header{padding:0 32px;height:60px;}
+  .page-head{padding:24px 32px 12px;}
+  .new-alert-card,.alerts-list,.info-box{max-width:700px;margin-left:auto;margin-right:auto;}
+  .bottom-nav{display:none;}
+  body{padding-bottom:40px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/index.html">
+    <div class="logo-hex">✈</div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+</div>
+
+<div class="page-head">
+  <div>
+    <div class="page-title">Mes alertes</div>
+    <div class="page-sub" id="alert-count-sub">0 alerte active</div>
+  </div>
+  <button class="add-btn" onclick="toggleNewAlert()">+ Nouvelle alerte</button>
+</div>
+
+<div class="new-alert-card" id="new-alert-card">
+  <div class="na-title">🔔 Créer une alerte prix</div>
+  <div class="form-row">
+    <div class="form-group">
+      <div class="form-label">Aéroport de départ</div>
+      <select class="form-select" id="na-from">
+        <option value="CDG">🇫🇷 Paris CDG</option>
+        <option value="ORY">🇫🇷 Paris Orly</option>
+        <option value="LYS">🇫🇷 Lyon</option>
+        <option value="NCE">🇫🇷 Nice</option>
+        <option value="MRS">🇫🇷 Marseille</option>
+        <option value="LHR">🇬🇧 Londres</option>
+        <option value="AMS">🇳🇱 Amsterdam</option>
+        <option value="FRA">🇩🇪 Francfort</option>
+        <option value="MAD">🇪🇸 Madrid</option>
+        <option value="DXB">🇦🇪 Dubai</option>
+        <option value="SIN">🇸🇬 Singapour</option>
+        <option value="JFK">🇺🇸 New York</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Destination</div>
+      <select class="form-select" id="na-to">
+        <option value="">Toutes destinations</option>
+        <option value="JFK">🇺🇸 New York</option>
+        <option value="LAX">🇺🇸 Los Angeles</option>
+        <option value="MIA">🇺🇸 Miami</option>
+        <option value="SFO">🇺🇸 San Francisco</option>
+        <option value="DXB">🇦🇪 Dubai</option>
+        <option value="SIN">🇸🇬 Singapour</option>
+        <option value="NRT">🇯🇵 Tokyo</option>
+        <option value="HKG">🇭🇰 Hong Kong</option>
+        <option value="BKK">🇹🇭 Bangkok</option>
+        <option value="SYD">🇦🇺 Sydney</option>
+        <option value="GRU">🇧🇷 São Paulo</option>
+        <option value="DEL">🇮🇳 Delhi</option>
+        <option value="BOM">🇮🇳 Mumbai</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <div class="form-label">Prix maximum (€)</div>
+      <input class="form-input" id="na-price" type="number" placeholder="Ex: 1500" min="100" max="10000">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Email de notification</div>
+      <input class="form-input" id="na-email" type="email" placeholder="votre@email.com">
+    </div>
+  </div>
+  <div class="na-footer">
+    <button class="na-save" onclick="saveAlert()">Créer l'alerte</button>
+    <button class="na-cancel" onclick="toggleNewAlert()">Annuler</button>
+  </div>
+  <div class="na-success" id="na-success">✅ Alerte créée ! Vous serez notifié par email dès qu'un deal correspond.</div>
+</div>
+
+<div class="info-box">
+  <strong>💡 Comment ça marche ?</strong><br>
+  Nous scannons les prix toutes les 30 minutes. Dès qu'un vol Business Class correspond à votre alerte, vous recevez un email immédiatement.
+</div>
+
+<div class="alerts-list" id="alerts-list">
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">🔔</div>
+    <div class="empty-title">Aucune alerte active</div>
+    <div class="empty-sub">Créez une alerte pour être notifié dès qu'un deal Business Class correspond à vos critères.</div>
+    <button class="empty-btn" onclick="toggleNewAlert()">Créer ma première alerte</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a class="bn-item" href="/index.html"><div class="bn-icon">✈</div>Deals</a>
+  <a class="bn-item on" href="/mes-alertes.html"><div class="bn-icon">🔔</div>Alertes</a>
+  <a class="bn-item" href="/index.html"><div class="bn-icon">📅</div>Calendrier</a>
+  <a class="bn-item" href="/compte.html"><div class="bn-icon">👤</div>Compte</a>
+</div>
+
+<script>
+const API = '/api';
+const CITIES={CDG:'Paris CDG',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',MRS:'Marseille',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',NRT:'Tokyo',HKG:'Hong Kong',BKK:'Bangkok',SYD:'Sydney',GRU:'São Paulo',DEL:'Delhi',BOM:'Mumbai'};
+
+function getAlerts(){return JSON.parse(localStorage.getItem('ab_alerts')||'[]');}
+function saveAlerts(a){localStorage.setItem('ab_alerts',JSON.stringify(a));}
+
+function toggleNewAlert(){
+  const card=document.getElementById('new-alert-card');
+  card.classList.toggle('open');
+  document.getElementById('na-success').style.display='none';
+  if(card.classList.contains('open')){
+    const user=JSON.parse(localStorage.getItem('ab_user')||'null');
+    if(user)document.getElementById('na-email').value=user.email||'';
+  }
+}
+
+async function saveAlert(){
+  const from=document.getElementById('na-from').value;
+  const to=document.getElementById('na-to').value;
+  const price=document.getElementById('na-price').value;
+  const email=document.getElementById('na-email').value;
+  if(!price||!email){alert('Remplissez le prix maximum et votre email.');return;}
+
+  // Sauvegarde en base PostgreSQL via API
+  try{
+    await fetch(`${API}/alertes`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,origin:from,destination:to||'',max_price:parseInt(price)})
+    });
+  }catch(e){console.error('API error:',e);}
+
+  // Aussi en localStorage pour affichage immédiat
+  const alerts=getAlerts();
+  alerts.push({
+    id:Date.now(),from,to,
+    maxPrice:parseInt(price),
+    email,active:true,
+    created:new Date().toLocaleDateString('fr-FR'),
+    triggered:false
+  });
+  saveAlerts(alerts);
+
+  document.getElementById('na-success').style.display='block';
+  setTimeout(()=>{toggleNewAlert();renderAlerts();},2000);
+}
+
+async function deleteAlert(id){
+  if(!confirm('Supprimer cette alerte ?'))return;
+  // Supprime en base si ID numérique (vient de l'API)
+  if(typeof id === 'number' && id < 1000000000000){
+    try{await fetch(`${API}/alertes/${id}`,{method:'DELETE'});}catch(e){}
+  }
+  saveAlerts(getAlerts().filter(a=>a.id!==id));
+  renderAlerts();
+}
+
+function renderAlerts(){
+  const alerts=getAlerts();
+  const list=document.getElementById('alerts-list');
+  const active=alerts.filter(a=>a.active).length;
+  document.getElementById('alert-count-sub').textContent=`${active} alerte${active>1?'s':''} active${active>1?'s':''}`;
+
+  if(alerts.length===0){
+    list.innerHTML=`<div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <div class="empty-title">Aucune alerte active</div>
+      <div class="empty-sub">Créez une alerte pour être notifié dès qu'un deal correspond.</div>
+      <button class="empty-btn" onclick="toggleNewAlert()">Créer ma première alerte</button>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML=alerts.map(a=>`
+    <div class="alert-card ${a.triggered?'triggered':'active-alert'}">
+      <div class="ac-top">
+        <div class="ac-icon">${a.triggered?'🎯':'🔔'}</div>
+        <div class="ac-info">
+          <div class="ac-route">${CITIES[a.from]||a.from} → ${a.to?(CITIES[a.to]||a.to):'Toutes destinations'}</div>
+          <div class="ac-details">Business Class · Max ${a.maxPrice} € · ${a.email}</div>
+        </div>
+        <div class="ac-status">
+          <div class="ac-badge ${a.triggered?'hit':'on'}">${a.triggered?'Deal trouvé !':'Active'}</div>
+          ${a.triggered&&a.triggeredPrice?`<div class="ac-price">${a.triggeredPrice} €</div>`:''}
+        </div>
+      </div>
+      <div class="ac-bot">
+        <div class="ac-date">Créée le ${a.created}</div>
+        <div class="ac-actions">
+          <button class="ac-delete" onclick="deleteAlert(${a.id})">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Vérifier si des deals correspondent aux alertes en temps réel
+async function checkAlerts(){
+  const alerts=getAlerts().filter(a=>a.active&&!a.triggered);
+  if(!alerts.length)return;
+  try{
+    const r=await fetch(`${API}/deals?limit=200`);
+    const d=await r.json();
+    const deals=d.deals||[];
+    let updated=false;
+    const allAlerts=getAlerts();
+    allAlerts.forEach(a=>{
+      if(!a.active||a.triggered)return;
+      const match=deals.find(deal=>
+        deal.origin===a.from&&
+        (!a.to||deal.destination===a.to)&&
+        deal.price<=a.maxPrice
+      );
+      if(match){
+        a.triggered=true;
+        a.triggeredPrice=Math.round(match.price);
+        updated=true;
+      }
+    });
+    if(updated){saveAlerts(allAlerts);renderAlerts();}
+  }catch(e){}
+}
+
+renderAlerts();
+checkAlerts();
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0f0f0f;--bg2:#161616;--gold:#b8962e;--gold2:#d4ae4a;--text:#f0ece4;--text2:#a09890;--text3:#6a6058;--border:rgba(255,255,255,0.07);--r:4px;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding-bottom:60px;}
+.header{display:flex;align-items:center;padding:0 20px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;}
+.logo-text{font-size:16px;font-weight:600;color:var(--text);}
+.logo-text em{color:var(--gold2);font-style:normal;}
+.back{padding:12px 20px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);background:var(--bg2);display:block;}
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;}
+.tab{flex:1;padding:14px 10px;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;min-width:120px;}
+.tab.active{color:var(--gold2);border-bottom-color:var(--gold2);}
+.content{max-width:760px;margin:0 auto;padding:32px 20px;}
+h1{font-family:'DM Serif Display',serif;font-size:28px;font-weight:400;margin-bottom:8px;}
+h2{font-family:'DM Serif Display',serif;font-size:20px;font-weight:400;margin:28px 0 10px;color:var(--text);}
+p{font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:10px;}
+ul{font-size:13px;color:var(--text3);line-height:1.8;padding-left:20px;margin-bottom:10px;}
+strong{color:var(--text2);}
+a{color:var(--gold2);}
+.date{font-size:11px;color:var(--text3);margin-bottom:24px;letter-spacing:1px;}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0;}
+.screen{display:none;}
+.screen.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/index.html">
+    <div class="logo-hex">✈</div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+</div>
+<a class="back" onclick="history.back()">← Retour</a>
+<div class="tabs">
+  <div class="tab active" onclick="show('ml')">Mentions légales</div>
+  <div class="tab" onclick="show('cgv')">CGV</div>
+  <div class="tab" onclick="show('privacy')">Confidentialité</div>
+</div>
+
+<div id="tab-ml" class="screen active"><div class="content">
+  <h1>Mentions légales</h1>
+  <div class="date">Mise à jour : 1er mai 2026</div>
+  <h2>Éditeur</h2>
+  <p><strong>Société :</strong> AirBizness</p>
+  <p><strong>Siège :</strong> Évry-Courcouronnes, France</p>
+  <p><strong>Email :</strong> <a href="mailto:contact@airbizness.com">contact@airbizness.com</a></p>
+  <hr>
+  <h2>Hébergement</h2>
+  <p><strong>OVHcloud</strong> — 2 rue Kellermann, 59100 Roubaix — <a href="https://ovhcloud.com">ovhcloud.com</a></p>
+  <hr>
+  <h2>Activité</h2>
+  <p>AirBizness est une agence de voyage en ligne (OTA) spécialisée dans la vente de billets en Classe Affaires via l'API Duffel.</p>
+  <hr>
+  <h2>Propriété intellectuelle</h2>
+  <p>Tout le contenu de ce site est protégé. Toute reproduction sans autorisation est interdite.</p>
+  <hr>
+  <h2>Médiation</h2>
+  <p>En cas de litige : <strong>Médiation du Tourisme et du Voyage</strong> — <a href="http://www.mtv.travel" target="_blank">www.mtv.travel</a></p>
+</div></div>
+
+<div id="tab-cgv" class="screen"><div class="content">
+  <h1>Conditions Générales de Vente</h1>
+  <div class="date">Mise à jour : 1er mai 2026</div>
+  <h2>Article 1 — Objet</h2>
+  <p>Les présentes CGV régissent les relations entre AirBizness et tout acheteur sur airbizness.com.</p>
+  <h2>Article 2 — Services</h2>
+  <p>AirBizness propose la réservation de billets d'avion en Classe Affaires. Les prix incluent le billet, les taxes et les bagages selon la politique de la compagnie.</p>
+  <h2>Article 3 — Prix et paiement</h2>
+  <p>Prix en euros TTC. Paiement sécurisé par Stripe (CB, Apple Pay, Google Pay). Les données bancaires ne sont jamais stockées sur nos serveurs.</p>
+  <h2>Article 4 — Confirmation</h2>
+  <p>Un email de confirmation avec billet électronique est envoyé après validation du paiement.</p>
+  <h2>Article 5 — Annulation et remboursement</h2>
+  <p>Selon le tarif choisi :</p>
+  <ul>
+    <li><strong>Non remboursable :</strong> aucun remboursement</li>
+    <li><strong>Remboursable :</strong> selon conditions compagnie, frais de service 50 € par billet</li>
+    <li><strong>Avec assurance :</strong> garanties de l'assureur applicables</li>
+  </ul>
+  <p>Demandes : <a href="mailto:contact@airbizness.com">contact@airbizness.com</a></p>
+  <h2>Article 6 — Responsabilité</h2>
+  <p>AirBizness est intermédiaire entre le voyageur et les compagnies. AirBizness n'est pas responsable des modifications ou annulations décidées par les compagnies aériennes.</p>
+  <h2>Article 7 — Données personnelles</h2>
+  <p>Vos données sont utilisées uniquement pour l'émission du billet. Voir notre <a onclick="show('privacy')" style="cursor:pointer">Politique de confidentialité</a>.</p>
+  <h2>Article 8 — Droit applicable</h2>
+  <p>Droit français applicable. Juridiction compétente : tribunaux du siège social d'AirBizness.</p>
+  <h2>Article 9 — Médiation</h2>
+  <p><strong>Médiation du Tourisme et du Voyage (MTV)</strong> — BP 80 303, 75 823 Paris Cedex 17 — <a href="http://www.mtv.travel" target="_blank">www.mtv.travel</a></p>
+</div></div>
+
+<div id="tab-privacy" class="screen"><div class="content">
+  <h1>Politique de confidentialité</h1>
+  <div class="date">Mise à jour : 1er mai 2026</div>
+  <h2>1. Responsable du traitement</h2>
+  <p>AirBizness — <a href="mailto:privacy@airbizness.com">privacy@airbizness.com</a></p>
+  <h2>2. Données collectées</h2>
+  <ul>
+    <li>Identité : nom, prénom, date de naissance, nationalité</li>
+    <li>Document : numéro de passeport, expiration</li>
+    <li>Contact : email, téléphone</li>
+    <li>Paiement : traité par Stripe (non stocké chez nous)</li>
+    <li>Navigation : IP, pages visitées</li>
+  </ul>
+  <h2>3. Finalités</h2>
+  <ul>
+    <li>Émission et gestion des billets</li>
+    <li>Communication relative à votre voyage</li>
+    <li>Gestion des alertes prix</li>
+    <li>Obligations légales</li>
+  </ul>
+  <h2>4. Conservation</h2>
+  <p>Durée du contrat + 5 ans (obligations légales).</p>
+  <h2>5. Vos droits (RGPD)</h2>
+  <p>Accès, rectification, effacement, portabilité, opposition. Contact : <a href="mailto:privacy@airbizness.com">privacy@airbizness.com</a></p>
+  <h2>6. Cookies</h2>
+  <p>Cookies techniques uniquement. Aucun cookie publicitaire.</p>
+  <h2>7. Prestataires</h2>
+  <ul>
+    <li><strong>Stripe</strong> — paiements — <a href="https://stripe.com/fr/privacy" target="_blank">privacy</a></li>
+    <li><strong>Duffel</strong> — billetterie — <a href="https://duffel.com/privacy" target="_blank">privacy</a></li>
+    <li><strong>OVHcloud</strong> — hébergement France</li>
+  </ul>
+  <h2>8. Réclamation</h2>
+  <p>CNIL : <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
+</div></div>
+
+<script>
+function show(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const map={ml:0,cgv:1,privacy:2};
+  document.querySelectorAll('.tab')[map[name]].classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

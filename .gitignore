@@ -1,0 +1,49 @@
+# === SECRETS - NE JAMAIS COMMIT ===
+.env
+*.env
+.env.*
+!.env.example
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+venv/
+env/
+.venv/
+.pytest_cache/
+
+# === Backups manuels ===
+*.bak
+*.bak2
+*.bak3
+*.backup
+*.old
+
+# === Logs ===
+*.log
+fetcher.log
+logs/
+
+# === Bases de données / dumps ===
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz
+
+# === État runtime ===
+.cycle_count
+
+# === OS / IDE ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*.html.save
+*.save
