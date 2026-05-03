@@ -291,7 +291,14 @@ async function handlePay(){
 
   try {
     const b = JSON.parse(sessionStorage.getItem('booking') || '{}');
-    const amount = Math.round((b.finalTotal || 1374) * 100);
+    if (!b.finalTotal || !b.offerId) {
+      error.textContent = "Votre session de réservation est expirée. Vous allez être redirigé vers l'accueil.";
+      error.style.display = 'block';
+      btn.disabled = true;
+      setTimeout(() => { location.href = '/'; }, 2500);
+      return;
+    }
+    const amount = Math.round(b.finalTotal * 100);
 
     // Créer PaymentIntent via notre API
     const piRes = await fetch(`${API}/create-payment-intent`, {
