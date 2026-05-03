@@ -4,7 +4,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 import psycopg2, psycopg2.extras, os, stripe, sib_api_v3_sdk, io
 from sib_api_v3_sdk.rest import ApiException
 from PIL import Image, ImageDraw, ImageFont
@@ -51,10 +51,10 @@ class EmailRequest(BaseModel):
     price: float
 
 class AlerteRequest(BaseModel):
-    email: str
-    origin: str
-    destination: str = ""
-    max_price: int
+    email: EmailStr
+    origin: str = Field(min_length=3, max_length=3)
+    destination: str = Field(default="", max_length=3)
+    max_price: int = Field(gt=0, lt=100000)
 
 @app.get("/deals")
 @limiter.limit("60/minute")
@@ -203,7 +203,8 @@ def send_confirmation(req: EmailRequest):
         return {"status": "error", "detail": str(e)}
 
 @app.post("/alertes")
-def create_alerte(req: AlerteRequest):
+@limiter.limit("5/minute")
+def create_alerte(request: Request, req: AlerteRequest):
     conn = psycopg2.connect(**DB_CONFIG)
     cur = conn.cursor()
     cur.execute("""
