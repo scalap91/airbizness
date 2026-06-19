@@ -10,9 +10,18 @@ Sortie : un .mp4 muet par défaut (piste audio silencieuse pour compat). La musi
 (libre de droits) est un TODO branché plus tard.
 """
 import os
+import re
 import subprocess
 import tempfile
 import urllib.request
+
+
+def _hires(u: str) -> str:
+    """Force la plus grande variante Hotelbeds (xxl=2048px) pour éviter la pixelisation.
+    bigger=800px → trop petit une fois forcé en 1080x1920. Si motif absent, URL inchangée."""
+    if not isinstance(u, str):
+        return u
+    return re.sub(r"/giata/(small|bigger|xl|original)/", "/giata/xxl/", u)
 
 W, H = 1080, 1920          # format vertical TikTok 9:16
 SLIDE_SEC = 3.0            # durée par photo
@@ -44,7 +53,7 @@ def _flatten_gallery(h: dict, limit: int = 5) -> list:
             u = pools[k].pop(0)
             u = u if isinstance(u, str) else (u.get("url") if isinstance(u, dict) else None)
             if u and u not in seen:
-                seen.add(u); urls.append(u)
+                seen.add(u); urls.append(_hires(u))
                 if len(urls) >= limit:
                     break
     return urls
@@ -54,17 +63,26 @@ def _download(urls: list, workdir: str) -> list:
     paths = []
     req_headers = {"User-Agent": "Mozilla/5.0 (AirBizness reel builder)"}
     for i, u in enumerate(urls):
-        try:
-            dst = os.path.join(workdir, f"img{i}.jpg")
-            req = urllib.request.Request(u, headers=req_headers)
-            with urllib.request.urlopen(req, timeout=15) as r, open(dst, "wb") as f:
-                data = r.read()
-                if len(data) < 2000:  # image trop petite/cassée
-                    continue
-                f.write(data)
-            paths.append(dst)
-        except Exception as e:
-            print(f"[tiktok_reel] skip image {i}: {e}")
+        # xxl en priorité ; fallback xxl→bigger si la variante n'existe pas (403).
+        candidates = [u]
+        if "/giata/xxl/" in u:
+            candidates.append(u.replace("/giata/xxl/", "/giata/bigger/"))
+        got = False
+        for c in candidates:
+            try:
+                dst = os.path.join(workdir, f"img{i}.jpg")
+                req = urllib.request.Request(c, headers=req_headers)
+                with urllib.request.urlopen(req, timeout=15) as r, open(dst, "wb") as f:
+                    data = r.read()
+                    if len(data) < 2000:
+                        continue
+                    f.write(data)
+                paths.append(dst); got = True
+                break
+            except Exception as e:
+                last = e
+        if not got:
+            print(f"[tiktok_reel] skip image {i}: {last if 'last' in dir() else 'n/a'}")
     return paths
 
 
