@@ -283,6 +283,14 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - Ce qu'on a : name/city/country + latitude/longitude (h.get) + giata/hbx codes. Livré : recherche par NOM COMPLET (l'hôtel sort en tête) + ÉPINGLAGE GPS où le param est documenté : Booking héros (&latitude&longitude), Expedia (&latLong=lat,lon). Agoda/Trip/Hotels.com = nom complet. services/affiliate_partners.py builders signature (n,c,co,lat,lon).
    - LIMITE assumée (marche vs préparé) : ce N'EST PAS le lien littéral « 1 clic = page de CET hôtel » chez le partenaire — ça exige l'ID hôtel partenaire = PAYANT (mapping Giata MultiCode) ou accord API direct (Booking Demand API). À décider par Pascal si on investit.
    - Test live fiche Le Faubourg : booking.com/searchresults?ss=...&latitude=48.874255&longitude=2.347839 ; expedia dest latLong=48.874255,2.347839. Page 200 (502 transitoire au restart, pas une erreur code).
+   - NB scraping fiche exacte : testé curl (Booking 202 DataDome / Expedia 429) ET Playwright headless (Chromium installé, mais Booking renvoie 202 + masque les liens /hotel/). DuckDuckGo 202, Bing inexploitable depuis l'IP serveur. → fiche partenaire exacte = mur anti-bot ; on reste sur recherche pré-remplie (nom+GPS) qui contourne le mur (c'est le visiteur qui cherche). Validé par Pascal.
+
+0terdecies. Dates par défaut dans les liens partenaires → prix affiché direct — 2026-06-19
+   - Demande Pascal : pré-remplir aussi les dates pour que l'hôtel s'affiche AVEC un prix chez le partenaire (pas juste « choisissez vos dates »).
+   - services/affiliate_partners.py : date_params(key, checkin, checkout, adults=2) → fragment query par partenaire (booking checkin/checkout/group_adults ; expedia/hotels startDate/endDate ; agoda checkIn/checkOut ; trip checkin/checkout ; hotellook checkIn/checkOut). Best-effort : param ignoré si invalide → jamais de lien cassé.
+   - routers/seo.py : _ci=J+7, _co=J+8 (datetime.utcnow, format YYYY-MM-DD), collés au Booking héros + à chaque ligne du comparateur. Pas de cache HTTP sur /hotels/ → dates toujours fraîches.
+   - Doctrine prix OK : le prix est affiché chez le partenaire (live), pas chez nous ; dates = exemple modifiable par le visiteur.
+   - Test live Le Faubourg : booking ...&checkin=2026-06-26&checkout=2026-06-27&group_adults=2&no_rooms=1 ; agoda dest checkIn=2026-06-26&checkOut=2026-06-27&adults=2.
 
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne

@@ -23,6 +23,24 @@ def _q(name: str, city: str, country: str) -> str:
     return quote_plus(f"{name} {city or ''} {country or ''}".strip())
 
 
+def date_params(key: str, checkin: str, checkout: str, adults: int = 2) -> str:
+    """Fragment de query 'dates par défaut' + occupants, par partenaire.
+    Best-effort : si un param ne colle pas, le partenaire l'ignore (l'hôtel s'affiche
+    quand même) → aucun risque de lien cassé. Dates au format YYYY-MM-DD.
+    Le visiteur peut changer les dates côté partenaire ; le prix affiché est le leur (live)."""
+    if key == "booking":
+        return f"&checkin={checkin}&checkout={checkout}&group_adults={adults}&no_rooms=1"
+    if key in ("expedia", "hotels"):
+        return f"&startDate={checkin}&endDate={checkout}&adults={adults}"
+    if key == "agoda":
+        return f"&checkIn={checkin}&checkOut={checkout}&adults={adults}"
+    if key == "trip":
+        return f"&checkin={checkin}&checkout={checkout}"
+    if key == "hotellook":
+        return f"&checkIn={checkin}&checkOut={checkout}&adults={adults}"
+    return ""
+
+
 def _latlong(lat, lon) -> str:
     """'{lat},{lon}' si dispo, sinon ''. Sert à épingler la recherche sur l'hôtel exact."""
     try:

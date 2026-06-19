@@ -903,6 +903,11 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     # Épingle la recherche sur le GPS exact → l'hôtel ressort en tête (carte centrée dessus).
     if lat and lng:
         booking_partner_url += f"&latitude={lat}&longitude={lng}"
+    # Dates par défaut (J+7, 1 nuit, 2 adultes) → l'hôtel s'affiche avec un PRIX chez le partenaire.
+    from services.affiliate_partners import date_params as _date_params
+    _ci = (datetime.utcnow() + timedelta(days=7)).strftime("%Y-%m-%d")
+    _co = (datetime.utcnow() + timedelta(days=8)).strftime("%Y-%m-%d")
+    booking_partner_url += _date_params("booking", _ci, _co)
     booking_partner_html = (
         '<div class="ab-booking-partner" style="margin:40px 0; padding:32px; background:linear-gradient(135deg,#1a1a2e,#0a0a14); border-radius:16px; border:2px solid #d4ae4a; text-align:center;">'
         '<div style="color:#d4ae4a; font-size:14px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">✨ Nos partenaires</div>'
@@ -927,6 +932,7 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     _cmp_rows = []
     for _p in _PARTNERS:
         _dest = _p["url"](name, city or "", country or "", lat, lng)
+        _dest += _date_params(_p["key"], _ci, _co)  # dates par défaut (mêmes que Booking)
         _href = (
             f"/api/affiliate-redirect?provider={_p['key']}"
             f"&hotel_code={_quote_plus(str(hbx_code_for_widget or '').strip())}"
