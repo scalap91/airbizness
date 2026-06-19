@@ -1319,9 +1319,9 @@ function goQuote(e){{
   window.location.href = '/quote.html?' + params.toString();
 }}
 </script>
-<!-- CJ Affiliate — Auto Deep Link + tracking impressions par page (PID 101805872, 2026-06-19).
-     Filet de sécurité : CJ monétise/suit les liens vers ses annonceurs sur la page. -->
-<script src="https://www.anrdoezrs.net/am/101805872/impressions/page/am.js" async></script>
+<!-- CJ Affiliate — Auto Deep Link (allCJ) + tracking impressions par page (PID 101805872, 2026-06-19).
+     Réécrit AU CLIC tout lien sortant vers un annonceur CJ (dont booking.com) en lien affilié. -->
+<script src="https://www.anrdoezrs.net/am/101805872/include/allCJ/impressions/page/am.js" async></script>
 </body>
 </html>"""
 
