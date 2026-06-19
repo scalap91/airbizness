@@ -254,6 +254,15 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - FINDING nginx : /affiliate-redirect avec dest contenant une URL https imbriquée (forme d'un lien CJ) → 502 au niveau nginx (filtre anti open-redirect). L'app répond 302 correctement en direct (port 8001). À régler quand on câble le vrai lien CJ (assouplir la règle nginx pour cet endpoint, OU utiliser une forme de lien CJ sans URL imbriquée).
    - À FAIRE aussi : ajouter CJ/Commission Junction aux sous-traitants de privacy.html ; vérifier le déclenchement am.js vs consentement cookies (cookies.js).
 
+0nonies. CJ Booking opérationnel via am.js (auto-deeplink allCJ) + beacon serveur — 2026-06-19
+   - Pascal valide « lien Booking direct + garder notre mesure ». Réglages CJ : automatisation liens profonds ON, tous annonceurs (allCJ), impressions ON, réécriture au clic. Script live = https://www.anrdoezrs.net/am/101805872/include/allCJ/impressions/page/am.js.
+   - routers/seo.py : bouton Booking héros = lien DIRECT https://www.booking.com/searchresults... (PLUS de proxy /api/affiliate-redirect, PLUS de BOOKING_AID → CJ gère l'attribution au clic). Attributs data-ab-partner="booking" data-ab-hotel=<code>.
+   - Listener module ① étendu : clic sur a[data-ab-partner] → GA4 affiliate_click+booking_click + beacon serveur. Beacon = fetch GET keepalive (PAS sendBeacon : nginx renvoie 502 sur le POST ; GET passe en 204).
+   - routers/affiliate.py : nouvel endpoint GET/POST /affiliate-log (insert affiliate_clicks target_url='direct:cj-am.js', 204, sans redirection) → garde Booking dans /admin-affiliate.html malgré le lien direct.
+   - Les autres OTA du comparateur restent sur /api/affiliate-redirect (canal TravelPayouts/IDs directs, PAS CJ — pas de double-dip).
+   - Test live : page 200, lien booking.com direct + data-ab-partner présents, /api/affiliate-log GET → 204 + ligne loggée. py_compile OK, service redémarré.
+   - RESTE côté Pascal : approuver le programme Booking.com sur CJ (Partenaires) sinon 0 commission.
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).

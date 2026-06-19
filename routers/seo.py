@@ -891,27 +891,22 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
         '</div>'
     )
 
-    # ── Bloc partenaire Booking #1 (mis en avant avant le comparator) ──
-    import os as _os
+    # ── Bloc partenaire Booking #1 — lien DIRECT booking.com (2026-06-19) ──
+    # Monétisé par CJ Affiliate : am.js (allCJ) réécrit ce lien AU CLIC en lien affilié.
+    # am.js ne peut réécrire qu'un lien pointant déjà vers l'annonceur → PAS de proxy ici.
+    # Notre mesure est conservée côté client (GA4 booking_click via data-ab-partner) +
+    # beacon serveur (/api/affiliate-log) pour garder Booking dans /admin-affiliate.html.
     from urllib.parse import quote_plus as _quote_plus
-    _booking_aid = _os.getenv("BOOKING_AID", "").strip()
     _booking_query = _quote_plus(f"{name} {city or ''} {country or ''}".strip())
-    booking_partner_url = f"https://www.booking.com/searchresults.html?ss={_booking_query}"
-    if _booking_aid:
-        booking_partner_url += f"&aid={_quote_plus(_booking_aid)}"
-    # Proxy via /api/affiliate-redirect pour tracker les clics (2026-06-02)
     _booking_hotel_code = str(hbx_code_for_widget or "").strip()
-    booking_partner_url = (
-        f"/api/affiliate-redirect?provider=booking"
-        f"&hotel_code={_quote_plus(_booking_hotel_code)}"
-        f"&dest={_quote_plus(booking_partner_url)}"
-    )
+    booking_partner_url = f"https://www.booking.com/searchresults.html?ss={_booking_query}"
     booking_partner_html = (
         '<div class="ab-booking-partner" style="margin:40px 0; padding:32px; background:linear-gradient(135deg,#1a1a2e,#0a0a14); border-radius:16px; border:2px solid #d4ae4a; text-align:center;">'
         '<div style="color:#d4ae4a; font-size:14px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">✨ Nos partenaires</div>'
         '<h3 style="color:#fff; font-family:\'DM Serif Display\',Georgia,serif; font-size:28px; margin:8px 0 16px;">Réserver cet hôtel</h3>'
         '<p style="color:#aaa; margin-bottom:24px; max-width:500px; margin-left:auto; margin-right:auto;">Profitez des meilleurs tarifs disponibles chez Booking, partenaire de confiance d\'AirBizness.</p>'
         f'<a href="{html_escape(booking_partner_url)}" target="_blank" rel="noopener nofollow sponsored" '
+        f'data-ab-partner="booking" data-ab-hotel="{html_escape(_booking_hotel_code)}" '
         'style="display:inline-block; background:#003580; color:#fff; padding:18px 48px; border-radius:8px; font-weight:600; text-decoration:none; font-size:17px; box-shadow:0 4px 16px rgba(0,53,128,0.4); transition:transform 0.2s;" '
         'onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'translateY(0)\'">'
         '📖 Voir cet hôtel sur Booking →'
@@ -1255,6 +1250,12 @@ body{{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;li
     var aff = t.closest('a[href*="affiliate-redirect"]');
     if (aff) {{ var m = (aff.getAttribute('href')||'').match(/provider=([^&]+)/); var prov = m ? m[1] : 'partner';
       abEvt('affiliate_click', {{ partner: prov }}); if (prov === 'booking') abEvt('booking_click', {{ partner: 'booking' }}); return; }}
+    // Lien partenaire DIRECT (ex. Booking, réécrit par CJ am.js) : GA4 + beacon serveur (garde la trace dans le dashboard).
+    var dp = t.closest('a[data-ab-partner]');
+    if (dp) {{ var p = dp.getAttribute('data-ab-partner') || 'partner';
+      abEvt('affiliate_click', {{ partner: p }}); if (p === 'booking') abEvt('booking_click', {{ partner: 'booking' }});
+      try {{ fetch('/api/affiliate-log?provider=' + encodeURIComponent(p) + '&hotel_code=' + encodeURIComponent(dp.getAttribute('data-ab-hotel')||''), {{ method:'GET', keepalive:true, cache:'no-store' }}); }} catch(_e){{}}
+      return; }}
     if (t.closest('.gtab') || t.closest('.ggrid img') || t.closest('.gallery-img')) {{ abEvt('gallery_open'); return; }}
     if (t.closest('#hotel-map')) {{ abEvt('map_open'); return; }}
     var nb = t.closest('.ab-neighbors a[href^="/hotels/"]'); if (nb) {{ abEvt('similar_hotel_click', {{ to: nb.getAttribute('href') }}); return; }}

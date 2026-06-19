@@ -166,6 +166,41 @@ async def affiliate_redirect(
     return RedirectResponse(url=final_url, status_code=302)
 
 
+@router.post("/affiliate-log")
+@router.get("/affiliate-log")
+@limiter.limit("120/minute")
+async def affiliate_log(request: Request, provider: str, hotel_code: str = ""):
+    """Beacon (navigator.sendBeacon) : logge un clic partenaire DIRECT (ex. Booking
+    réécrit côté client par CJ am.js) SANS redirection. Garde la trace serveur dans
+    affiliate_clicks → le dashboard /admin-affiliate.html reste complet. 204 No Content."""
+    from fastapi import Response
+    if provider not in VALID_PROVIDERS:
+        return Response(status_code=204)  # silencieux, ne casse jamais la navigation
+    user_ip = request.client.host if request.client else "0.0.0.0"
+    try:
+        ip_obj = ipaddress.ip_address(user_ip)
+        if isinstance(ip_obj, ipaddress.IPv4Address):
+            anonymized_ip = str(ipaddress.IPv4Network(f"{user_ip}/24", strict=False).network_address)
+        else:
+            anonymized_ip = str(ipaddress.IPv6Network(f"{user_ip}/48", strict=False).network_address)
+    except ValueError:
+        anonymized_ip = "0.0.0.0"
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        with conn, conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO public.affiliate_clicks
+                   (provider, hotel_code, target_url, user_ip, user_agent, referrer)
+                   VALUES (%s, %s, %s, %s, %s, %s)""",
+                (provider, (hotel_code or None), "direct:cj-am.js", anonymized_ip,
+                 request.headers.get("user-agent", "")[:300],
+                 request.headers.get("referer", "")[:300])
+            )
+    except Exception as _e:
+        print(f"[affiliate-log] log fail (non-fatal): {_e}")
+    return Response(status_code=204)
+
+
 @router.get("/affiliate-stats")
 async def affiliate_stats_admin(admin=Depends(require_admin_token)):
     now = datetime.utcnow()
