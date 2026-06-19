@@ -100,19 +100,24 @@ def _scene_captions(h: dict) -> list:
 
 
 def _flatten_gallery(h: dict, limit: int) -> list:
+    urls, seen = [], set()
+    # Photo PRINCIPALE en premier (comme le héros de la fiche).
+    main = h.get("photo_main") or h.get("best_photo_url") or h.get("hbx_main_image")
+    if main:
+        hu = _hires(main); urls.append(hu); seen.add(hu)
     gal = h.get("gallery") or {}
     order = ["general", "rooms", "restaurant", "outdoor", "bar", "other"]
     cats = order + [k for k in gal.keys() if k not in order]
     pools = {k: list(gal.get(k) or []) for k in cats}
-    urls, seen = [], set()
     while len(urls) < limit and any(pools.values()):
         for k in cats:
             if not pools[k]:
                 continue
             u = pools[k].pop(0)
             u = u if isinstance(u, str) else (u.get("url") if isinstance(u, dict) else None)
-            if u and u not in seen:
-                seen.add(u); urls.append(_hires(u))
+            hu = _hires(u) if u else None
+            if hu and hu not in seen:
+                seen.add(hu); urls.append(hu)
                 if len(urls) >= limit:
                     break
     return urls
