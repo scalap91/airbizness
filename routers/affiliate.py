@@ -89,7 +89,9 @@ from fastapi import Depends
 from routers.schema import require_admin_token
 
 VALID_PROVIDERS = {"booking", "aviasales", "expedia", "agoda", "skyscanner", "hotellook", "trip", "hotels"}
-VALID_HOSTS = ("booking.com", "aviasales.com", "expedia.com", "agoda.com", "skyscanner.com", "hotellook.com", "trip.com", "hotels.com", "tp.media", "tpe.travelpayouts.com")
+VALID_HOSTS = ("booking.com", "aviasales.com", "expedia.com", "agoda.com", "skyscanner.com", "hotellook.com", "trip.com", "hotels.com", "tp.media", "tpe.travelpayouts.com",
+               # Domaines de tracking CJ Affiliate (liens profonds) — PID 101805872, 2026-06-19.
+               "anrdoezrs.net", "dpbolvw.net", "kqzyfj.com", "jdoqocy.com", "tkqlhce.com", "emjcd.com")
 
 # Module ② (2026-06-19) — table d'injection d'ID d'affiliation, data-driven.
 # Pour chaque provider : liste de (param d'URL, variable .env). L'ID est ajouté au

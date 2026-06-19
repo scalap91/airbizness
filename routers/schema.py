@@ -246,6 +246,14 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - ADMIN_AUDIT_TOKEN était absent partout → TOUTES les routes admin renvoyaient 503 (cohérent note « audit-apis=503 »). Token fort généré et ajouté à .env (gitignoré, NON commité). Désormais : 403 sans token, 200 avec. Active aussi les autres routes require_admin_token.
    - Test live : sans token → 403 ; avec token → 9 clés, données réelles (255 clics/30j, booking 229, 10 jours, 5 pages, 20 hôtels). Page HTTP 200.
 
+0octies. CJ Affiliate (Commission Junction) — début intégration (module ② réseau réel) — 2026-06-19
+   - Pascal inscrit sur CJ : compte éditeur « AirBizness – Premium Hotel Discovery », PID 101805872. Demande à monétiser Booking via CJ + filet am.js (« les deux »).
+   - FAIT : am.js (Auto Deep Link + impressions/page CJ) ajouté avant </body> de la fiche hôtel SEO (routers/seo.py) : <script src="https://www.anrdoezrs.net/am/101805872/impressions/page/am.js" async>. Domaines CJ ajoutés à VALID_HOSTS (anrdoezrs.net, dpbolvw.net, kqzyfj.com, jdoqocy.com, tkqlhce.com, emjcd.com) → /affiliate-redirect peut router un lien profond CJ en dest.
+   - LIMITE actuelle : tous nos liens sortants passent par /api/affiliate-redirect (notre domaine) → am.js (client) ne les réécrit PAS. Donc am.js = impressions seules pour l'instant ; la monétisation Booking réelle = lien profond CJ mis en dest de notre redirect (à câbler dans services/affiliate_partners.py).
+   - BLOQUEURS (marche vs préparé) : (a) besoin du FORMAT exact d'un lien profond CJ Booking (générateur CJ) — ne pas fabriquer ; (b) programme Booking sur CJ doit être APPROUVÉ sinon 0 commission.
+   - FINDING nginx : /affiliate-redirect avec dest contenant une URL https imbriquée (forme d'un lien CJ) → 502 au niveau nginx (filtre anti open-redirect). L'app répond 302 correctement en direct (port 8001). À régler quand on câble le vrai lien CJ (assouplir la règle nginx pour cet endpoint, OU utiliser une forme de lien CJ sans URL imbriquée).
+   - À FAIRE aussi : ajouter CJ/Commission Junction aux sous-traitants de privacy.html ; vérifier le déclenchement am.js vs consentement cookies (cookies.js).
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).

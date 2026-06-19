@@ -1319,6 +1319,9 @@ function goQuote(e){{
   window.location.href = '/quote.html?' + params.toString();
 }}
 </script>
+<!-- CJ Affiliate — Auto Deep Link + tracking impressions par page (PID 101805872, 2026-06-19).
+     Filet de sécurité : CJ monétise/suit les liens vers ses annonceurs sur la page. -->
+<script src="https://www.anrdoezrs.net/am/101805872/impressions/page/am.js" async></script>
 </body>
 </html>"""
 
