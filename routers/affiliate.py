@@ -88,6 +88,28 @@ from datetime import datetime, timedelta
 from fastapi import Depends
 from routers.schema import require_admin_token
 
+# Détection bots (Meta/Google/Bing crawlers, outils) — 2026-06-19.
+# Les crawlers suivent les liens et polluaient affiliate_clicks (198/261 = meta-externalagent).
+_BOT_UA = ("bot", "crawler", "spider", "meta-external", "facebookexternal", "slurp",
+           "yandex", "ahrefs", "semrush", "curl", "python-requests", "headless", "preview")
+# Fragment SQL (regex) pour exclure les bots des stats historiques.
+_SQL_NO_BOT = r"AND COALESCE(user_agent,'') !~* '(bot|crawler|spider|meta-external|facebookexternal|slurp|yandex|ahrefs|semrush|curl|python-requests|headless|preview)'"
+
+
+def _client_ip(request):
+    """Vraie IP du visiteur : 1er hop de X-Forwarded-For (posé par nginx), sinon peer TCP.
+    Sans ça, request.client.host = 127.0.0.1 (nginx) pour tout le monde."""
+    xff = (request.headers.get("x-forwarded-for") or "").strip()
+    if xff:
+        return xff.split(",")[0].strip()
+    return request.client.host if request.client else "0.0.0.0"
+
+
+def _is_bot(request):
+    ua = (request.headers.get("user-agent") or "").lower()
+    return any(b in ua for b in _BOT_UA)
+
+
 VALID_PROVIDERS = {"booking", "aviasales", "expedia", "agoda", "skyscanner", "hotellook", "trip", "hotels"}
 VALID_HOSTS = ("booking.com", "aviasales.com", "expedia.com", "agoda.com", "skyscanner.com", "hotellook.com", "trip.com", "hotels.com", "tp.media", "tpe.travelpayouts.com",
                # Domaines de tracking CJ Affiliate (liens profonds) — PID 101805872, 2026-06-19.
@@ -139,29 +161,30 @@ async def affiliate_redirect(
     if changed:
         final_url = urlunparse(parsed._replace(query=urlencode(query, doseq=True)))
 
-    user_ip = request.client.host if request.client else "0.0.0.0"
-    try:
-        ip_obj = ipaddress.ip_address(user_ip)
-        if isinstance(ip_obj, ipaddress.IPv4Address):
-            anonymized_ip = str(ipaddress.IPv4Network(f"{user_ip}/24", strict=False).network_address)
-        else:
-            anonymized_ip = str(ipaddress.IPv6Network(f"{user_ip}/48", strict=False).network_address)
-    except ValueError:
-        anonymized_ip = "0.0.0.0"
-
-    try:
-        conn = psycopg2.connect(**DB_CONFIG)
-        with conn, conn.cursor() as cur:
-            cur.execute(
-                """INSERT INTO public.affiliate_clicks
-                   (provider, hotel_code, target_url, user_ip, user_agent, referrer)
-                   VALUES (%s, %s, %s, %s, %s, %s)""",
-                (provider, (hotel_code or None), final_url, anonymized_ip,
-                 request.headers.get("user-agent", "")[:300],
-                 request.headers.get("referer", "")[:300])
-            )
-    except Exception as _e:
-        print(f"[affiliate-redirect] log fail (non-fatal): {_e}")
+    # On redirige tout le monde, mais on ne LOGGE pas les bots (crawlers suivent les liens).
+    if not _is_bot(request):
+        user_ip = _client_ip(request)
+        try:
+            ip_obj = ipaddress.ip_address(user_ip)
+            if isinstance(ip_obj, ipaddress.IPv4Address):
+                anonymized_ip = str(ipaddress.IPv4Network(f"{user_ip}/24", strict=False).network_address)
+            else:
+                anonymized_ip = str(ipaddress.IPv6Network(f"{user_ip}/48", strict=False).network_address)
+        except ValueError:
+            anonymized_ip = "0.0.0.0"
+        try:
+            conn = psycopg2.connect(**DB_CONFIG)
+            with conn, conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO public.affiliate_clicks
+                       (provider, hotel_code, target_url, user_ip, user_agent, referrer)
+                       VALUES (%s, %s, %s, %s, %s, %s)""",
+                    (provider, (hotel_code or None), final_url, anonymized_ip,
+                     request.headers.get("user-agent", "")[:300],
+                     request.headers.get("referer", "")[:300])
+                )
+        except Exception as _e:
+            print(f"[affiliate-redirect] log fail (non-fatal): {_e}")
 
     return RedirectResponse(url=final_url, status_code=302)
 
@@ -174,9 +197,9 @@ async def affiliate_log(request: Request, provider: str, hotel_code: str = ""):
     réécrit côté client par CJ am.js) SANS redirection. Garde la trace serveur dans
     affiliate_clicks → le dashboard /admin-affiliate.html reste complet. 204 No Content."""
     from fastapi import Response
-    if provider not in VALID_PROVIDERS:
-        return Response(status_code=204)  # silencieux, ne casse jamais la navigation
-    user_ip = request.client.host if request.client else "0.0.0.0"
+    if provider not in VALID_PROVIDERS or _is_bot(request):
+        return Response(status_code=204)  # silencieux ; on ne logge pas les bots
+    user_ip = _client_ip(request)
     try:
         ip_obj = ipaddress.ip_address(user_ip)
         if isinstance(ip_obj, ipaddress.IPv4Address):
@@ -209,64 +232,65 @@ async def affiliate_stats_admin(admin=Depends(require_admin_token)):
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-        cur.execute("SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s", (now - timedelta(hours=24),))
+        # NB : _SQL_NO_BOT exclut les crawlers (Meta/Google/Bing…) des stats → chiffres = HUMAINS.
+        cur.execute(f"SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s {_SQL_NO_BOT}", (now - timedelta(hours=24),))
         results["total_clicks_24h"] = cur.fetchone()["c"]
-        cur.execute("SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s", (now - timedelta(days=7),))
+        cur.execute(f"SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s {_SQL_NO_BOT}", (now - timedelta(days=7),))
         results["total_clicks_7d"] = cur.fetchone()["c"]
-        cur.execute("SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s", (now - timedelta(days=30),))
+        cur.execute(f"SELECT COUNT(*) AS c FROM public.affiliate_clicks WHERE ts >= %s {_SQL_NO_BOT}", (now - timedelta(days=30),))
         results["total_clicks_30d"] = cur.fetchone()["c"]
 
-        cur.execute("""
+        cur.execute(f"""
             SELECT provider, COUNT(*) AS clicks
             FROM public.affiliate_clicks
-            WHERE ts >= %s
+            WHERE ts >= %s {_SQL_NO_BOT}
             GROUP BY provider
             ORDER BY clicks DESC
         """, (now - timedelta(days=30),))
         results["by_provider"] = [dict(r) for r in cur.fetchall()]
 
-        cur.execute("""
+        cur.execute(f"""
             SELECT hotel_code, COUNT(*) AS clicks
             FROM public.affiliate_clicks
-            WHERE ts >= %s AND hotel_code IS NOT NULL AND hotel_code <> ''
+            WHERE ts >= %s AND hotel_code IS NOT NULL AND hotel_code <> '' {_SQL_NO_BOT}
             GROUP BY hotel_code
             ORDER BY clicks DESC
             LIMIT 20
         """, (now - timedelta(days=30),))
         results["top_hotels"] = [dict(r) for r in cur.fetchall()]
 
-        cur.execute("""
+        cur.execute(f"""
             SELECT destination, COUNT(*) AS clicks
             FROM public.affiliate_clicks
-            WHERE ts >= %s AND destination IS NOT NULL AND destination <> ''
+            WHERE ts >= %s AND destination IS NOT NULL AND destination <> '' {_SQL_NO_BOT}
             GROUP BY destination
             ORDER BY clicks DESC
             LIMIT 20
         """, (now - timedelta(days=30),))
         results["top_destinations"] = [dict(r) for r in cur.fetchall()]
 
-        cur.execute("""
+        cur.execute(f"""
             SELECT TO_CHAR(DATE(ts), 'YYYY-MM-DD') AS date, COUNT(*) AS clicks
             FROM public.affiliate_clicks
-            WHERE ts >= %s
+            WHERE ts >= %s {_SQL_NO_BOT}
             GROUP BY DATE(ts)
             ORDER BY DATE(ts)
         """, (now - timedelta(days=30),))
         results["by_day"] = [dict(r) for r in cur.fetchall()]
 
         # Quelles PAGES génèrent les clics (module ② — referrer = URL de la fiche SEO).
-        cur.execute("""
+        cur.execute(f"""
             SELECT referrer, COUNT(*) AS clicks, COUNT(DISTINCT provider) AS partenaires
             FROM public.affiliate_clicks
-            WHERE ts >= %s AND referrer IS NOT NULL AND referrer <> ''
+            WHERE ts >= %s AND referrer IS NOT NULL AND referrer <> '' {_SQL_NO_BOT}
             GROUP BY referrer
             ORDER BY clicks DESC
             LIMIT 25
         """, (now - timedelta(days=30),))
         results["top_pages"] = [dict(r) for r in cur.fetchall()]
 
-        # Total visiteurs uniques (IP /24 anonymisée) sur 30j.
-        cur.execute("SELECT COUNT(DISTINCT user_ip) AS c FROM public.affiliate_clicks WHERE ts >= %s", (now - timedelta(days=30),))
+        # Total visiteurs uniques (IP /24 anonymisée) sur 30j, hors bots.
+        cur.execute(f"SELECT COUNT(DISTINCT user_ip) AS c FROM public.affiliate_clicks WHERE ts >= %s {_SQL_NO_BOT}", (now - timedelta(days=30),))
         results["unique_visitors_30d"] = cur.fetchone()["c"]
 
         cur.close()

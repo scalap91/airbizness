@@ -270,6 +270,13 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - public/cookies.html : nouvelle section 2.5 « Cookies d'affiliation » (CJ, am.js, domaines, 13 mois, lien politique CJ).
    - Test : fiche 200, plus de <script src=anrdoezrs> direct, loader présent ; privacy.html & cookies.html 200 avec mention CJ. NB : GA4/gtag (shared-chrome.js) PAS encore gardé par consentement — follow-up séparé éventuel.
 
+0undecies. Fix mesure : vraie IP visiteur + exclusion bots dans affiliate_clicks — 2026-06-19
+   - Déclencheur : Pascal conteste « les clics c'est toi/moi ». Vérif logs : 198/261 clics = meta-externalagent (crawler FB), 29 curl. Et TOUTES les IP = 127.0.0.1.
+   - BUG 1 (IP) : nginx pose bien X-Forwarded-For (sites-enabled/airbizness l.94/103) mais l'app lisait request.client.host = 127.0.0.1 (nginx) → IP visiteur perdue pour TOUS. Fix : helper _client_ip(request) = 1er hop XFF, utilisé dans affiliate-redirect + affiliate-log + track-click. Testé : XFF 88.120.5.9 → loggé 88.120.5.0 (/24). NB : le rate-limiter slowapi keye aussi sur l'IP → un fix GLOBAL via uvicorn --proxy-headers --forwarded-allow-ips=127.0.0.1 corrigerait l'app entière (proposé, non fait).
+   - BUG 2 (bots) : crawlers suivent les liens → polluaient affiliate_clicks. _BOT_UA + _is_bot() : on ne LOGGE plus les bots (redirect + beacon redirigent quand même). _SQL_NO_BOT exclut les bots des stats (couvre l'historique). Après fix : 34 clics humains/30j (vs 261), booking 25.
+   - VRAI trafic confirmé via logs nginx : sur ~24h, 373 hits robots Google/Bing sur /hotels/ (indexation active des 7433 fiches) + ~50 vues humaines, 12 IP réelles distinctes. Source de vérité trafic = GSC + GA4 (PAS affiliate_clicks qui ne mesure que les clics partenaire).
+   - Doctrine feedback_compteurs_recoupement : l'écart compteur a révélé 2 bugs réels.
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).
