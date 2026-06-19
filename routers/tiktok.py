@@ -31,7 +31,20 @@ CLIENT_SECRET = os.getenv("TIKTOK_CLIENT_SECRET", "").strip()
 REDIRECT_URI = "https://airbizness.com/api/tiktok/callback"
 SCOPES = "video.upload"
 TOKEN_FILE = "/var/www/airbizness/.tiktok-token.json"
-_STATE = {"v": None}  # CSRF state en mémoire (usage admin unique)
+STATE_FILE = "/var/www/airbizness/.tiktok-state"  # state CSRF partagé entre workers (fichier, pas mémoire)
+
+
+def _set_state(v: str):
+    with open(STATE_FILE, "w") as f:
+        f.write(v)
+
+
+def _get_state() -> str:
+    try:
+        with open(STATE_FILE) as f:
+            return f.read().strip()
+    except Exception:
+        return ""
 
 
 def _save_token(tok: dict):
@@ -80,10 +93,11 @@ async def tiktok_auth(admin_token: str = Query(None), request: Request = None):
     await require_admin_token(admin_token=admin_token, request=request)
     if not CLIENT_KEY:
         raise HTTPException(503, "TIKTOK_CLIENT_KEY absent")
-    _STATE["v"] = secrets.token_urlsafe(16)
+    state = secrets.token_urlsafe(16)
+    _set_state(state)
     params = {
         "client_key": CLIENT_KEY, "scope": SCOPES, "response_type": "code",
-        "redirect_uri": REDIRECT_URI, "state": _STATE["v"],
+        "redirect_uri": REDIRECT_URI, "state": state,
     }
     url = "https://www.tiktok.com/v2/auth/authorize/?" + urllib.parse.urlencode(params)
     return RedirectResponse(url=url, status_code=302)
@@ -93,7 +107,7 @@ async def tiktok_auth(admin_token: str = Query(None), request: Request = None):
 async def tiktok_callback(code: str = "", state: str = "", error: str = "", error_description: str = ""):
     if error:
         return HTMLResponse(f"<h2>TikTok a refusé : {error}</h2><p>{error_description}</p>", status_code=400)
-    if not code or state != _STATE.get("v"):
+    if not code or not state or state != _get_state():
         return HTMLResponse("<h2>État invalide ou code manquant</h2>", status_code=400)
     try:
         tok = _post_form("https://open.tiktokapis.com/v2/oauth/token/", {

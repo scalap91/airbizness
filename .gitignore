@@ -48,3 +48,4 @@ Thumbs.db
 *.html.save
 *.save
 .tiktok-token.json
+.tiktok-state
