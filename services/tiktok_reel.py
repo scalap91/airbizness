@@ -228,8 +228,9 @@ def build_hotel_reel(h: dict, out_path: str, max_photos: int = 4, music_path: st
             # avant-plan : photo ENTIÈRE (fit), pas de crop
             fc.append(f"[fg{i}]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1,fps=30[fgf{i}]")
             fc.append(f"[bgb{i}][fgf{i}]overlay=(W-w)/2:(H-h)/2[ov{i}]")
+            # Texte EN HAUT (le bas de TikTok est masqué par l'UI : légende, boutons like/partage).
             fc.append(f"[ov{i}]drawtext=fontfile={FONT}:textfile='{cf}':fontcolor=white:fontsize=50:line_spacing=14:"
-                      f"box=1:boxcolor=0x0a0a14@0.66:boxborderw=34:x=(w-tw)/2:y=h-th-150[vp{i}]")
+                      f"box=1:boxcolor=0x0a0a14@0.66:boxborderw=34:x=(w-tw)/2:y=210[vp{i}]")
 
         # Carte outro
         outro_lines = [("AIRBIZNESS", FONT, 84, GOLD, 0.38),
