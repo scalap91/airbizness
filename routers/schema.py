@@ -239,6 +239,13 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
        TRAVELPAYOUTS_MARKER : déjà rempli (723813) → hotellook rapporte dès maintenant.
    - Test live 2026-06-19 : fiche Rueil-Malmaison HTTP 200, ab-compare-block présent, 5 lignes (agoda/expedia/trip/hotels/hotellook) + booking héros. Chaque redirect → 302 vers le bon host. hotellook → marker=723813 injecté. affiliate_clicks : 2 clics loggés/provider (tests). py_compile OK, service redémarré.
 
+0septies. Dashboard admin affiliation + activation ADMIN_AUDIT_TOKEN — 2026-06-19
+   - Demande Pascal : « dashboard admin pour voir ce que rapporte chaque hôtel/ville/partenaire ».
+   - public/admin-affiliate.html (NOUVEAU) : KPIs 24h/7j/30j + visiteurs uniques, clics/jour (30j), par partenaire (badge rapporte/tracké), pages qui génèrent les clics (referrer), top hôtels. Gate token (URL ?admin_token / localStorage / prompt). Thème AirBizness.
+   - routers/affiliate.py : endpoint /affiliate-stats enrichi (top_pages via referrer + unique_visitors_30d). SUPPRIMÉ l'ancien GET /affiliate-stats SANS auth (param hours) : route DUPLIQUÉE qui masquait l'endpoint admin ET exposait les clics sans token (faille fermée).
+   - ADMIN_AUDIT_TOKEN était absent partout → TOUTES les routes admin renvoyaient 503 (cohérent note « audit-apis=503 »). Token fort généré et ajouté à .env (gitignoré, NON commité). Désormais : 403 sans token, 200 avec. Active aussi les autres routes require_admin_token.
+   - Test live : sans token → 403 ; avec token → 9 clés, données réelles (255 clics/30j, booking 229, 10 jours, 5 pages, 20 hôtels). Page HTTP 200.
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).

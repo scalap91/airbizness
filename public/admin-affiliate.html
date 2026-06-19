@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Affiliation · Dashboard admin · AirBizness</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0a14; --bg2:#1a1a2e; --line:#2a2a3e; --gold:#d4ae4a; --txt:#fff; --muted:#8a8aa0; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font-family:'DM Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1100px; margin:0 auto; padding:28px 18px 80px; }
+  header.top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
+  h1 { font-family:'DM Serif Display',Georgia,serif; font-size:30px; margin:0; }
+  h1 small { color:var(--gold); font-family:'DM Sans'; font-size:13px; letter-spacing:2px; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .sub { color:var(--muted); font-size:14px; margin:6px 0 24px; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:28px; }
+  .kpi { background:linear-gradient(135deg,var(--bg2),var(--bg)); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+  .kpi .n { font-size:34px; font-weight:700; color:var(--gold); line-height:1.1; }
+  .kpi .l { color:var(--muted); font-size:13px; margin-top:4px; }
+  .card { background:var(--bg2); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin-bottom:22px; }
+  .card h2 { font-size:17px; margin:0 0 16px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { text-align:left; padding:9px 8px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:500; font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+  td.num,th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:none; }
+  td a { color:var(--gold); text-decoration:none; word-break:break-all; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:7px; vertical-align:middle; }
+  .bars { display:flex; align-items:flex-end; gap:3px; height:120px; padding-top:8px; }
+  .bars .b { flex:1; background:linear-gradient(180deg,var(--gold),#8a6f24); border-radius:3px 3px 0 0; min-height:2px; position:relative; }
+  .bars .b:hover::after { content:attr(data-t); position:absolute; bottom:100%; left:50%; transform:translateX(-50%); background:#000; color:#fff; font-size:11px; padding:3px 6px; border-radius:4px; white-space:nowrap; }
+  .legend { color:var(--muted); font-size:12.5px; line-height:1.6; margin-top:6px; }
+  .legend b { color:var(--gold); }
+  .empty { color:var(--muted); font-style:italic; padding:8px 0; }
+  .err { background:#3a1416; border:1px solid #7a2a2e; color:#ffb4b4; padding:16px 18px; border-radius:12px; }
+  .gate { max-width:380px; margin:80px auto; text-align:center; }
+  .gate input { width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:#fff; font-size:15px; margin:14px 0; }
+  .gate button, .reload { background:var(--gold); color:var(--bg); border:none; padding:10px 20px; border-radius:8px; font-weight:600; cursor:pointer; font-size:14px; }
+  .pill { font-size:11px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); color:var(--muted); }
+  .pill.live { color:#7be88a; border-color:#2e5a36; }
+  a.back { color:var(--muted); text-decoration:none; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="sub">Chargement…</div></div>
+
+<script>
+const PROVIDERS = {
+  booking:   { label:'Booking',    color:'#003580', earns:false },
+  agoda:     { label:'Agoda',      color:'#ff6a00', earns:false },
+  expedia:   { label:'Expedia',    color:'#1668e3', earns:false },
+  trip:      { label:'Trip.com',   color:'#287dfa', earns:false },
+  hotels:    { label:'Hotels.com', color:'#d32f2f', earns:false },
+  hotellook: { label:'Hotellook',  color:'#d4ae4a', earns:true  },
+  aviasales: { label:'Aviasales',  color:'#00aaff', earns:true  },
+  skyscanner:{ label:'Skyscanner', color:'#0770e3', earns:false },
+};
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PROV = k => PROVIDERS[k] || { label:k, color:'#8a8aa0', earns:false };
+
+function getToken() {
+  const u = new URLSearchParams(location.search).get('admin_token');
+  if (u) { localStorage.setItem('ab_admin_token', u); return u; }
+  return localStorage.getItem('ab_admin_token') || '';
+}
+
+function gate(msg) {
+  document.getElementById('app').innerHTML = `
+    <div class="gate">
+      <h1><small>AirBizness</small>Dashboard affiliation</h1>
+      ${msg ? `<div class="err" style="margin:14px 0;text-align:left;">${esc(msg)}</div>` : ''}
+      <p class="sub">Token admin requis.</p>
+      <input id="tok" type="password" placeholder="admin_token" autocomplete="off">
+      <button onclick="(function(){const t=document.getElementById('tok').value.trim();if(t){localStorage.setItem('ab_admin_token',t);location.href=location.pathname;}})()">Entrer</button>
+    </div>`;
+}
+
+function row(cells){ return '<tr>'+cells.map(c=>c).join('')+'</tr>'; }
+
+function render(d) {
+  const days = d.by_day || [];
+  const maxDay = Math.max(1, ...days.map(x=>+x.clicks));
+  const bars = days.map(x=>`<div class="b" style="height:${Math.round(+x.clicks/maxDay*100)}%" data-t="${esc(x.date)} · ${x.clicks}"></div>`).join('') || '<div class="empty">Aucun clic sur 30 jours.</div>';
+
+  const byProv = (d.by_provider||[]);
+  const provRows = byProv.length ? byProv.map(p=>{
+    const m=PROV(p.provider);
+    return row([
+      `<td><span class="dot" style="background:${m.color}"></span>${esc(m.label)}</td>`,
+      `<td class="num">${p.clicks}</td>`,
+      `<td>${m.earns?'<span class="pill live">rapporte</span>':'<span class="pill">tracké</span>'}</td>`,
+    ]);
+  }).join('') : row(['<td colspan="3" class="empty">Aucun clic.</td>']);
+
+  const pages = (d.top_pages||[]);
+  const pageRows = pages.length ? pages.map(p=>{
+    const url = esc(p.referrer);
+    const short = url.replace(/^https?:\/\/[^/]+/,'').slice(0,70) || url;
+    return row([`<td><a href="${url}" target="_blank">${esc(short)}</a></td>`,`<td class="num">${p.clicks}</td>`,`<td class="num">${p.partenaires}</td>`]);
+  }).join('') : row(['<td colspan="3" class="empty">Aucune page (le referrer arrive avec les premiers clics réels).</td>']);
+
+  const hotels = (d.top_hotels||[]);
+  const hotelRows = hotels.length ? hotels.map(h=>row([`<td>${esc(h.hotel_code)}</td>`,`<td class="num">${h.clicks}</td>`])).join('') : row(['<td colspan="2" class="empty">Aucun hôtel.</td>']);
+
+  document.getElementById('app').innerHTML = `
+    <header class="top">
+      <h1><small>AirBizness · Affiliation</small>Ce que rapportent les fiches</h1>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <a class="back" href="/admin-home.html">← Admin</a>
+        <button class="reload" onclick="location.reload()">↻ Rafraîchir</button>
+      </div>
+    </header>
+    <p class="sub">Mesure <b>serveur</b> des clics partenaires (table <code>affiliate_clicks</code>), 30 derniers jours. Le comportement détaillé du visiteur est dans <a href="https://analytics.google.com/" target="_blank" style="color:var(--gold)">GA4</a> (events <code>affiliate_click</code> / <code>compare_prices_click</code>).</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="n">${d.total_clicks_24h??0}</div><div class="l">Clics partenaires · 24 h</div></div>
+      <div class="kpi"><div class="n">${d.total_clicks_7d??0}</div><div class="l">Clics · 7 jours</div></div>
+      <div class="kpi"><div class="n">${d.total_clicks_30d??0}</div><div class="l">Clics · 30 jours</div></div>
+      <div class="kpi"><div class="n">${d.unique_visitors_30d??0}</div><div class="l">Visiteurs uniques · 30 j</div></div>
+    </div>
+
+    <div class="card"><h2>Clics par jour · 30 jours</h2><div class="bars">${bars}</div></div>
+
+    <div class="card"><h2>Par partenaire</h2>
+      <table><thead><tr><th>Partenaire</th><th class="num">Clics 30j</th><th>Revenu</th></tr></thead><tbody>${provRows}</tbody></table>
+      <p class="legend"><b>tracké</b> = on sait qu'ils ont cliqué, mais le lien ne rapporte pas encore (ajouter l'ID d'affiliation dans <code>.env</code> — cf. boussole 0sexies). <b>rapporte</b> = ID/marker en place. Un clic mesure l'intérêt, pas le revenu (la conversion se confirme côté partenaire).</p>
+    </div>
+
+    <div class="card"><h2>Pages qui génèrent le plus de clics</h2>
+      <table><thead><tr><th>Fiche</th><th class="num">Clics</th><th class="num">Partenaires</th></tr></thead><tbody>${pageRows}</tbody></table>
+    </div>
+
+    <div class="card"><h2>Top hôtels (code)</h2>
+      <table><thead><tr><th>Code hôtel</th><th class="num">Clics 30j</th></tr></thead><tbody>${hotelRows}</tbody></table>
+    </div>`;
+}
+
+async function load() {
+  const token = getToken();
+  if (!token) return gate('');
+  try {
+    const r = await fetch('/api/affiliate-stats?admin_token=' + encodeURIComponent(token));
+    if (r.status === 403) { localStorage.removeItem('ab_admin_token'); return gate('Token refusé.'); }
+    if (r.status === 503) return gate('ADMIN_AUDIT_TOKEN non configuré côté serveur.');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    render(await r.json());
+  } catch (e) {
+    document.getElementById('app').innerHTML = '<div class="err">Erreur de chargement : ' + esc(e.message) + '</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>

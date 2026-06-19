@@ -71,28 +71,10 @@ def track_affiliate_click(
     return RedirectResponse(url=deeplink, status_code=302)
 
 
-@router.get("/affiliate-stats")
-def affiliate_stats(hours: int = 24):
-    """Stats clics affiliation pour le dashboard admin."""
-    if hours < 1 or hours > 720:
-        raise HTTPException(400, "hours must be 1-720")
-    conn = psycopg2.connect(**DB_CONFIG)
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute(f"""
-        SELECT provider, COUNT(*) AS clicks,
-               SUM(price) AS total_price,
-               COUNT(DISTINCT user_ip) AS unique_visitors
-        FROM affiliate_clicks
-        WHERE ts > NOW() - INTERVAL '{int(hours)} hours'
-        GROUP BY provider ORDER BY clicks DESC
-    """)
-    rows = cur.fetchall()
-    cur.close(); conn.close()
-    return {
-        "hours": hours,
-        "by_provider": [dict(r) for r in rows],
-        "total_clicks": sum(r["clicks"] for r in rows),
-    }
+# NOTE 2026-06-19 : l'ancien GET /affiliate-stats SANS auth (param `hours`) a été
+# supprimé — il masquait (route dupliquée) le vrai endpoint admin plus bas ET exposait
+# les clics sans token. Le seul /affiliate-stats est désormais affiliate_stats_admin
+# (require_admin_token), utilisé par public/admin-affiliate.html.
 
 
 # ─────────────────────────────────────────────────────────────
@@ -234,6 +216,21 @@ async def affiliate_stats_admin(admin=Depends(require_admin_token)):
             ORDER BY DATE(ts)
         """, (now - timedelta(days=30),))
         results["by_day"] = [dict(r) for r in cur.fetchall()]
+
+        # Quelles PAGES génèrent les clics (module ② — referrer = URL de la fiche SEO).
+        cur.execute("""
+            SELECT referrer, COUNT(*) AS clicks, COUNT(DISTINCT provider) AS partenaires
+            FROM public.affiliate_clicks
+            WHERE ts >= %s AND referrer IS NOT NULL AND referrer <> ''
+            GROUP BY referrer
+            ORDER BY clicks DESC
+            LIMIT 25
+        """, (now - timedelta(days=30),))
+        results["top_pages"] = [dict(r) for r in cur.fetchall()]
+
+        # Total visiteurs uniques (IP /24 anonymisée) sur 30j.
+        cur.execute("SELECT COUNT(DISTINCT user_ip) AS c FROM public.affiliate_clicks WHERE ts >= %s", (now - timedelta(days=30),))
+        results["unique_visitors_30d"] = cur.fetchone()["c"]
 
         cur.close()
     finally:
