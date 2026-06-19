@@ -23,6 +23,9 @@ FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"      # serif (tit
 FONT_SANS = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # sans (labels, étoiles)
 BG = "0x0a0a14"           # fond sombre fiche
 GOLD = "0xD4AE4A"         # or fiche
+# Musique libre de droits embarquée dans AirBizness (autonome). Sert pour la démo et
+# pour un éventuel post via API. En post manuel/scraping, on mettra plutôt un son TikTok.
+MUSIC_DEFAULT = "/var/www/airbizness/assets/music/ambient-1.mp3"
 
 
 def _flatten_gallery(h: dict, limit: int = 5) -> list:
@@ -85,8 +88,10 @@ def _card_filter(idx: int, lines: list, out_label: str) -> str:
     return ";".join(pieces)
 
 
-def build_hotel_reel(h: dict, out_path: str, max_photos: int = 5) -> dict:
-    """Construit la vidéo au format fiche AirBizness. Retourne {ok, path, photos, error}."""
+def build_hotel_reel(h: dict, out_path: str, max_photos: int = 5, music_path: str = None) -> dict:
+    """Construit la vidéo au format fiche AirBizness. Retourne {ok, path, photos, error}.
+    music_path : piste audio (def. MUSIC_DEFAULT). None explicite = vidéo muette."""
+    music = music_path if music_path is not None else (MUSIC_DEFAULT if os.path.exists(MUSIC_DEFAULT) else None)
     name = h.get("name") or ""
     city = h.get("city") or h.get("city_name") or ""
     city = city.title() if city.isupper() else city
@@ -112,7 +117,10 @@ def build_hotel_reel(h: dict, out_path: str, max_photos: int = 5) -> dict:
         for p in imgs:
             cmd += ["-loop", "1", "-t", str(SLIDE_SEC), "-i", p]
         cmd += ["-f", "lavfi", "-t", str(CARD_SEC), "-i", f"color=c={BG}:s={W}x{H}:r=30"]
-        cmd += ["-f", "lavfi", "-t", str(total), "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
+        if music:
+            cmd += ["-stream_loop", "-1", "-i", music]      # boucle si plus courte que la vidéo
+        else:
+            cmd += ["-f", "lavfi", "-t", str(total), "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
 
         fc = []
         # Carte intro (style fiche : marque + nom serif + ville + étoiles or)
@@ -155,9 +163,18 @@ def build_hotel_reel(h: dict, out_path: str, max_photos: int = 5) -> dict:
             last = out
             acc += durs[k] - XFADE_SEC
 
+        dur = total - (n + 1) * XFADE_SEC  # durée réelle après fondus
+        if music:
+            fc.append(
+                f"[{n+2}:a]afade=t=in:st=0:d=1,"
+                f"afade=t=out:st={max(dur-1.5, 0):.2f}:d=1.5,volume=0.8[aout]"
+            )
+            audio_map = "[aout]"
+        else:
+            audio_map = f"{n+2}:a"
         cmd += [
             "-filter_complex", ";".join(fc),
-            "-map", f"[{last}]", "-map", f"{n+2}:a",
+            "-map", f"[{last}]", "-map", audio_map,
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
             "-c:a", "aac", "-shortest", "-movflags", "+faststart",
             out_path,
