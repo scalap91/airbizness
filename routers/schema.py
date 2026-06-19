@@ -292,6 +292,11 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - Doctrine prix OK : le prix est affiché chez le partenaire (live), pas chez nous ; dates = exemple modifiable par le visiteur.
    - Test live Le Faubourg : booking ...&checkin=2026-06-26&checkout=2026-06-27&group_adults=2&no_rooms=1 ; agoda dest checkIn=2026-06-26&checkOut=2026-06-27&adults=2.
 
+0quaterdecies. Fix BreadcrumbList (diagnostic SEO parqué du 29/05) — 2026-06-19
+   - Bug : pos2 (ville) et pos3 ("Hôtels") pointaient vers la MÊME URL /destinations/{slug} (doublon), et le dernier maillon (nom hôtel) n'avait pas d'item URL.
+   - Fix routers/seo.py : "Hôtels" ajouté SEULEMENT sans hub_link (sinon doublon) → "Accueil > Ville > Hôtel". Dernier maillon porte seo_path (= canonical) dans le schema. Rendu visible : dernier = <span aria-current=page> (non-cliquable) via index, pas via absence d'URL.
+   - Vérifié Googlebot sur Le Faubourg : 3 items, chacun avec item URL, 0 doublon ; fil visible dernier = span.
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).

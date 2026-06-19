@@ -533,12 +533,16 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     dist_centre_str = _fmt_km(dist_centre_km)
     dist_airport_str = _fmt_km(dist_airport_km)
 
-    # ── Breadcrumbs : "Accueil > {Ville} > Hôtels > {Nom hôtel}"
+    # ── Breadcrumbs : "Accueil > {Ville} > {Nom hôtel}"
+    # hub_link (ville) couvre déjà le niveau ville → on n'ajoute "Hôtels" que SANS hub,
+    # sinon pos2 et pos3 pointaient vers la même URL (doublon). Le dernier maillon porte
+    # son URL canonique (exigé par Google ; rendu non-cliquable côté visible).
     breadcrumb_items = [("Accueil", "/")]
     if hub_link:
         breadcrumb_items.append((hub_link[0], hub_link[1]))
-    breadcrumb_items.append(("Hôtels", f"/destinations/{_city_url_slug(city)}" if city else "/"))
-    breadcrumb_items.append((name, None))  # dernier = page courante
+    elif city:
+        breadcrumb_items.append(("Hôtels", f"/destinations/{_city_url_slug(city)}"))
+    breadcrumb_items.append((name, seo_path))  # page courante (URL = canonical pour le schema)
 
     # Schema.org BreadcrumbList (rich snippet Google)
     breadcrumb_schema = {
@@ -1145,9 +1149,10 @@ body{{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;li
 
 <nav class="breadcrumbs" aria-label="Fil d'Ariane">
   <ol>{"".join(
-    (f'<li><a href="{html_escape(_url)}">{html_escape(_label)}</a></li><li class="bc-sep">›</li>' if _url
-     else f'<li><span aria-current="page">{html_escape(_label)}</span></li>')
-    for _label, _url in breadcrumb_items
+    (f'<li><span aria-current="page">{html_escape(_label)}</span></li>'
+     if (_i == len(breadcrumb_items) - 1 or not _url)
+     else f'<li><a href="{html_escape(_url)}">{html_escape(_label)}</a></li><li class="bc-sep">›</li>')
+    for _i, (_label, _url) in enumerate(breadcrumb_items)
   )}</ol>
 </nav>
 
