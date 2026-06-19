@@ -226,6 +226,18 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - Bénéfice GA4 : pages les + cliquées, CTR vers Booking, top villes, clics/jour, comportement complet du visiteur.
    - TODO module ② : activer mode affilié des providers (Booking/Agoda/Expedia/Trip.com/HotelsCombined/RateHawk) + bloc « Comparer les prix » (chaque ligne = deeplink via /api/affiliate-redirect?provider=X → déjà tracké par affiliate_click + affiliate_clicks).
 
+0sexies. Affiliation multi-partenaires — bloc « Comparer les prix » (module ②) — 2026-06-19
+   - Demande Pascal : préparer l'affiliation Booking/Agoda/Expedia/Trip.com/Hotels.com + bloc comparer les prix, chaque ligne affiliée. « IL FAUT QU'ON SACHE S'ILS ONT CLIQUÉ SUR LE BOUTON PARTENAIRE AUSSI. »
+   - Stratégie validée : HYBRIDE. ID direct si présent dans .env, sinon le lien marche + le clic est tracké (sans rapporter encore). La ligne Hotellook porte le marker TravelPayouts déjà actif → RAPPORTE aujourd'hui.
+   - Fichiers (1 seul module affiliation, pas de patch éparpillé) :
+       * services/affiliate_partners.py (NOUVEAU) : registre PARTNERS = source de vérité (agoda, expedia, trip, hotels, hotellook). Ne fabrique que l'URL de recherche publique, jamais d'ID en dur.
+       * routers/affiliate.py : VALID_PROVIDERS/HOSTS += trip.com, hotels.com. Injection d'ID remplacée par table data-driven AFFILIATE_PARAMS {provider:[(param, env_var)]} → ajoute l'ID au deeplink seulement si la var .env est remplie.
+       * routers/seo.py : bloc compare_block_html (une ligne/OTA via /api/affiliate-redirect + data-compare-partner) inséré après le bouton Booking héros. Booking garde son bouton dédié (pas doublé dans le bloc).
+   - Double mesure par partenaire : SERVEUR (affiliate_clicks, une ligne/clic) + GA4 (affiliate_click + compare_prices_click via le listener module ①, déjà en place — zéro ajout JS).
+   - Vars .env à remplir pour qu'un partenaire DIRECT rapporte (sinon tracké mais non monétisé) :
+       BOOKING_AID (booking) · AGODA_CID (agoda) · EXPEDIA_AFFID (expedia) · HOTELS_AFFID (hotels) · TRIP_ALLIANCE_ID + TRIP_SID (trip) · SKYSCANNER_AID.
+       TRAVELPAYOUTS_MARKER : déjà rempli (723813) → hotellook rapporte dès maintenant.
+   - Test live 2026-06-19 : fiche Rueil-Malmaison HTTP 200, ab-compare-block présent, 5 lignes (agoda/expedia/trip/hotels/hotellook) + booking héros. Chaque redirect → 302 vers le bon host. hotellook → marker=723813 injecté. affiliate_clicks : 2 clics loggés/provider (tests). py_compile OK, service redémarré.
 
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne

@@ -920,6 +920,42 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
         '</div>'
     )
 
+    # ── Bloc « Comparer les prix » multi-partenaires (module ②, 2026-06-19) ──
+    # Une ligne par OTA. Chaque lien passe par /api/affiliate-redirect (log serveur
+    # affiliate_clicks + injection ID .env) et porte data-compare-partner → le listener
+    # gtag (module ①) émet affiliate_click + compare_prices_click. On sait donc, par
+    # partenaire, qui a cliqué — côté serveur ET GA4. Registre : services/affiliate_partners.py.
+    from services.affiliate_partners import PARTNERS as _PARTNERS
+    _cmp_rows = []
+    for _p in _PARTNERS:
+        _dest = _p["url"](name, city or "", country or "")
+        _href = (
+            f"/api/affiliate-redirect?provider={_p['key']}"
+            f"&hotel_code={_quote_plus(str(hbx_code_for_widget or '').strip())}"
+            f"&dest={_quote_plus(_dest)}"
+        )
+        _cmp_rows.append(
+            f'<a href="{html_escape(_href)}" target="_blank" rel="noopener nofollow sponsored" '
+            f'data-compare-partner="{_p["key"]}" '
+            'style="display:flex;align-items:center;justify-content:space-between;gap:12px;'
+            'padding:14px 18px;margin:8px 0;background:#0a0a14;border:1px solid #2a2a3e;'
+            'border-radius:10px;text-decoration:none;transition:border-color .2s;" '
+            'onmouseover="this.style.borderColor=\'#d4ae4a\'" onmouseout="this.style.borderColor=\'#2a2a3e\'">'
+            f'<span style="display:flex;align-items:center;gap:12px;color:#fff;font-weight:600;">'
+            f'<span style="width:10px;height:10px;border-radius:50%;background:{_p["color"]};"></span>'
+            f'{html_escape(_p["label"])}</span>'
+            '<span style="color:#d4ae4a;font-weight:600;white-space:nowrap;">Voir le prix →</span>'
+            '</a>'
+        )
+    compare_block_html = (
+        '<div class="ab-compare-block" style="margin:32px 0;padding:24px;background:linear-gradient(135deg,#1a1a2e,#0a0a14);border-radius:16px;border:1px solid #2a2a3e;">'
+        '<div style="color:#d4ae4a;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;text-align:center;">Comparer les prix</div>'
+        '<h3 style="color:#fff;font-family:\'DM Serif Display\',Georgia,serif;font-size:24px;margin:0 0 18px;text-align:center;">Le meilleur tarif chez nos partenaires</h3>'
+        + "".join(_cmp_rows) +
+        '<div style="color:#777;font-size:12px;margin-top:14px;text-align:center;">Liens partenaires — la réservation et le paiement se font sur le site choisi.</div>'
+        '</div>'
+    )
+
     # ── Leaflet assets (chargés seulement si lat/lng dispo) ──
     leaflet_head = (
         '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" '
@@ -1183,6 +1219,8 @@ body{{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;li
       </div>
 
       {booking_partner_html}
+
+      {compare_block_html}
 
       {comparator_widget_html}
 
