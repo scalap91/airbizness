@@ -263,6 +263,13 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - Test live : page 200, lien booking.com direct + data-ab-partner présents, /api/affiliate-log GET → 204 + ligne loggée. py_compile OK, service redémarré.
    - RESTE côté Pascal : approuver le programme Booking.com sur CJ (Partenaires) sinon 0 commission.
 
+0decies. RGPD CJ : consentement cookies + privacy/cookies — 2026-06-19
+   - am.js n'est PLUS chargé en dur : routers/seo.py = loader conditionnel (charge le script seulement si localStorage.ab_cookie_consent==='accepted', sinon attend l'event 'ab-consent'). Conforme art. 82 (traceur tiers après consentement).
+   - public/cookies.js : émet window CustomEvent 'ab-consent' (detail accepted/refused) à l'acceptation ET au rechargement si déjà accepté ; expose window.abConsent(). dismiss() signale aussi.
+   - public/privacy.html : CJ Affiliate (Commission Junction — Conversant LLC, USA) ajouté aux destinataires (§4).
+   - public/cookies.html : nouvelle section 2.5 « Cookies d'affiliation » (CJ, am.js, domaines, 13 mois, lien politique CJ).
+   - Test : fiche 200, plus de <script src=anrdoezrs> direct, loader présent ; privacy.html & cookies.html 200 avec mention CJ. NB : GA4/gtag (shared-chrome.js) PAS encore gardé par consentement — follow-up séparé éventuel.
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).

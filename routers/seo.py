@@ -1320,9 +1320,19 @@ function goQuote(e){{
   window.location.href = '/quote.html?' + params.toString();
 }}
 </script>
-<!-- CJ Affiliate — Auto Deep Link (allCJ) + tracking impressions par page (PID 101805872, 2026-06-19).
-     Réécrit AU CLIC tout lien sortant vers un annonceur CJ (dont booking.com) en lien affilié. -->
-<script src="https://www.anrdoezrs.net/am/101805872/include/allCJ/impressions/page/am.js" async></script>
+<!-- CJ Affiliate — Auto Deep Link (allCJ) + impressions/page (PID 101805872, 2026-06-19).
+     Traceur tiers : chargé UNIQUEMENT après consentement cookies (RGPD). Réécrit au clic
+     tout lien sortant vers un annonceur CJ (dont booking.com) en lien affilié. -->
+<script>
+(function(){{
+  var SRC = 'https://www.anrdoezrs.net/am/101805872/include/allCJ/impressions/page/am.js';
+  var loaded = false;
+  function loadCJ(){{ if (loaded) return; loaded = true;
+    var s = document.createElement('script'); s.src = SRC; s.async = true; document.body.appendChild(s); }}
+  try {{ if (localStorage.getItem('ab_cookie_consent') === 'accepted') loadCJ(); }} catch(_e){{}}
+  window.addEventListener('ab-consent', function(ev){{ if (ev && ev.detail === 'accepted') loadCJ(); }});
+}})();
+</script>
 </body>
 </html>"""
 
