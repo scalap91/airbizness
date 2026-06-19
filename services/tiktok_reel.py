@@ -217,15 +217,19 @@ def build_hotel_reel(h: dict, out_path: str, max_photos: int = 4, music_path: st
             intro_lines.append(("by " + chain.title(), FONT_SANS, 32, "0x999999", 0.565))
         fc.append(_card_filter(0, intro_lines, "vintro"))
 
-        # Photos + bande texte or (lower third)
+        # Photos ENTIÈRES (jamais croppées) centrées sur un fond flou de la même photo.
         for i in range(n):
             cf = capfiles[i].replace(":", r"\:")
-            fc.append(
-                f"[{i+1}:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,fps=30,"
-                f"zoompan=z='min(zoom+0.0008,1.10)':d={int(SLIDE_SEC*30)}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps=30,"
-                f"drawtext=fontfile={FONT}:textfile='{cf}':fontcolor=white:fontsize=50:line_spacing=14:"
-                f"box=1:boxcolor=0x0a0a14@0.66:boxborderw=34:x=(w-tw)/2:y=h-th-230[vp{i}]"
-            )
+            src = f"{i+1}:v"
+            fc.append(f"[{src}]split=2[bg{i}][fg{i}]")
+            # fond : la photo en "cover" + flou + assombrie
+            fc.append(f"[bg{i}]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+                      f"gblur=sigma=22,eq=brightness=-0.12,setsar=1,fps=30[bgb{i}]")
+            # avant-plan : photo ENTIÈRE (fit), pas de crop
+            fc.append(f"[fg{i}]scale={W}:{H}:force_original_aspect_ratio=decrease,setsar=1,fps=30[fgf{i}]")
+            fc.append(f"[bgb{i}][fgf{i}]overlay=(W-w)/2:(H-h)/2[ov{i}]")
+            fc.append(f"[ov{i}]drawtext=fontfile={FONT}:textfile='{cf}':fontcolor=white:fontsize=50:line_spacing=14:"
+                      f"box=1:boxcolor=0x0a0a14@0.66:boxborderw=34:x=(w-tw)/2:y=h-th-150[vp{i}]")
 
         # Carte outro
         outro_lines = [("AIRBIZNESS", FONT, 84, GOLD, 0.38),
