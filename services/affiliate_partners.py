@@ -23,17 +23,31 @@ def _q(name: str, city: str, country: str) -> str:
     return quote_plus(f"{name} {city or ''} {country or ''}".strip())
 
 
+def _latlong(lat, lon) -> str:
+    """'{lat},{lon}' si dispo, sinon ''. Sert à épingler la recherche sur l'hôtel exact."""
+    try:
+        if lat is not None and lon is not None and str(lat) and str(lon):
+            return f"{float(lat)},{float(lon)}"
+    except (TypeError, ValueError):
+        pass
+    return ""
+
+
 # Ordre = ordre d'affichage. provider doit être dans VALID_PROVIDERS (routers/affiliate.py).
 # Booking n'est PAS ici : il a déjà son bouton "héros" dédié sur la fiche.
+# Builders : (nom, ville, pays, lat, lon) → recherche par nom complet (l'hôtel sort en tête) ;
+# Expedia épinglé sur le GPS via latLong quand dispo. ID hôtel exact par partenaire = payant (non câblé).
 PARTNERS = [
     {"key": "agoda",     "label": "Agoda",      "color": "#ff6a00",
-     "url": lambda n, c, co: f"https://www.agoda.com/search?q={_q(n, c, co)}"},
+     "url": lambda n, c, co, lat, lon: f"https://www.agoda.com/search?q={_q(n, c, co)}"},
     {"key": "expedia",   "label": "Expedia",    "color": "#1668e3",
-     "url": lambda n, c, co: f"https://www.expedia.com/Hotel-Search?destination={_q(n, c, co)}"},
+     "url": lambda n, c, co, lat, lon: (
+         f"https://www.expedia.com/Hotel-Search?destination={_q(n, c, co)}"
+         + (f"&latLong={quote_plus(_latlong(lat, lon))}" if _latlong(lat, lon) else ""))},
     {"key": "trip",      "label": "Trip.com",   "color": "#287dfa",
-     "url": lambda n, c, co: f"https://www.trip.com/hotels/list?keyword={_q(n, c, co)}"},
+     "url": lambda n, c, co, lat, lon: f"https://www.trip.com/hotels/list?keyword={_q(n, c, co)}"},
     {"key": "hotels",    "label": "Hotels.com", "color": "#d32f2f",
-     "url": lambda n, c, co: f"https://www.hotels.com/Hotel-Search?destination={_q(n, c, co)}"},
+     "url": lambda n, c, co, lat, lon: f"https://www.hotels.com/Hotel-Search?destination={_q(n, c, co)}"},
     {"key": "hotellook", "label": "Comparer tous les prix", "color": "#d4ae4a",
-     "url": lambda n, c, co: f"https://search.hotellook.com/?destination={_q(n, c, co)}"},
+     "url": lambda n, c, co, lat, lon: f"https://search.hotellook.com/?destination={_q(n, c, co)}"},
 ]

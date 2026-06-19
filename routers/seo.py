@@ -900,6 +900,9 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     _booking_query = _quote_plus(f"{name} {city or ''} {country or ''}".strip())
     _booking_hotel_code = str(hbx_code_for_widget or "").strip()
     booking_partner_url = f"https://www.booking.com/searchresults.html?ss={_booking_query}"
+    # Épingle la recherche sur le GPS exact → l'hôtel ressort en tête (carte centrée dessus).
+    if lat and lng:
+        booking_partner_url += f"&latitude={lat}&longitude={lng}"
     booking_partner_html = (
         '<div class="ab-booking-partner" style="margin:40px 0; padding:32px; background:linear-gradient(135deg,#1a1a2e,#0a0a14); border-radius:16px; border:2px solid #d4ae4a; text-align:center;">'
         '<div style="color:#d4ae4a; font-size:14px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">✨ Nos partenaires</div>'
@@ -923,7 +926,7 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     from services.affiliate_partners import PARTNERS as _PARTNERS
     _cmp_rows = []
     for _p in _PARTNERS:
-        _dest = _p["url"](name, city or "", country or "")
+        _dest = _p["url"](name, city or "", country or "", lat, lng)
         _href = (
             f"/api/affiliate-redirect?provider={_p['key']}"
             f"&hotel_code={_quote_plus(str(hbx_code_for_widget or '').strip())}"

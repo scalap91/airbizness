@@ -277,6 +277,13 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - VRAI trafic confirmé via logs nginx : sur ~24h, 373 hits robots Google/Bing sur /hotels/ (indexation active des 7433 fiches) + ~50 vues humaines, 12 IP réelles distinctes. Source de vérité trafic = GSC + GA4 (PAS affiliate_clicks qui ne mesure que les clics partenaire).
    - Doctrine feedback_compteurs_recoupement : l'écart compteur a révélé 2 bugs réels.
 
+0duodecies. Liens partenaires épinglés sur l'hôtel exact (GPS) — module ② suite — 2026-06-19
+   - Demande Pascal : « liens partenaires direct à la fiche de l'hôtel ? ».
+   - TEST AVANT CODE (doctrine grounding) : résolveur Hotellook/TravelPayouts pour récupérer l'ID exact de l'hôtel chez chaque OTA = MORT. engine.hotellook lookup/cache.json = 404 ; autocomplete places2 = villes only (types[]=hotel → []) ; data API = 403. Donc pas d'ID hôtel partenaire gratuit.
+   - Ce qu'on a : name/city/country + latitude/longitude (h.get) + giata/hbx codes. Livré : recherche par NOM COMPLET (l'hôtel sort en tête) + ÉPINGLAGE GPS où le param est documenté : Booking héros (&latitude&longitude), Expedia (&latLong=lat,lon). Agoda/Trip/Hotels.com = nom complet. services/affiliate_partners.py builders signature (n,c,co,lat,lon).
+   - LIMITE assumée (marche vs préparé) : ce N'EST PAS le lien littéral « 1 clic = page de CET hôtel » chez le partenaire — ça exige l'ID hôtel partenaire = PAYANT (mapping Giata MultiCode) ou accord API direct (Booking Demand API). À décider par Pascal si on investit.
+   - Test live fiche Le Faubourg : booking.com/searchresults?ss=...&latitude=48.874255&longitude=2.347839 ; expedia dest latLong=48.874255,2.347839. Page 200 (502 transitoire au restart, pas une erreur code).
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).
