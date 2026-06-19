@@ -297,6 +297,14 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
    - Fix routers/seo.py : "Hôtels" ajouté SEULEMENT sans hub_link (sinon doublon) → "Accueil > Ville > Hôtel". Dernier maillon porte seo_path (= canonical) dans le schema. Rendu visible : dernier = <span aria-current=page> (non-cliquable) via index, pas via absence d'URL.
    - Vérifié Googlebot sur Le Faubourg : 3 items, chacun avec item URL, 0 doublon ; fil visible dernier = span.
 
+0quindecies. Module TikTok : OAuth + upload brouillon (inbox) + reel HD/musique — 2026-06-19
+   - Pascal a fourni Client key/secret de l'app TikTok « AirBizness » (.env TIKTOK_CLIENT_KEY/SECRET, gitignorés ; token .tiktok-token.json hors git).
+   - routers/tiktok.py : /tiktok/auth (302 autorisation, gardé admin_token) + /tiktok/callback (échange code→token) + /tiktok/status + POST /tiktok/post?slug= (build reel + upload_to_inbox). Atteint via /api/tiktok/* (location /api/ strippe ; coming-soon laisse passer /api/).
+   - upload_to_inbox : Content Posting API v2 inbox (FILE_UPLOAD init → PUT octets) = BROUILLON. L'API INTERDIT d'attacher leur musique commerciale → Pascal colle le son TikTok + publie à la main.
+   - services/tiktok_reel.py : Hotelbeds xxl 2048px (fin pixelisation) + fallback xxl→bigger si 403 + musique libre embarquée (assets/music, autonome).
+   - Test : /api/tiktok/auth → 302 OK ; /api/tiktok/status → connected:false. RESTE Pascal : Redirect URI https://airbizness.com/api/tiktok/callback + scope video.upload + Target User sandbox, puis ouvrir /api/tiktok/auth.
+   - INCIDENT : 1ère écriture de cette entrée hors docstring → SyntaxError schema.py ; retiré + remis dans le docstring (py_compile OK).
+
   1. Watchdog HBX quota branché sur Telegram (corrige les 14h de silence du 2026-06-01)
      Le 2026-06-01, le quota HBX sandbox a été crevé à 09:56 UTC et Pascal ne
      l'a vu qu'à 23:55 sur son téléphone (bandeau "Aucun tarif" sur quote.html).
@@ -2328,11 +2336,3 @@ async def linkedin_auth_check():
             {"ok": False, "error": str(e)},
             status_code=502
         )
-
-
-0quindecies. Module TikTok : OAuth + upload brouillon + reel HD/musique — 2026-06-19
-   - Pascal a fourni Client key/secret de l'app TikTok "AirBizness" (stockés .env TIKTOK_CLIENT_KEY/SECRET, gitignorés).
-   - routers/tiktok.py : /tiktok/auth (302 vers autorisation, gardé admin_token) + /tiktok/callback (échange code->token, stocké .tiktok-token.json) + /tiktok/status + POST /tiktok/post?slug= (build reel + upload_to_inbox). Reachable via /api/tiktok/* (nginx location /api/ strippe ; coming-soon laisse passer /api/).
-   - upload_to_inbox : Content Posting API v2 inbox (FILE_UPLOAD init -> PUT octets) = BROUILLON dans l'inbox TikTok. Pascal colle un son TikTok + publie (l'API INTERDIT d'attacher leur musique commerciale par programme).
-   - services/tiktok_reel.py amélioré : variante Hotelbeds xxl (2048px) au lieu de bigger (800px) -> fin de pixelisation ; fallback xxl->bigger si 403 ; musique libre embarquee (assets/music, autonome, pas T2M) avec fondu ; muet possible (music_path=None) pour son TikTok.
-   - Test : /api/tiktok/auth -> 302 OK vers tiktok.com ; /api/tiktok/status -> connected:false. RESTE cote Pascal : enregistrer Redirect URI https://airbizness.com/api/tiktok/callback + scope video.upload + s ajouter en Target User sandbox, puis ouvrir /api/tiktok/auth pour autoriser.
