@@ -106,7 +106,8 @@ def _flatten_gallery(h: dict, limit: int) -> list:
     if main:
         hu = _hires(main); urls.append(hu); seen.add(hu)
     gal = h.get("gallery") or {}
-    order = ["general", "rooms", "restaurant", "outdoor", "bar", "other"]
+    # On VEND des chambres → les photos de chambres en priorité (après la photo principale).
+    order = ["rooms", "general", "restaurant", "outdoor", "bar", "other"]
     cats = order + [k for k in gal.keys() if k not in order]
     pools = {k: list(gal.get(k) or []) for k in cats}
     while len(urls) < limit and any(pools.values()):
