@@ -1170,11 +1170,34 @@ def _send_brevo_booking_confirmation(booking_row, hbx_booking):
     api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(cfg))
     nights = (booking_row["check_out"] - booking_row["check_in"]).days
 
+    # Photo de l'hôtel réservé (comme le mail RateHawk) : RateHawk (hotel_code=hid)
+    # sinon HBX. Best-effort — pas de photo → on n'affiche pas le bloc.
+    photo_url = ""
+    try:
+        _cx = psycopg2.connect(**DB_CONFIG); _cq = _cx.cursor()
+        _hc = booking_row.get("hotel_code")
+        _cq.execute("SELECT main_image_url FROM ratehawk_hotels_catalog WHERE hid = %s", (_hc,))
+        _r = _cq.fetchone()
+        if not (_r and _r[0]):
+            _cq.execute("SELECT main_image_url FROM hbx_hotels_catalog WHERE hotel_code = %s", (str(_hc),))
+            _r = _cq.fetchone()
+        if _r and _r[0]:
+            photo_url = _r[0]
+        _cq.close(); _cx.close()
+    except Exception:
+        pass
+    photo_html = (
+        f'<img src="{photo_url}" alt="{hbx_booking.get("hotel_name","")}" '
+        'style="width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:0 0 18px;">'
+        if photo_url else ""
+    )
+
     html = f"""
     <html><body style="font-family:Arial,sans-serif; color:#333; max-width:600px; margin:0 auto; padding:20px;">
       <h1 style="font-family:Georgia,serif; color:#b8962e; border-bottom:1px solid #ddd; padding-bottom:14px;">
         Confirmation AirBizness
       </h1>
+      {photo_html}
       <p>Bonjour {booking_row['holder_name']},</p>
       <p>Votre réservation est confirmée.</p>
       <table style="width:100%; border-collapse:collapse; margin:24px 0;">
@@ -1202,7 +1225,7 @@ def _send_brevo_booking_confirmation(booking_row, hbx_booking):
     msg = sib_api_v3_sdk.SendSmtpEmail(
         to=[{"email": booking_row["user_email"],
              "name": f"{booking_row['holder_name']} {booking_row['holder_surname']}"}],
-        sender={"name": "AirBizness", "email": "no-reply@airbizness.com"},
+        sender={"name": "AirBizness", "email": "noreply@airbizness.com"},  # sans tiret = sender Brevo vérifié (DKIM/SPF OK)
         subject=f"Confirmation AirBizness — {hbx_booking['hotel_name']}",
         html_content=html,
     )

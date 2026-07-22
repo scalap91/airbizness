@@ -32,6 +32,13 @@ router = APIRouter()
 
 MARGIN_PCT = 0.15  # marge AirBizness sur le net RateHawk (provisoire, a parametrer)
 
+# WHITE-LABEL (doctrine Pascal : RateHawk n'apparait JAMAIS cote client) : on passe
+# a RateHawk NOTRE email de contact, pas celui du voyageur. Ainsi RateHawk envoie SA
+# confirmation a NOUS (interne), jamais au client. Le client ne recoit QUE le mail
+# AirBizness + notre voucher. (a rediriger vers une vraie boite surveillee cote OVH)
+CONTACT_EMAIL = __import__("os").getenv("RATEHAWK_CONTACT_EMAIL", "bookings@airbizness.com")
+CONTACT_PHONE = __import__("os").getenv("RATEHAWK_CONTACT_PHONE", "12124567899")
+
 
 # ───────────────────────── Dispo live ─────────────────────────
 @router.get("/api/ratehawk/hotel/{hid}/rates")
@@ -201,10 +208,11 @@ def finalize_ratehawk_booking(airbizness_ref: str) -> dict:
                 partner_order_id=oid,
                 rooms=[{"guests": [{"first_name": guest.get("first_name", "Guest"),
                                     "last_name": guest.get("last_name", "Traveler")}]}],
-                user={"email": guest.get("email", ""), "comment": "", "phone": guest.get("phone", "")},
+                # WHITE-LABEL : contact = NOUS (RateHawk n'écrit jamais au client).
+                user={"email": CONTACT_EMAIL, "comment": "", "phone": CONTACT_PHONE},
                 supplier_data={"first_name_original": guest.get("first_name", "Guest"),
                                "last_name_original": guest.get("last_name", "Traveler"),
-                               "phone": guest.get("phone", ""), "email": guest.get("email", "")},
+                               "phone": CONTACT_PHONE, "email": CONTACT_EMAIL},
                 payment_type={"type": "deposit", "amount": str(rh.get("net")),
                               "currency_code": rh.get("currency", "EUR")})
             final = _poll(c, oid)
@@ -229,6 +237,12 @@ def finalize_ratehawk_booking(airbizness_ref: str) -> dict:
                 cur.execute("""UPDATE bookings_v2 SET status='confirmed',
                                payment_status='succeeded', hbx_reference=%s WHERE airbizness_ref=%s""",
                             (str(order_id) if order_id else None, airbizness_ref))
+                # Mail de confirmation (Brevo) — comme HBX.
+                try:
+                    from main import _send_hotel_booking_confirmation
+                    _send_hotel_booking_confirmation(airbizness_ref, {"order_id": order_id, "provider": "ratehawk"})
+                except Exception as e:  # noqa: BLE001
+                    log.warning(f"[ratehawk] mail confirmation KO ref={airbizness_ref}: {e}")
                 return {"ok": True, "order_id": order_id}
             else:
                 try:
@@ -237,6 +251,16 @@ def finalize_ratehawk_booking(airbizness_ref: str) -> dict:
                     log.error(f"[ratehawk] cancel KO ref={airbizness_ref}: {e}")
                 cur.execute("""UPDATE bookings_v2 SET status='booking_failed',
                                payment_status='cancelled' WHERE airbizness_ref=%s""", (airbizness_ref,))
+                # Mail au client : résa échouée, carte NON débitée (autorisation annulée).
+                try:
+                    from main import _send_booking_failed_mail
+                    g = rh.get("guest") or {}
+                    _send_booking_failed_mail(
+                        airbizness_ref, to_email=g.get("email", ""),
+                        to_name=f"{g.get('first_name', '')} {g.get('last_name', '')}".strip(),
+                        original_amount=float(rh.get("gross") or 0), reason="hotel_indisponible")
+                except Exception as e:  # noqa: BLE001
+                    log.warning(f"[ratehawk] mail échec KO ref={airbizness_ref}: {e}")
                 return {"ok": False, "error": f"booking_{final}"}
     except Exception as e:  # noqa: BLE001
         log.error(f"[ratehawk] finalize KO ref={airbizness_ref}: {e}")
