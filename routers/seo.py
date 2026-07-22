@@ -881,41 +881,88 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
     # réel reste câblé au lancement ; ici on montre la dispo live, pas de leurre.
     _rh_hid = h.get("ratehawk_hid")
     if _rh_hid:
-        cta_html = (
-            '<div class="cta-card">'
-            '<div class="cta-tag" style="background:rgba(184,150,46,0.18);color:var(--gold2);">RÉSERVER</div>'
-            '<h3>Vérifier la disponibilité</h3>'
-            '<p class="sub">Sélectionnez vos dates — chambres et tarifs en direct.</p>'
-            '<form class="cta-form" id="rh-form" onsubmit="rhRates(event)">'
-            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Arrivée</label>'
-            '<input type="date" id="rh-checkin" required>'
-            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Départ</label>'
-            '<input type="date" id="rh-checkout" required>'
-            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Voyageurs</label>'
-            '<input type="number" id="rh-adults" value="2" min="1" max="9" required>'
-            '<button type="submit">Voir les disponibilités</button>'
-            '</form>'
-            '<div id="rh-results" style="margin-top:14px;"></div>'
-            '<div class="cta-note">Disponibilités et tarifs en temps réel · voucher à votre nom.</div>'
-            '</div>'
-            f'<script>window.__RH_HID__={int(_rh_hid)};</script>'
-            '<style>.rh-room{display:flex;justify-content:space-between;align-items:center;gap:10px;'
-            'padding:10px 12px;margin:6px 0;background:rgba(255,255,255,0.04);border:1px solid rgba(184,150,46,0.25);'
-            'border-radius:8px;font-size:13px}.rh-room b{color:var(--gold2);white-space:nowrap}'
-            '.rh-msg{color:var(--text3);font-size:13px;padding:8px 0}</style>'
-            '<script>'
-            'function rhRates(e){e.preventDefault();'
-            "var ci=document.getElementById('rh-checkin').value,co=document.getElementById('rh-checkout').value,"
-            "ad=document.getElementById('rh-adults').value||2,box=document.getElementById('rh-results');"
-            "if(!ci||!co){return;}box.innerHTML='<div class=\\'rh-msg\\'>Recherche en cours…</div>';"
-            "fetch('/api/ratehawk/hotel/'+window.__RH_HID__+'/rates?checkin='+ci+'&checkout='+co+'&adults='+ad)"
-            '.then(function(r){return r.json();}).then(function(d){'
-            "if(!d.ok||!d.rooms||!d.rooms.length){box.innerHTML='<div class=\\'rh-msg\\'>Aucune disponibilité pour ces dates.</div>';return;}"
-            "var html='';d.rooms.forEach(function(rm){html+='<div class=\\'rh-room\\'><span>'+(rm.room_name||'Chambre')+'</span><b>'+(rm.amount||'')+' '+(rm.currency||'')+'</b></div>';});"
-            'box.innerHTML=html;'
-            "}).catch(function(){box.innerHTML='<div class=\\'rh-msg\\'>Erreur de chargement.</div>';});}"
-            '</script>'
-        )
+        import os as _os
+        _pk = _os.getenv("STRIPE_PUBLISHABLE_KEY", "")
+        # Checkout client : dispo live → chambres → « Réserver » → carte Stripe.
+        # GATED : le vrai paiement ne s'active qu'avec ?pay=1 (tests) tant qu'on est
+        # en Stripe TEST ; le public voit les prix réels + « à l'ouverture » (anti-leurre).
+        _widget = r'''
+<script src="https://js.stripe.com/v3/"></script>
+<div class="cta-card">
+  <div class="cta-tag" style="background:rgba(184,150,46,0.18);color:var(--gold2);">RÉSERVER</div>
+  <h3>Vérifier la disponibilité</h3>
+  <p class="sub">Sélectionnez vos dates — chambres et tarifs en direct.</p>
+  <form class="cta-form" id="rh-form" onsubmit="rhRates(event)">
+    <label class="rh-lbl">Arrivée</label><input type="date" id="rh-checkin" required>
+    <label class="rh-lbl">Départ</label><input type="date" id="rh-checkout" required>
+    <label class="rh-lbl">Voyageurs</label><input type="number" id="rh-adults" value="2" min="1" max="9" required>
+    <button type="submit">Voir les disponibilités</button>
+  </form>
+  <div id="rh-results" style="margin-top:14px;"></div>
+  <div id="rh-checkout" style="display:none;margin-top:14px;">
+    <h4 id="rh-co-title" style="font-size:14px;margin:0 0 10px;color:var(--gold2);"></h4>
+    <input id="co-first" placeholder="Prénom" class="rh-in">
+    <input id="co-last" placeholder="Nom" class="rh-in">
+    <input id="co-email" type="email" placeholder="Email" class="rh-in">
+    <input id="co-phone" placeholder="Téléphone" class="rh-in">
+    <div id="co-card" class="rh-card"></div>
+    <div id="co-err" style="color:#e66;font-size:13px;padding:4px 0;"></div>
+    <button id="co-pay" onclick="rhPay()" style="width:100%;">Payer</button>
+  </div>
+  <div id="rh-done" style="display:none;margin-top:14px;" class="rh-msg"></div>
+  <div class="cta-note">Disponibilités et tarifs en temps réel · voucher à votre nom.</div>
+</div>
+<style>
+.rh-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.rh-room{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;background:rgba(255,255,255,0.04);border:1px solid rgba(184,150,46,0.25);border-radius:8px;font-size:13px}
+.rh-room b{color:var(--gold2);white-space:nowrap}
+.rh-book{background:var(--gold2,#b8962e);color:#000;border:0;border-radius:6px;padding:6px 12px;font-weight:600;cursor:pointer;font-size:12px}
+.rh-in{width:100%;padding:9px 11px;margin:4px 0;border:1px solid rgba(255,255,255,0.15);border-radius:8px;background:rgba(0,0,0,0.25);color:#fff;font-size:13px;box-sizing:border-box}
+.rh-card{padding:11px;border:1px solid rgba(255,255,255,0.15);border-radius:8px;background:#fff;margin:8px 0}
+.rh-msg{color:var(--text3);font-size:13px;padding:8px 0}
+</style>
+<script>
+window.__RH_HID__=__HID__;window.__PK__="STRIPEPKHERE";
+window.__PAY_ON__=new URLSearchParams(location.search).has("pay");
+var _rhStripe=null,_rhCard=null,_rhSel=null;
+function rhRates(e){e.preventDefault();
+  var ci=document.getElementById("rh-checkin").value,co=document.getElementById("rh-checkout").value,ad=document.getElementById("rh-adults").value||2,box=document.getElementById("rh-results");
+  document.getElementById("rh-checkout").style.display="none";document.getElementById("rh-done").style.display="none";
+  if(!ci||!co){return;}box.innerHTML='<div class="rh-msg">Recherche en cours…</div>';
+  fetch("/api/ratehawk/hotel/"+window.__RH_HID__+"/rates?checkin="+ci+"&checkout="+co+"&adults="+ad).then(function(r){return r.json();}).then(function(d){
+    if(!d.ok||!d.rooms||!d.rooms.length){box.innerHTML='<div class="rh-msg">Aucune disponibilité pour ces dates.</div>';return;}
+    window.__RH_ROOMS__=d.rooms;window.__RH_CI__=ci;window.__RH_CO__=co;window.__RH_AD__=ad;
+    var html="";d.rooms.forEach(function(rm,i){var price=(rm.sell_amount||rm.amount||"")+" "+(rm.currency||"");
+      html+='<div class="rh-room"><span>'+(rm.room_name||"Chambre")+'</span><span style="display:flex;gap:10px;align-items:center;"><b>'+price+'</b><button class="rh-book" onclick="rhSelect('+i+')">Réserver</button></span></div>';});
+    box.innerHTML=html;
+  }).catch(function(){box.innerHTML='<div class="rh-msg">Erreur de chargement.</div>';});
+}
+function rhSelect(i){var rm=window.__RH_ROOMS__[i];_rhSel=rm;
+  if(!window.__PAY_ON__){var dn=document.getElementById("rh-done");dn.style.display="block";dn.innerHTML="🔒 Réservation en ligne disponible à l ouverture officielle. Ces dates et ce tarif sont bien réels.";dn.scrollIntoView({behavior:"smooth"});return;}
+  var co=document.getElementById("rh-checkout");co.style.display="block";
+  document.getElementById("rh-co-title").textContent=(rm.room_name||"Chambre")+" — "+(rm.sell_amount||rm.amount)+" "+(rm.currency||"");
+  if(!_rhStripe){_rhStripe=Stripe(window.__PK__);var el=_rhStripe.elements();_rhCard=el.create("card");_rhCard.mount("#co-card");}
+  co.scrollIntoView({behavior:"smooth"});
+}
+function rhPay(){var btn=document.getElementById("co-pay"),err=document.getElementById("co-err");err.textContent="";
+  var fn=document.getElementById("co-first").value,ln=document.getElementById("co-last").value,em=document.getElementById("co-email").value,ph=document.getElementById("co-phone").value;
+  if(!fn||!ln||!em){err.textContent="Renseignez prénom, nom et email.";return;}
+  btn.disabled=true;btn.textContent="Paiement…";
+  fetch("/api/ratehawk/hotel/"+window.__RH_HID__+"/payment-intent",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({book_hash:_rhSel.book_hash,checkin:window.__RH_CI__,checkout:window.__RH_CO__,adults:parseInt(window.__RH_AD__),first_name:fn,last_name:ln,email:em,phone:ph})})
+  .then(function(r){return r.json();}).then(function(d){
+    if(!d.ok){err.textContent="Tarif indisponible, réessayez.";btn.disabled=false;btn.textContent="Payer";return;}
+    _rhStripe.confirmCardPayment(d.client_secret,{payment_method:{card:_rhCard,billing_details:{name:fn+" "+ln,email:em}}}).then(function(res){
+      if(res.error){err.textContent=res.error.message;btn.disabled=false;btn.textContent="Payer";return;}
+      document.getElementById("rh-checkout").style.display="none";
+      var dn=document.getElementById("rh-done");dn.style.display="block";
+      dn.innerHTML="✅ Paiement autorisé. Votre réservation est en cours de confirmation — vous recevrez un email AirBizness avec votre voucher.";dn.scrollIntoView({behavior:"smooth"});
+    });
+  }).catch(function(){err.textContent="Erreur réseau.";btn.disabled=false;btn.textContent="Payer";});
+}
+</script>
+'''.replace("__HID__", str(int(_rh_hid))).replace("STRIPEPKHERE", _pk)
+        cta_html = _widget
         disclaimer_html = ''
 
     # ── Widget comparateur multi-providers (Booking / Expedia / Agoda) ──
