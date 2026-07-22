@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion sans mot de passe — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="/js/carnets.js?v=2026053113"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--gold:#b8962e;--gold2:#d4ae4a;--text:#f0ece4;--text2:#a09890;--text3:#6a6058;--border:rgba(255,255,255,0.07);--red:#e87a7a;--green:#7ddc94;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:34px 30px;max-width:420px;width:100%;}
+.logo{font-family:'DM Serif Display',serif;font-size:24px;text-align:center;}
+.logo em{color:var(--gold2);font-style:italic;}
+h1{font-family:'DM Serif Display',serif;font-size:24px;margin:16px 0 8px;text-align:center;}
+.sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:22px;line-height:1.5;}
+.field{margin-bottom:14px;}
+.field label{font-size:12px;color:var(--text2);margin-bottom:6px;display:block;}
+.field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:15px;color:var(--text);font-family:inherit;outline:none;}
+.btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:14.5px;font-weight:600;cursor:pointer;margin-top:6px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.msg{margin-top:14px;padding:12px;border-radius:8px;font-size:13px;display:none;text-align:center;}
+.msg.ok{background:rgba(125,220,148,0.15);color:var(--green);display:block;}
+.msg.err{background:rgba(232,122,122,0.12);color:var(--red);display:block;}
+.alt{text-align:center;margin-top:18px;font-size:13px;color:var(--text2);}
+.alt a{color:var(--gold2);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Air<em>Bizness</em></div>
+  <h1>Connexion sans mot de passe</h1>
+  <p class="sub">Saisissez votre email. On vous envoie un lien magique pour vous connecter en un clic. Pas de mot de passe à retenir.</p>
+  <form id="form">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" required autocomplete="email" placeholder="votre@email.com">
+    </div>
+    <button type="submit" class="btn" id="btn">Envoyer le lien magique</button>
+    <div class="msg" id="msg"></div>
+  </form>
+  <div class="alt">Préférez mot de passe ? <a href="/login.html">Login classique</a></div>
+</div>
+<script>
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  msg.className = 'msg';
+  btn.disabled = true; btn.textContent = 'Envoi…';
+  try {
+    const r = await fetch('/api/auth/magic-link', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email: document.getElementById('email').value.trim()})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Erreur');
+    msg.classList.add('ok');
+    msg.innerHTML = '✓ Lien envoyé ! Vérifiez votre boîte mail (et spams). Le lien expire dans 15 min.';
+  } catch (e) {
+    msg.classList.add('err');
+    msg.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Envoyer le lien magique';
+  }
+});
+</script>
+</body>
+</html>

@@ -2906,7 +2906,7 @@ Disallow: /pack-confirmation.html
 Disallow: /hotel-confirmation.html
 Disallow: /activity-checkout.html
 Disallow: /activity-confirmation.html
-Disallow: /bizzi-chat.html
+Disallow: /concierge-chat.html
 Disallow: /compte.html
 Disallow: /confirmation.html
 

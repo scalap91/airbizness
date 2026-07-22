@@ -3,381 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
 <title>Mon compte — AirBizness</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script defer src="/shared-chrome.js"></script>
+<script src="/js/carnets.js?v=2026053113"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
   --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
   --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
   --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
-  --green:#27ae60;--green-dim:rgba(39,174,96,0.1);
-  --save:#c0392b;--save-dim:rgba(192,57,43,0.1);
-  --r:4px;
+  --red:#e87a7a;--green:#7ddc94;--green-dim:rgba(125,220,148,0.12);
 }
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;padding-bottom:80px;}
-
-/* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;flex-shrink:0;}
-.logo-text{font-size:16px;font-weight:600;color:var(--text);}
-.logo-text em{color:var(--gold2);font-style:normal;}
-
-/* AUTH FORMS */
-.auth-wrap{max-width:400px;margin:40px auto;padding:0 16px;}
-.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.auth-tabs{display:flex;border-bottom:1px solid var(--border);}
-.auth-tab{flex:1;padding:14px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;}
-.auth-tab.active{color:var(--gold2);border-bottom-color:var(--gold2);}
-.auth-body{padding:24px;}
-.auth-title{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:6px;}
-.auth-sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;}
-.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-.form-label{font-size:11px;color:var(--text3);}
-.form-input{padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%;}
-.form-input:focus{border-color:var(--border2);}
-.form-input::placeholder{color:var(--text3);}
-.auth-btn{width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:var(--r);margin-top:4px;}
-.auth-btn:hover{background:var(--gold2);}
-.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
-.auth-divider-line{flex:1;height:1px;background:var(--border);}
-.auth-divider-text{font-size:11px;color:var(--text3);}
-.auth-google{width:100%;padding:12px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:8px;}
-.auth-google:hover{border-color:var(--border2);}
-.auth-error{background:var(--save-dim);border:1px solid rgba(192,57,43,.3);border-radius:var(--r);padding:10px 14px;font-size:12px;color:#e74c3c;margin-bottom:12px;display:none;}
-
-/* DASHBOARD */
-.dashboard{display:none;max-width:700px;margin:0 auto;padding:20px 16px;}
-
-/* HERO PROFIL */
-.profile-hero{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:16px;}
-.profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--gold-dim);border:2px solid var(--border2);display:grid;place-items:center;font-size:24px;flex-shrink:0;}
-.profile-info{}
-.profile-name{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:3px;}
-.profile-email{font-size:12px;color:var(--text3);}
-.profile-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 10px;background:var(--gold-dim);border:1px solid var(--border2);border-radius:2px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold2);}
-
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;}
-.stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:3px;}
-.stat-label{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
-.stat-sub{font-size:11px;color:var(--green);margin-top:2px;}
-
-/* MENU ITEMS */
-.menu-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
-.menu-item{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;}
-.menu-item:last-child{border-bottom:none;}
-.menu-item:hover{background:var(--bg3);}
-.menu-icon{font-size:20px;flex-shrink:0;}
-.menu-info{flex:1;}
-.menu-label{font-size:14px;font-weight:500;margin-bottom:2px;}
-.menu-sub{font-size:11px;color:var(--text3);}
-.menu-arrow{color:var(--text3);font-size:18px;}
-.menu-badge{background:var(--save-dim);border:1px solid rgba(192,57,43,.2);color:#e74c3c;font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;}
-
-/* PREFS */
-.pref-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
-.pref-head{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;}
-.pref-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
-.pref-item:last-child{border-bottom:none;}
-.pref-label{font-size:13px;}
-.pref-sub{font-size:11px;color:var(--text3);margin-top:2px;}
-.toggle{width:44px;height:24px;background:var(--bg4);border-radius:12px;position:relative;cursor:pointer;border:1px solid var(--border);transition:background .2s;flex-shrink:0;}
-.toggle.on{background:var(--green);}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s;}
-.toggle.on::after{transform:translateX(20px);}
-
-/* LOGOUT */
-.logout-btn{width:100%;padding:14px;background:transparent;border:1px solid var(--border);color:var(--text3);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-radius:var(--r);margin-top:4px;}
-.logout-btn:hover{border-color:rgba(192,57,43,.3);color:#e74c3c;}
-
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom);}
-.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;cursor:pointer;color:var(--text3);font-size:10px;gap:3px;text-decoration:none;}
-.bn-item.on{color:var(--gold2);}
-.bn-icon{font-size:18px;}
-
-@media(min-width:768px){
-  .header{padding:0 32px;height:60px;}
-  .bottom-nav{display:none;}
-  body{padding-bottom:40px;}
-  .auth-wrap{margin:60px auto;}
-  .dashboard{padding:32px 16px;}
-  .stats-grid{grid-template-columns:repeat(3,1fr);}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.wrap{max-width:1000px;margin:30px auto;padding:0 20px;}
+/* Hero */
+.hero{background:linear-gradient(135deg, rgba(184,150,46,0.15) 0%, var(--bg2) 60%);border:1px solid var(--border2);border-radius:14px;padding:30px 28px;margin-bottom:24px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+.avatar-big{width:72px;height:72px;border-radius:50%;background:var(--bg3);display:grid;place-items:center;font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold2);font-weight:600;flex-shrink:0;}
+.hero-info{flex:1;min-width:200px;}
+.hero-greeting{font-family:'DM Serif Display',serif;font-size:28px;line-height:1.15;margin-bottom:5px;}
+.hero-greeting em{color:var(--gold2);font-style:italic;}
+.hero-email{font-size:13px;color:var(--text2);}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-ghost{padding:10px 16px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-ghost:hover{border-color:var(--gold2);color:var(--gold2);}
+.btn-ghost.danger:hover{border-color:var(--red);color:var(--red);}
+/* Email verified badge */
+.verif-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px;border-radius:4px;margin-top:5px;}
+.verif-badge.ok{background:var(--green-dim);color:var(--green);}
+.verif-badge.no{background:rgba(232,122,122,0.12);color:var(--red);cursor:pointer;}
+.verif-badge.no:hover{filter:brightness(1.15);}
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:14px;}
+.tile{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 20px;text-decoration:none;color:inherit;transition:all .15s;display:flex;flex-direction:column;}
+.tile:hover{border-color:var(--gold2);transform:translateY(-2px);}
+.tile-icon{font-size:28px;margin-bottom:12px;line-height:1;}
+.tile-title{font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:5px;}
+.tile-sub{font-size:12.5px;color:var(--text2);line-height:1.5;flex:1;}
+.tile-count{font-size:11px;color:var(--gold2);font-weight:600;letter-spacing:0.3px;text-transform:uppercase;margin-top:10px;}
+/* Auth-required state */
+.auth-required{text-align:center;padding:80px 20px;}
+.auth-required h2{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:10px;}
+.auth-required p{color:var(--text2);font-size:14px;margin-bottom:22px;}
+.auth-required .btn{display:inline-block;padding:13px 22px;background:var(--gold);color:#000;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px;margin:0 5px;}
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);padding:13px 22px;border-radius:8px;font-size:13.5px;z-index:1000;display:none;}
+.toast.ok{border-color:var(--green);}
+.toast.show{display:block;}
+@media(max-width:560px){
+  .hero{padding:22px 18px;}
+  .hero-greeting{font-size:22px;}
+  .avatar-big{width:58px;height:58px;font-size:22px;}
 }
 </style>
 </head>
 <body>
+<div id="ab-header"></div>
 
-<div class="header">
-  <a class="logo" href="/index.html">
-    <div class="logo-hex">✈</div>
-    <div class="logo-text">Air<em>Bizness</em></div>
-  </a>
+<h1 style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">Mon compte AirBizness</h1>
+
+<div class="wrap" id="main">
+  <!-- Rendu dynamique selon auth state -->
 </div>
 
-<!-- AUTH -->
-<div class="auth-wrap" id="auth-wrap">
-  <div class="auth-card">
-    <div class="auth-tabs">
-      <div class="auth-tab active" onclick="switchTab('login')">Connexion</div>
-      <div class="auth-tab" onclick="switchTab('register')">Inscription</div>
-    </div>
-    <div class="auth-body">
-
-      <!-- LOGIN -->
-      <div id="tab-login">
-        <div class="auth-title">Bon retour !</div>
-        <div class="auth-sub">Connectez-vous pour accéder à vos voyages et alertes.</div>
-        <div class="auth-error" id="login-error"></div>
-        <div class="form-group">
-          <div class="form-label">Email</div>
-          <input class="form-input" id="login-email" type="email" placeholder="votre@email.com">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Mot de passe</div>
-          <input class="form-input" id="login-pwd" type="password" placeholder="••••••••">
-        </div>
-        <button class="auth-btn" onclick="login()">Se connecter</button>
-        <div class="auth-divider"><div class="auth-divider-line"></div><div class="auth-divider-text">ou</div><div class="auth-divider-line"></div></div>
-        <button class="auth-google" onclick="loginGoogle()">🔵 Continuer avec Google</button>
-      </div>
-
-      <!-- REGISTER -->
-      <div id="tab-register" style="display:none;">
-        <div class="auth-title">Créer un compte</div>
-        <div class="auth-sub">Rejoignez AirBizness et accédez aux meilleurs deals Business Class.</div>
-        <div class="auth-error" id="register-error"></div>
-        <div class="form-group">
-          <div class="form-label">Prénom</div>
-          <input class="form-input" id="reg-prenom" type="text" placeholder="Jean">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Email</div>
-          <input class="form-input" id="reg-email" type="email" placeholder="votre@email.com">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Mot de passe</div>
-          <input class="form-input" id="reg-pwd" type="password" placeholder="8 caractères minimum">
-        </div>
-        <button class="auth-btn" onclick="register()">Créer mon compte</button>
-        <div class="auth-divider"><div class="auth-divider-line"></div><div class="auth-divider-text">ou</div><div class="auth-divider-line"></div></div>
-        <button class="auth-google" onclick="loginGoogle()">🔵 Continuer avec Google</button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-
-  <div class="profile-hero">
-    <div class="profile-avatar" id="dash-avatar">👤</div>
-    <div class="profile-info">
-      <div class="profile-name" id="dash-name">—</div>
-      <div class="profile-email" id="dash-email">—</div>
-      <div class="profile-badge">✈ Voyageur Business</div>
-    </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-val" id="stat-voyages">0</div>
-      <div class="stat-label">Voyages</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-alertes">0</div>
-      <div class="stat-label">Alertes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-eco">0 €</div>
-      <div class="stat-label">Économisé</div>
-      <div class="stat-sub">vs prix normal</div>
-    </div>
-  </div>
-
-  <div class="menu-section">
-    <div class="menu-item" onclick="location.href='/mes-voyages.html'">
-      <div class="menu-icon">✈️</div>
-      <div class="menu-info">
-        <div class="menu-label">Mes voyages</div>
-        <div class="menu-sub">Historique de vos réservations</div>
-      </div>
-      <div class="menu-arrow">›</div>
-    </div>
-    <div class="menu-item" onclick="location.href='/mes-alertes.html'">
-      <div class="menu-icon">🔔</div>
-      <div class="menu-info">
-        <div class="menu-label">Mes alertes prix</div>
-        <div class="menu-sub">Soyez alerté quand les prix baissent</div>
-      </div>
-      <div class="menu-badge" id="alertes-count">0</div>
-      <div class="menu-arrow">›</div>
-    </div>
-    <div class="menu-item" onclick="location.href='/index.html'">
-      <div class="menu-icon">🔥</div>
-      <div class="menu-info">
-        <div class="menu-label">Deals du moment</div>
-        <div class="menu-sub">Voir tous les deals Business Class</div>
-      </div>
-      <div class="menu-arrow">›</div>
-    </div>
-  </div>
-
-  <div class="pref-section">
-    <div class="pref-head">Préférences</div>
-    <div class="pref-item">
-      <div>
-        <div class="pref-label">Notifications email</div>
-        <div class="pref-sub">Nouvelles alertes et deals</div>
-      </div>
-      <div class="toggle on" id="toggle-email" onclick="togglePref(this)"></div>
-    </div>
-    <div class="pref-item">
-      <div>
-        <div class="pref-label">Newsletter hebdo</div>
-        <div class="pref-sub">Les meilleurs deals de la semaine</div>
-      </div>
-      <div class="toggle" id="toggle-newsletter" onclick="togglePref(this)"></div>
-    </div>
-    <div class="pref-item">
-      <div>
-        <div class="pref-label">Devise</div>
-        <div class="pref-sub">Euros (€)</div>
-      </div>
-      <div style="font-size:13px;color:var(--text3)">EUR ›</div>
-    </div>
-  </div>
-
-  <div class="menu-section">
-    <div class="menu-item" onclick="location.href='/mentions-legales.html'">
-      <div class="menu-icon">📄</div>
-      <div class="menu-info">
-        <div class="menu-label">Mentions légales & CGV</div>
-      </div>
-      <div class="menu-arrow">›</div>
-    </div>
-    <div class="menu-item">
-      <div class="menu-icon">🔒</div>
-      <div class="menu-info">
-        <div class="menu-label">Modifier mon mot de passe</div>
-      </div>
-      <div class="menu-arrow">›</div>
-    </div>
-    <div class="menu-item" onclick="deleteAccount()">
-      <div class="menu-icon">🗑</div>
-      <div class="menu-info">
-        <div class="menu-label" style="color:#e74c3c;">Supprimer mon compte</div>
-      </div>
-      <div class="menu-arrow">›</div>
-    </div>
-  </div>
-
-  <button class="logout-btn" onclick="logout()">Se déconnecter</button>
-
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <a class="bn-item" href="/index.html"><div class="bn-icon">✈</div>Deals</a>
-  <a class="bn-item" href="/mes-alertes.html"><div class="bn-icon">🔔</div>Alertes</a>
-  <a class="bn-item" href="/index.html"><div class="bn-icon">📅</div>Calendrier</a>
-  <a class="bn-item on" href="/compte.html"><div class="bn-icon">👤</div>Compte</a>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// Simple auth avec localStorage
-function getUser(){return JSON.parse(localStorage.getItem('ab_user')||'null');}
-function setUser(u){localStorage.setItem('ab_user',JSON.stringify(u));}
-function clearUser(){localStorage.removeItem('ab_user');}
+const main = document.getElementById('main');
+const toast = document.getElementById('toast');
 
-function switchTab(tab){
-  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
-  document.getElementById('tab-login').style.display=tab==='login'?'block':'none';
-  document.getElementById('tab-register').style.display=tab==='register'?'block':'none';
+function showToast(msg, type) {
+  toast.className = 'toast ' + (type || 'ok') + ' show';
+  toast.textContent = msg;
+  setTimeout(() => toast.className = 'toast', 3500);
 }
 
-function login(){
-  const email=document.getElementById('login-email').value.trim();
-  const pwd=document.getElementById('login-pwd').value;
-  const err=document.getElementById('login-error');
-  if(!email||!pwd){err.textContent='Remplissez tous les champs.';err.style.display='block';return;}
-  const users=JSON.parse(localStorage.getItem('ab_users')||'[]');
-  const user=users.find(u=>u.email===email&&u.pwd===btoa(pwd));
-  if(!user){err.textContent='Email ou mot de passe incorrect.';err.style.display='block';return;}
-  setUser(user);
-  showDashboard(user);
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function register(){
-  const prenom=document.getElementById('reg-prenom').value.trim();
-  const email=document.getElementById('reg-email').value.trim();
-  const pwd=document.getElementById('reg-pwd').value;
-  const err=document.getElementById('register-error');
-  if(!prenom||!email||!pwd){err.textContent='Remplissez tous les champs.';err.style.display='block';return;}
-  if(pwd.length<8){err.textContent='Mot de passe trop court (8 caractères minimum).';err.style.display='block';return;}
-  const users=JSON.parse(localStorage.getItem('ab_users')||'[]');
-  if(users.find(u=>u.email===email)){err.textContent='Cet email est déjà utilisé.';err.style.display='block';return;}
-  const user={id:Date.now(),prenom,email,pwd:btoa(pwd),created:new Date().toISOString(),alertes:[],voyages:[]};
-  users.push(user);
-  localStorage.setItem('ab_users',JSON.stringify(users));
-  setUser(user);
-  showDashboard(user);
+async function render() {
+  if (!window.Auth || !window.Auth.isLoggedIn()) {
+    main.innerHTML = `
+      <div class="auth-required">
+        <h2>Votre <em style="color:var(--gold2);font-style:italic;">espace voyageur</em></h2>
+        <p>Connectez-vous pour accéder à vos voyages, vos voyageurs enregistrés et vos alertes.</p>
+        <a href="/login.html?next=${encodeURIComponent(location.pathname)}" class="btn">Se connecter</a>
+        <a href="/signup.html?next=${encodeURIComponent(location.pathname)}" class="btn" style="background:transparent;color:var(--gold2);border:1px solid var(--gold2);">Créer un compte</a>
+      </div>`;
+    return;
+  }
+
+  const u = window.Auth.getUser() || {};
+  // Initiales
+  const givenName = u.given_name || (u.full_name || '').split(' ')[0] || 'Voyageur';
+  const familyName = u.full_name ? u.full_name.split(' ').slice(1).join(' ') : '';
+  const initials = ((givenName[0]||'?') + (familyName[0]||'')).toUpperCase();
+
+  // Email verified badge
+  const verified = u.email_verified;
+  const verifBadge = verified
+    ? '<div class="verif-badge ok">✓ Email vérifié</div>'
+    : '<div class="verif-badge no" onclick="sendVerify()" title="Cliquer pour renvoyer">⚠ Email non vérifié — Envoyer le lien</div>';
+
+  // Check banner email_verified (depuis redirect verify)
+  let banner = '';
+  if (new URLSearchParams(location.search).get('email_verified') === '1') {
+    banner = '<div style="background:var(--green-dim);border:1px solid rgba(125,220,148,0.3);color:var(--green);padding:12px 16px;border-radius:8px;margin-bottom:18px;font-size:13px;">✓ Email confirmé avec succès.</div>';
+  }
+
+  main.innerHTML = `
+    ${banner}
+    <div class="hero">
+      <div class="avatar-big">${initials}</div>
+      <div class="hero-info">
+        <div class="hero-greeting">Bonjour <em>${escapeHtml(givenName)}</em></div>
+        <div class="hero-email">${escapeHtml(u.email)}</div>
+        ${verifBadge}
+      </div>
+      <div class="hero-actions">
+        <button class="btn-ghost danger" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <a href="/compte-voyageurs.html" class="tile">
+        <div class="tile-icon">👥</div>
+        <div class="tile-title">Mes voyageurs</div>
+        <div class="tile-sub">Carnet des personnes avec qui vous voyagez. Sélection en 1 clic au moment de réserver.</div>
+        <div class="tile-count" id="cnt-passengers">— voyageurs</div>
+      </a>
+      <a href="/mes-voyages.html" class="tile">
+        <div class="tile-icon">✈</div>
+        <div class="tile-title">Mes voyages</div>
+        <div class="tile-sub">Historique vol + hôtel + séjour. Tous vos billets et confirmations en un endroit.</div>
+        <div class="tile-count" id="cnt-bookings">—</div>
+      </a>
+      <a href="/mes-alertes.html" class="tile">
+        <div class="tile-icon">🔔</div>
+        <div class="tile-title">Mes alertes</div>
+        <div class="tile-sub">Surveillez les baisses de prix sur vos routes favorites. Notification dès qu'un deal apparaît.</div>
+        <div class="tile-count" id="cnt-alerts">—</div>
+      </a>
+      <a href="/" class="tile">
+        <div class="tile-icon">🔍</div>
+        <div class="tile-title">Nouvelle recherche</div>
+        <div class="tile-sub">Vol, hôtel, séjour complet ou activités. Prix négociés sans intermédiaire.</div>
+        <div class="tile-count">Rechercher →</div>
+      </a>
+    </div>`;
+
+  // Charge les compteurs async
+  loadCounters();
 }
 
-function loginGoogle(){
-  const user={id:Date.now(),prenom:'Voyageur',email:'google@airbizness.com',created:new Date().toISOString(),alertes:[],voyages:[]};
-  setUser(user);
-  showDashboard(user);
-}
-
-function showDashboard(user){
-  document.getElementById('auth-wrap').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  document.getElementById('dash-name').textContent=user.prenom||'Voyageur';
-  document.getElementById('dash-email').textContent=user.email;
-  document.getElementById('dash-avatar').textContent=(user.prenom||'V')[0].toUpperCase();
-  const alertes=user.alertes||[];
-  const voyages=user.voyages||[];
-  document.getElementById('stat-alertes').textContent=alertes.length;
-  document.getElementById('stat-voyages').textContent=voyages.length;
-  document.getElementById('alertes-count').textContent=alertes.length;
-  document.getElementById('stat-eco').textContent=voyages.reduce((s,v)=>s+(v.saved||0),0)+' €';
-}
-
-function logout(){
-  clearUser();
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('auth-wrap').style.display='block';
-}
-
-function togglePref(el){el.classList.toggle('on');}
-
-function deleteAccount(){
-  if(confirm('Supprimer définitivement votre compte ?')){
-    const user=getUser();
-    if(user){
-      const users=JSON.parse(localStorage.getItem('ab_users')||'[]').filter(u=>u.id!==user.id);
-      localStorage.setItem('ab_users',JSON.stringify(users));
+async function loadCounters() {
+  // Voyageurs enregistrés
+  try {
+    const r = await window.Auth.fetch('/api/user/passengers');
+    if (r.ok) {
+      const d = await r.json();
+      const n = (d.passengers || []).length;
+      const el = document.getElementById('cnt-passengers');
+      if (el) el.textContent = n + ' voyageur' + (n>1?'s':'') + ' enregistré' + (n>1?'s':'');
     }
-    clearUser();
-    location.reload();
+  } catch(_){}
+  // Bookings + Alertes : endpoints pas encore branchés au user, on laisse "—"
+}
+
+async function sendVerify() {
+  const badge = document.querySelector('.verif-badge.no');
+  if (badge) {
+    badge.style.pointerEvents = 'none';
+    badge.style.opacity = '0.7';
+    badge.textContent = 'Envoi en cours…';
+  }
+  try {
+    const r = await window.Auth.fetch('/api/auth/send-verify', {method: 'POST'});
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Erreur');
+    if (badge) {
+      badge.textContent = '✓ Lien envoyé, vérifie ta boîte mail';
+      badge.style.color = '#4bbf73';
+      badge.style.borderColor = 'rgba(75,191,115,0.4)';
+      badge.style.background = 'rgba(75,191,115,0.08)';
+      badge.style.opacity = '1';
+    }
+    showToast('✓ ' + (d.msg || 'Email envoyé. Vérifiez votre boîte (et spams).'));
+  } catch (e) {
+    if (badge) {
+      badge.textContent = '✗ Erreur, réessayer';
+      badge.style.color = '#e0564a';
+      badge.style.pointerEvents = 'auto';
+      badge.style.opacity = '1';
+    }
+    showToast('Erreur : ' + e.message, 'err');
   }
 }
+window.sendVerify = sendVerify;
 
-// Auto-login
-const u=getUser();
-if(u)showDashboard(u);
+function doLogout() {
+  if (!confirm('Vous déconnecter ?')) return;
+  window.Auth.logout();
+  location.href = '/';
+}
+window.doLogout = doLogout;
+
+// Re-render au changement auth (login/logout depuis un autre onglet)
+window.addEventListener('ab-auth-change', render);
+
+render();
 </script>
-<script defer src="/cookies.js"></script>
-
-<!-- ── Bizzi chat bubble (added 2026-05-09) ── -->
-<script src="https://bizzi.fr/bizzi-loader.js" defer></script>
-<div data-bizzi-mount="chat" data-bizzi-tenant="airbizness"></div>
 </body>
 </html>

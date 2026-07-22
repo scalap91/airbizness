@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Page introuvable — AirBizness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0f;
+  --bg-card:#18181c;
+  --text:#f5f0e6;
+  --ash:#88847d;
+  --gold:#e8dcc4;
+  --gold2:#b89968;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+header{padding:28px 32px;display:flex;align-items:center;gap:10px}
+.logo-text{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:22px;letter-spacing:-0.01em;
+}
+.logo-text em{color:var(--gold2);font-style:italic;font-weight:400}
+main{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;
+}
+.wrap{max-width:560px}
+.code{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(72px,14vw,140px);
+  line-height:1;color:var(--gold);letter-spacing:-0.02em;
+  margin-bottom:18px;
+}
+.code em{color:var(--gold2);font-style:italic}
+h1{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(24px,3.4vw,34px);
+  line-height:1.2;color:#fff;
+  margin-bottom:14px;letter-spacing:-0.01em;
+}
+h1 em{color:var(--gold2);font-style:italic}
+p{color:var(--ash);font-size:15px;line-height:1.6;margin-bottom:32px}
+.cta{
+  display:inline-block;padding:13px 28px;
+  background:var(--gold);color:#000;
+  font-weight:600;font-size:14px;letter-spacing:0.2px;
+  border-radius:99px;text-decoration:none;
+  transition:background .15s,transform .15s;
+}
+.cta:hover{background:#fff;transform:translateY(-1px)}
+.line{
+  width:48px;height:1px;background:var(--gold2);
+  margin:0 auto 26px;opacity:0.5;
+}
+footer{
+  padding:24px 32px;font-size:12px;color:var(--ash);
+  text-align:center;letter-spacing:0.3px;
+}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo-text">AirBizness <em>✦</em></span>
+</header>
+<main>
+  <div class="wrap">
+    <div class="code">4<em>0</em>4</div>
+    <div class="line"></div>
+    <h1>Cette page <em>n'existe pas</em>.</h1>
+    <p>L'adresse demandée est introuvable. Elle a peut-être été déplacée, ou n'a jamais existé. Reprenons depuis le début.</p>
+    <a href="/" class="cta">Retour à l'accueil</a>
+  </div>
+</main>
+<footer>AirBizness — Voyager autrement</footer>
+</body>
+</html>

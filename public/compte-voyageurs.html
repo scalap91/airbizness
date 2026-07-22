@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Mes voyageurs — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script defer src="/shared-chrome.js"></script>
+<script src="/js/carnets.js?v=2026053113"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --red:#e87a7a;--green:#7ddc94;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.wrap{max-width:880px;margin:30px auto;padding:0 20px;}
+h1{font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:6px;line-height:1.15;}
+h1 em{color:var(--gold2);font-style:italic;}
+.subtitle{color:var(--text2);font-size:14px;margin-bottom:24px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.card.self{border-color:var(--border2);background:linear-gradient(to right, var(--gold-dim) 0%, var(--bg2) 50%);}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--bg3);display:grid;place-items:center;font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2);flex-shrink:0;font-weight:600;}
+.info{flex:1;min-width:140px;}
+.name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.2;}
+.meta{font-size:12px;color:var(--text2);margin-top:3px;}
+.tag{display:inline-block;background:var(--gold-dim);color:var(--gold2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;letter-spacing:0.3px;text-transform:uppercase;margin-right:6px;}
+.tag.self{background:rgba(125,220,148,0.15);color:var(--green);}
+.actions{display:flex;gap:8px;}
+.btn-icon{background:transparent;border:1px solid var(--border);color:var(--text2);width:34px;height:34px;border-radius:7px;cursor:pointer;display:grid;place-items:center;transition:all .15s;}
+.btn-icon:hover{border-color:var(--gold2);color:var(--gold2);}
+.btn-icon.del:hover{border-color:var(--red);color:var(--red);}
+.empty{padding:50px 20px;text-align:center;color:var(--text3);background:var(--bg2);border:1px dashed var(--border);border-radius:12px;}
+.btn-primary{padding:12px 22px;background:var(--gold);color:#000;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .15s;text-decoration:none;}
+.btn-primary:hover{background:var(--gold2);}
+.btn-secondary{padding:10px 18px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;}
+.btn-secondary:hover{border-color:var(--gold2);color:var(--gold2);}
+.add-bar{margin:20px 0 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.count{font-size:13px;color:var(--text3);}
+.back-link{display:inline-block;color:var(--text2);text-decoration:none;font-size:13px;margin-bottom:16px;}
+.back-link:hover{color:var(--gold2);}
+/* Modal form */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:18px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field{margin-bottom:14px;}
+.field label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block;}
+.field input, .field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:14px;color:var(--text);font-family:inherit;outline:none;}
+.field input:focus, .field select:focus{border-color:var(--gold2);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+.err{color:var(--red);font-size:13px;margin-top:10px;display:none;text-align:center;}
+.err.show{display:block;}
+.auth-required{text-align:center;padding:80px 20px;}
+.auth-required h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px;}
+.auth-required p{color:var(--text2);margin-bottom:18px;font-size:14px;}
+@media(max-width:560px){
+  .row{grid-template-columns:1fr;}
+  h1{font-size:24px;}
+}
+</style>
+</head>
+<body>
+<div id="ab-header"></div>
+
+<div class="wrap">
+  <a href="/compte.html" class="back-link">← Retour à mon compte</a>
+  <h1>Mes <em>voyageurs</em></h1>
+  <p class="subtitle">Enregistrez les personnes avec qui vous voyagez. Au moment de réserver, vous les sélectionnez en un clic.</p>
+
+  <div id="content"></div>
+</div>
+
+<!-- Modal form add/edit -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Ajouter un voyageur</h2>
+    <form id="form">
+      <input type="hidden" id="passenger-id">
+      <div class="row">
+        <div class="field">
+          <label>Prénom *</label>
+          <input type="text" id="first_name" required>
+        </div>
+        <div class="field">
+          <label>Nom *</label>
+          <input type="text" id="last_name" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Genre</label>
+          <select id="gender">
+            <option value="">—</option>
+            <option value="m">Masculin</option>
+            <option value="f">Féminin</option>
+            <option value="x">Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Date de naissance</label>
+          <input type="date" id="date_of_birth">
+        </div>
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select id="type">
+          <option value="adult">Adulte (12 ans et +)</option>
+          <option value="child">Enfant (2-11 ans)</option>
+          <option value="infant">Bébé (-2 ans)</option>
+        </select>
+      </div>
+      <div class="err" id="err"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Annuler</button>
+        <button type="submit" class="btn-primary" id="save-btn">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────
+// CRUD voyageurs — utilise window.Auth.fetch (JWT auto)
+// ────────────────────────────────────────────────────────
+
+const content = document.getElementById('content');
+const modal   = document.getElementById('modal');
+
+async function loadPassengers() {
+  if (!window.Auth || !window.Auth.isLoggedIn()) {
+    content.innerHTML = `
+      <div class="auth-required">
+        <h2>Connexion requise</h2>
+        <p>Vous devez être connecté pour gérer vos voyageurs.</p>
+        <a href="/login.html?next=${encodeURIComponent(location.pathname)}" class="btn-primary">Se connecter →</a>
+      </div>`;
+    return;
+  }
+  try {
+    const r = await window.Auth.fetch('/api/user/passengers');
+    if (!r.ok) throw new Error('Chargement échoué');
+    const d = await r.json();
+    renderList(d.passengers || []);
+  } catch (e) {
+    content.innerHTML = `<div class="empty">Erreur de chargement : ${e.message}</div>`;
+  }
+}
+
+function renderList(passengers) {
+  const addBar = `
+    <div class="add-bar">
+      <span class="count">${passengers.length} voyageur${passengers.length>1?'s':''} enregistré${passengers.length>1?'s':''}</span>
+      <button class="btn-primary" onclick="openModal()">+ Ajouter un voyageur</button>
+    </div>`;
+  if (!passengers.length) {
+    content.innerHTML = addBar + `<div class="empty"><p style="margin-bottom:8px;">Aucun voyageur enregistré pour l'instant.</p><p style="font-size:12px;">Ajoutez-vous d'abord vous-même, puis votre conjoint·e, vos enfants…</p></div>`;
+    return;
+  }
+  const TYPE_LABELS = {adult:'Adulte', child:'Enfant', infant:'Bébé'};
+  const cards = passengers.map(p => {
+    const initials = ((p.first_name||'?')[0] + (p.last_name||'?')[0]).toUpperCase();
+    const tags = [];
+    if (p.is_self) tags.push('<span class="tag self">Moi</span>');
+    tags.push(`<span class="tag">${TYPE_LABELS[p.type] || p.type}</span>`);
+    const meta = [];
+    if (p.date_of_birth) {
+      const age = new Date().getFullYear() - new Date(p.date_of_birth).getFullYear();
+      meta.push(`${age} ans`);
+    }
+    if (p.gender === 'm') meta.push('M.');
+    else if (p.gender === 'f') meta.push('Mme');
+    return `
+      <div class="card ${p.is_self ? 'self' : ''}">
+        <div class="avatar">${initials}</div>
+        <div class="info">
+          <div class="name">${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}</div>
+          <div class="meta">${tags.join(' ')}${meta.length ? ' · ' + meta.join(' · ') : ''}</div>
+        </div>
+        <div class="actions">
+          <button class="btn-icon" onclick='editPassenger(${JSON.stringify(p)})' title="Modifier">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          ${p.is_self ? '' : `
+          <button class="btn-icon del" onclick="deletePassenger(${p.id}, '${escapeHtml(p.first_name)} ${escapeHtml(p.last_name)}')" title="Supprimer">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>`}
+        </div>
+      </div>`;
+  }).join('');
+  content.innerHTML = addBar + cards;
+}
+
+function openModal() {
+  document.getElementById('modal-title').textContent = 'Ajouter un voyageur';
+  document.getElementById('passenger-id').value = '';
+  document.getElementById('first_name').value = '';
+  document.getElementById('last_name').value = '';
+  document.getElementById('gender').value = '';
+  document.getElementById('date_of_birth').value = '';
+  document.getElementById('type').value = 'adult';
+  document.getElementById('err').classList.remove('show');
+  modal.classList.add('open');
+}
+
+function editPassenger(p) {
+  document.getElementById('modal-title').textContent = `Modifier ${p.first_name}`;
+  document.getElementById('passenger-id').value = p.id;
+  document.getElementById('first_name').value = p.first_name;
+  document.getElementById('last_name').value = p.last_name;
+  document.getElementById('gender').value = p.gender || '';
+  document.getElementById('date_of_birth').value = p.date_of_birth || '';
+  document.getElementById('type').value = p.type || 'adult';
+  document.getElementById('err').classList.remove('show');
+  modal.classList.add('open');
+}
+window.editPassenger = editPassenger;
+
+function closeModal() {
+  modal.classList.remove('open');
+}
+window.closeModal = closeModal;
+
+async function deletePassenger(id, name) {
+  if (!confirm(`Supprimer ${name} de vos voyageurs ?`)) return;
+  try {
+    const r = await window.Auth.fetch('/api/user/passengers/' + id, {method: 'DELETE'});
+    if (!r.ok) throw new Error('Suppression échouée');
+    loadPassengers();
+  } catch (e) {
+    alert('Erreur : ' + e.message);
+  }
+}
+window.deletePassenger = deletePassenger;
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('save-btn');
+  const err = document.getElementById('err');
+  err.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
+  const id = document.getElementById('passenger-id').value;
+  const payload = {
+    first_name: document.getElementById('first_name').value.trim(),
+    last_name:  document.getElementById('last_name').value.trim(),
+    gender: document.getElementById('gender').value || null,
+    date_of_birth: document.getElementById('date_of_birth').value || null,
+    type: document.getElementById('type').value,
+    is_self: false,
+  };
+  try {
+    const url = id ? '/api/user/passengers/' + id : '/api/user/passengers';
+    const method = id ? 'PUT' : 'POST';
+    const r = await window.Auth.fetch(url, {
+      method,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Échec');
+    closeModal();
+    loadPassengers();
+  } catch (e) {
+    err.textContent = e.message;
+    err.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enregistrer';
+  }
+});
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Close modal on overlay click
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeModal();
+});
+
+loadPassengers();
+</script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Pour les hôteliers — Revendiquez votre fiche · AirBizness</title>
+<meta name="description" content="Vous êtes hôtelier ? Revendiquez gratuitement votre fiche AirBizness : gérez photos, description, tarifs et accédez à des conditions de partenariat direct.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.55;}
+
+/* HERO */
+.hero{padding:60px 24px 40px;background:linear-gradient(180deg,#1a1a1a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);text-align:center;}
+.hero-inner{max-width:780px;margin:0 auto;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);color:var(--gold2);padding:6px 14px;border-radius:99px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;margin-bottom:22px;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(32px,5vw,52px);line-height:1.05;margin-bottom:16px;letter-spacing:-0.01em;}
+.hero h1 em{font-style:italic;color:var(--gold2);}
+.hero p{color:var(--text2);font-size:clamp(15px,1.6vw,17px);max-width:620px;margin:0 auto;line-height:1.6;}
+
+/* SEARCH */
+.search-section{padding:36px 24px 28px;}
+.search-inner{max-width:880px;margin:0 auto;}
+.search-card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:24px;}
+.search-card h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;}
+.search-card h2 em{font-style:italic;color:var(--gold2);}
+.search-card-lead{color:var(--text2);font-size:13px;margin-bottom:18px;}
+.search-form{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;align-items:end;}
+@media(max-width:640px){.search-form{grid-template-columns:1fr;}}
+.sf{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:10px 14px;}
+.sf-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px;}
+.sf input,.sf select{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:inherit;font-size:14px;}
+.sf input::placeholder{color:var(--text3);}
+.search-btn{padding:13px 26px;background:var(--gold);border:none;color:#000;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:9px;letter-spacing:0.3px;transition:background .15s;}
+.search-btn:hover{background:var(--gold2);}
+
+/* RESULTS */
+.results{padding:6px 24px 60px;}
+.results-inner{max-width:880px;margin:0 auto;}
+.results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;padding:14px 4px;}
+.results-count{font-size:11px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;}
+.hotel-row{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px;display:flex;gap:14px;align-items:center;margin-bottom:10px;transition:border-color .15s;}
+.hotel-row:hover{border-color:var(--border2);}
+.hotel-row-img{width:80px;height:80px;border-radius:8px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
+.hotel-row-img img{width:100%;height:100%;object-fit:cover;}
+.hotel-row-body{flex:1;min-width:0;}
+.hotel-row-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.2;letter-spacing:-0.01em;}
+.hotel-row-meta{font-size:12px;color:var(--text2);margin-top:4px;}
+.hotel-row-meta .stars{color:var(--gold2);margin-right:6px;}
+.hotel-row-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.claim-btn{padding:10px 18px;background:transparent;border:1px solid var(--gold2);color:var(--gold2);font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;border-radius:8px;letter-spacing:0.3px;transition:all .15s;white-space:nowrap;}
+.claim-btn:hover{background:var(--gold-dim);}
+.claim-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.email-hint{font-size:10px;color:var(--text3);}
+
+.empty-state{padding:60px 24px;text-align:center;background:var(--bg2);border:1px dashed var(--border);border-radius:12px;}
+.empty-state h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:8px;color:var(--text);}
+.empty-state p{color:var(--text2);font-size:14px;max-width:480px;margin:0 auto;}
+.empty-state-cta{margin-top:18px;padding:11px 20px;background:transparent;border:1px solid var(--border2);color:var(--gold2);border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;}
+.empty-state-cta:hover{background:var(--gold-dim);}
+
+.loading{padding:40px 20px;text-align:center;color:var(--text3);}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* BENEFITS */
+.benefits{padding:60px 24px;background:var(--bg2);border-top:1px solid var(--border);}
+.benefits-inner{max-width:1080px;margin:0 auto;}
+.benefits-head{text-align:center;margin-bottom:38px;}
+.benefits-head h2{font-family:'DM Serif Display',serif;font-size:clamp(26px,3.5vw,36px);margin-bottom:8px;letter-spacing:-0.01em;}
+.benefits-head h2 em{font-style:italic;color:var(--gold2);}
+.benefits-head p{color:var(--text2);font-size:14px;max-width:540px;margin:0 auto;}
+.benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:880px){.benefits-grid{grid-template-columns:1fr;}}
+.benefit{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:26px 22px;}
+.benefit-ic{width:42px;height:42px;border-radius:10px;background:var(--gold-dim);color:var(--gold2);display:grid;place-items:center;margin-bottom:16px;}
+.benefit-ic svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.benefit h3{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:8px;letter-spacing:-0.01em;}
+.benefit p{color:var(--text2);font-size:13.5px;line-height:1.65;}
+
+/* HOW IT WORKS */
+.steps{padding:60px 24px;}
+.steps-inner{max-width:880px;margin:0 auto;}
+.steps-head{text-align:center;margin-bottom:34px;}
+.steps-head h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,3vw,32px);}
+.steps-head h2 em{font-style:italic;color:var(--gold2);}
+.step-row{display:flex;gap:20px;margin-bottom:24px;align-items:flex-start;}
+.step-num{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#000;display:grid;place-items:center;font-family:'DM Serif Display',serif;font-size:18px;flex-shrink:0;}
+.step-body h3{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:4px;}
+.step-body p{color:var(--text2);font-size:14px;line-height:1.6;}
+
+/* CONTACT */
+.contact-block{padding:50px 24px 70px;background:var(--bg2);border-top:1px solid var(--border);text-align:center;}
+.contact-block h2{font-family:'DM Serif Display',serif;font-size:clamp(22px,2.6vw,28px);margin-bottom:10px;}
+.contact-block h2 em{font-style:italic;color:var(--gold2);}
+.contact-block p{color:var(--text2);font-size:14px;margin-bottom:18px;}
+.contact-block a{color:var(--gold2);text-decoration:none;font-size:14px;padding:11px 22px;border:1px solid var(--border2);border-radius:99px;display:inline-block;transition:background .15s;}
+.contact-block a:hover{background:var(--gold-dim);}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:999;display:none;align-items:center;justify-content:center;padding:24px;}
+.modal-bg.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;max-width:500px;width:100%;padding:32px;}
+.modal-icon{width:54px;height:54px;border-radius:50%;background:rgba(74,222,128,0.12);color:var(--green);display:grid;place-items:center;margin:0 auto 16px;}
+.modal-icon svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.modal h3{font-family:'DM Serif Display',serif;font-size:24px;text-align:center;margin-bottom:8px;}
+.modal-lead{color:var(--text2);font-size:14px;text-align:center;line-height:1.6;margin-bottom:18px;}
+.modal-email{background:var(--bg3);padding:14px 16px;border-radius:10px;margin-bottom:18px;font-family:'DM Mono',monospace;font-size:13px;color:var(--gold2);text-align:center;word-break:break-all;}
+.modal-actions{display:flex;justify-content:center;}
+.modal-btn{padding:11px 22px;background:var(--gold);color:#000;border:none;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:8px;}
+.modal-btn:hover{background:var(--gold2);}
+.modal-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.25);color:#ff8080;padding:12px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;}
+.modal-icon.err{background:rgba(255,80,80,0.12);color:#ff8080;}
+
+</style>
+<script defer src="/shared-chrome.js"></script>
+<script defer src="/cookies.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Espace hôteliers</div>
+    <h1>Revendiquez votre fiche <em>AirBizness</em></h1>
+    <p>Votre établissement est référencé sur notre marketplace voyageurs. Revendiquez-le gratuitement pour gérer vos photos, votre description, vos tarifs préférentiels et accéder à des conditions de partenariat direct, sans intermédiaire.</p>
+  </div>
+</section>
+
+<section class="search-section">
+  <div class="search-inner">
+    <div class="search-card">
+      <h2>Trouvez votre <em>établissement</em></h2>
+      <p class="search-card-lead">Recherchez par nom d'hôtel ou ville. Si vous le trouvez dans nos résultats, vous pourrez le revendiquer en un clic.</p>
+      <form class="search-form" onsubmit="doSearch(event)">
+        <div class="sf">
+          <div class="sf-label">Nom de l'hôtel ou ville</div>
+          <input type="text" id="q" placeholder="ex. Ritz Madrid, Palace Paris…" required>
+        </div>
+        <div class="sf">
+          <div class="sf-label">Destination</div>
+          <select id="destination">
+            <option value="">Toutes les destinations</option>
+            <option value="MAD">Madrid</option>
+            <option value="PAR">Paris</option>
+            <option value="LON">Londres</option>
+          </select>
+        </div>
+        <button type="submit" class="search-btn">Rechercher</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="results">
+  <div class="results-inner">
+    <div class="results-head" id="results-head" style="display:none;">
+      <span class="results-count" id="results-count">—</span>
+      <span class="results-count" id="results-hint">Cliquez sur "Revendiquer" pour recevoir le lien d'activation</span>
+    </div>
+    <div id="results-list"></div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="benefits-inner">
+    <div class="benefits-head">
+      <h2>Pourquoi <em>revendiquer</em> votre fiche ?</h2>
+      <p>L'inscription est gratuite et sans engagement. Vous gardez le contrôle total de votre établissement.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="m21 19-7-8-9 8"/></svg>
+        </div>
+        <h3>Maîtrise totale des photos</h3>
+        <p>Remplacez les images par vos propres clichés professionnels. Mettez en valeur les suites, le spa, le rooftop, la piscine.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><path d="M9 12h6"/><path d="M9 8h6"/><path d="M9 16h4"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+        </div>
+        <h3>Description authentique</h3>
+        <p>Rédigez votre propre texte de présentation : histoire, conciergerie, signatures gastronomiques, expériences locales.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M5 9c0-2 1.5-4 7-4s7 2 7 4-3 3-7 4-7 1-7 4 3 4 7 4 7-2 7-4"/></svg>
+        </div>
+        <h3>Conditions directes</h3>
+        <p>Bénéficiez de conditions de partenariat avantageuses sans intermédiaire. Commission réduite, paiements rapides, contrôle des tarifs.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Disponibilités en temps réel</h3>
+        <p>Synchronisez automatiquement votre PMS / channel manager. Plus de double-bookings.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M3 12h12"/><path d="M3 18h7"/></svg>
+        </div>
+        <h3>Tableau de bord clair</h3>
+        <p>Suivez vos réservations, vos avis, vos statistiques de visibilité. Exportez en quelques clics.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ic">
+          <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <h3>Vérification garantie</h3>
+        <p>Le lien d'activation est envoyé exclusivement à l'adresse email officielle de votre établissement. Aucun risque d'usurpation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="steps">
+  <div class="steps-inner">
+    <div class="steps-head">
+      <h2>Comment ça <em>marche</em> ?</h2>
+    </div>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Trouvez votre hôtel ci-dessus</h3>
+        <p>Tapez le nom ou la ville. Si votre établissement apparaît dans notre catalogue, vous pourrez le revendiquer.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Cliquez sur "Revendiquer"</h3>
+        <p>Nous envoyons immédiatement un email d'activation à l'adresse contact officielle de votre établissement (issue de nos sources GDS partenaires). Cette adresse ne peut pas être modifiée pour des raisons de sécurité.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Activez et personnalisez</h3>
+        <p>Ouvrez le lien dans l'email reçu, créez votre mot de passe, et accédez à votre espace de gestion. Vous pouvez immédiatement modifier photos, description, tarifs et politiques.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Profitez de vos conditions partenaires</h3>
+        <p>Une fois activé, vous bénéficiez automatiquement de la grille tarifaire partenaire direct, sans commission d'intermédiaire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-block">
+  <h2>Votre hôtel n'est pas dans notre <em>catalogue</em> ?</h2>
+  <p>Si votre établissement n'apparaît pas dans nos résultats, contactez-nous directement pour l'ajouter au lancement.</p>
+  <a href="mailto:partenariats@airbizness.com">partenariats@airbizness.com</a>
+</section>
+
+<!-- MODAL SUCCESS / ERROR -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal" id="modal">
+    <div class="modal-icon" id="modal-icon">
+      <svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>
+    </div>
+    <h3 id="modal-title">Lien d'activation envoyé</h3>
+    <p class="modal-lead" id="modal-lead">Un email de revendication a été envoyé à l'adresse contact officielle de votre établissement.</p>
+    <div class="modal-email" id="modal-email"></div>
+    <p class="modal-lead" style="font-size:12px;color:var(--text3);">Ouvrez l'email reçu dans les prochaines minutes pour finaliser l'activation. L'email peut prendre 5–10 minutes à arriver.</p>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeModal()">Compris</button>
+    </div>
+  </div>
+</div>
+
+<div id="ab-footer"></div>
+
+<script>
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function doSearch(e){
+  if (e) e.preventDefault();
+  const q = $('#q').value.trim();
+  const dest = $('#destination').value;
+  if (!q) return;
+
+  $('#results-head').style.display = 'flex';
+  $('#results-count').textContent = 'Recherche…';
+  $('#results-list').innerHTML = '<div class="loading"><div class="spinner"></div>Recherche dans le catalogue AirBizness…</div>';
+
+  const params = new URLSearchParams({q, limit: 20});
+  if (dest) params.set('destination', dest);
+
+  try {
+    const r = await fetch('/api/hbx/catalog/hotels?' + params.toString());
+    if (!r.ok) throw new Error('http ' + r.status);
+    const data = await r.json();
+    renderResults(data.hotels || [], data.total || 0);
+  } catch(err){
+    $('#results-list').innerHTML =
+      '<div class="empty-state"><h3>Erreur réseau</h3><p>Impossible de joindre le catalogue. Réessayez dans un instant.</p></div>';
+    $('#results-count').textContent = '0 résultat';
+  }
+}
+
+function renderResults(hotels, total){
+  $('#results-count').textContent = hotels.length + (hotels.length>1?' établissements trouvés':' établissement trouvé') + (total > hotels.length ? ' (sur ' + total + ')' : '');
+  if (!hotels.length){
+    $('#results-list').innerHTML =
+      `<div class="empty-state">
+         <h3>Aucun résultat</h3>
+         <p>Votre établissement n'apparaît pas dans nos sources actuelles. Contactez-nous directement pour l'ajouter au lancement officiel.</p>
+         <a href="mailto:partenariats@airbizness.com?subject=Inscription hôtel AirBizness"><button class="empty-state-cta">Nous écrire</button></a>
+       </div>`;
+    return;
+  }
+  $('#results-list').innerHTML = hotels.map(h => {
+    const stars = '★'.repeat(h.category_stars || 0);
+    const city = h.city || '';
+    const country = h.country_code || '';
+    const addr = [city, country].filter(Boolean).join(' · ');
+    const hasEmail = !!h.email;
+    const btnLabel = hasEmail ? 'Revendiquer cette fiche' : 'Email contact manquant';
+    return `<div class="hotel-row">
+      <div class="hotel-row-img">${h.main_image_url ? `<img src="${esc(h.main_image_url)}" alt="" loading="lazy">` : ''}</div>
+      <div class="hotel-row-body">
+        <div class="hotel-row-name">${esc(h.name)}</div>
+        <div class="hotel-row-meta"><span class="stars">${stars}</span>${esc(addr)}</div>
+      </div>
+      <div class="hotel-row-actions">
+        <button class="claim-btn" ${hasEmail?'':'disabled'} onclick="claimHotel(${h.hotel_code}, '${esc(h.name).replace(/'/g,"\\'")}')">${btnLabel}</button>
+        ${hasEmail ? '<span class="email-hint">Email vérifié</span>' : '<span class="email-hint">Contactez-nous directement</span>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function claimHotel(hotelCode, hotelName){
+  const btns = document.querySelectorAll('.claim-btn');
+  btns.forEach(b => b.disabled = true);
+  try {
+    const r = await fetch('/api/claim/send', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({hotel_code: hotelCode})
+    });
+    if (!r.ok){
+      const errData = await r.json().catch(() => ({}));
+      const errMsg = errData.detail || 'Impossible d\'envoyer l\'email (' + r.status + ')';
+      showModalError(errMsg);
+      btns.forEach(b => b.disabled = false);
+      return;
+    }
+    const data = await r.json();
+    showModalSuccess(data.sent_to || '');
+  } catch(err){
+    showModalError('Erreur réseau. Réessayez dans un instant.');
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+function showModalSuccess(email){
+  $('#modal-icon').classList.remove('err');
+  $('#modal-icon').innerHTML = '<svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>';
+  $('#modal-title').textContent = 'Lien d\'activation envoyé';
+  $('#modal-lead').textContent = 'Un email de revendication a été envoyé à l\'adresse contact officielle de votre établissement.';
+  $('#modal-email').textContent = email || '—';
+  $('#modal-email').style.display = email ? 'block' : 'none';
+  $('#modal-bg').classList.add('show');
+}
+
+function showModalError(msg){
+  $('#modal-icon').classList.add('err');
+  $('#modal-icon').innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  $('#modal-title').textContent = 'Envoi impossible';
+  $('#modal-lead').textContent = msg;
+  $('#modal-email').style.display = 'none';
+  $('#modal-bg').classList.add('show');
+}
+
+function closeModal(){
+  $('#modal-bg').classList.remove('show');
+}
+$('#modal-bg').addEventListener('click', (e) => { if (e.target.id === 'modal-bg') closeModal(); });
+
+// Focus le champ de search au load
+window.addEventListener('DOMContentLoaded', () => $('#q').focus());
+</script>
+</body>
+</html>

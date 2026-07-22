@@ -11,7 +11,6 @@
 :root{
   --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
   --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
-  --orange:#f59e0b;--orange-h:#ea8c00;
   --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
   --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
   --save:#c0392b;--save-dim:rgba(192,57,43,0.1);
@@ -25,9 +24,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 /* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-hex{width:30px;height:30px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:12px;color:#000;flex-shrink:0;}
-.logo-text{font-size:18px;font-weight:600;color:var(--text);}
-.logo-text em{color:var(--gold2);font-style:normal;}
+.logo-mark{width:46px;height:32px;display:grid;place-items:center;flex-shrink:0;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;overflow:visible;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:20px;font-weight:400;letter-spacing:-0.005em;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;font-weight:400;}
 .header-right{display:flex;gap:10px;}
 .hbtn{padding:8px 16px;border:1px solid var(--border2);background:transparent;color:var(--gold2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--r);transition:all .2s;}
 .hbtn:hover{background:var(--gold-dim);}
@@ -58,11 +58,16 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .mfield input,.mfield select{width:100%;border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;}
 .mfield select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><path fill='%23a09890' d='M7 10l5 5 5-5z'/></svg>");background-repeat:no-repeat;background-position:right center;padding-right:14px;}
 .mfield input[type=date]{color-scheme:dark;}
-.modify-submit{margin-top:14px;padding:12px 28px;background:var(--orange);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border-radius:8px;transition:background .15s;}
-.modify-submit:hover{background:var(--orange-h);}
+.modify-submit{margin-top:14px;padding:12px 28px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;transition:background .15s;}
+.modify-submit:hover{background:var(--gold2);}
 
 /* MAIN LAYOUT */
-.layout{max-width:1280px;margin:0 auto;padding:24px 32px 80px;display:grid;grid-template-columns:260px 1fr;gap:24px;}
+.layout{max-width:1280px;margin:0 auto;padding:24px 32px 80px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;}
+/* FIX débordement horizontal : la colonne contenu (cartes + calendrier prix) ne doit
+   jamais forcer la largeur au-delà du viewport. min-width:0 = clé du CSS Grid. */
+.layout > *{min-width:0;}
+.results{min-width:0;overflow:hidden;}
+.flight-card,.price-calendar{max-width:100%;}
 
 /* FILTERS */
 .filters{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;align-self:start;position:sticky;top:160px;}
@@ -100,6 +105,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .flight-card:hover{border-color:var(--border2);}
 .flight-card.exc{border-left:3px solid var(--save);}
 .flight-card.good{border-left:3px solid var(--gold);}
+.fc-date-strip{padding:9px 20px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold2);font-weight:500;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;}}
 .fc-main{display:grid;grid-template-columns:140px 1fr 180px;gap:18px;padding:18px 20px;align-items:center;}
 .fc-airline{display:flex;flex-direction:column;gap:4px;}
@@ -112,18 +118,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .fc-mid{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px;}
 .fc-dur{font-size:10px;color:var(--text3);letter-spacing:0.5px;}
 .fc-line{width:100%;height:1px;background:var(--border);position:relative;}
-.fc-line::after{content:'✈';position:absolute;left:50%;top:-9px;transform:translateX(-50%);font-size:11px;color:var(--text3);background:var(--bg2);padding:0 4px;}
+.fc-line::after{content:'';position:absolute;left:50%;top:-3px;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:var(--gold2);}
 .fc-stop{font-size:10px;font-weight:500;}
 .fc-direct{color:var(--gold2);}
 .fc-escale{color:var(--text3);}
 .fc-pb{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-.fc-orig{font-size:11px;color:var(--text3);text-decoration:line-through;}
 .fc-price{font-family:'DM Serif Display',serif;font-size:30px;line-height:1;color:var(--text);}
-.fc-pct{font-size:10px;font-weight:600;letter-spacing:0.5px;padding:2px 8px;border-radius:2px;}
-.fc-pct.exc{background:var(--save-dim);color:#e74c3c;border:1px solid rgba(192,57,43,.2);}
-.fc-pct.good{background:var(--gold-dim);color:var(--gold2);border:1px solid var(--border2);}
-.fc-select{padding:10px 18px;background:var(--orange);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border-radius:6px;transition:background .15s;white-space:nowrap;}
-.fc-select:hover{background:var(--orange-h);}
+.fc-select{padding:10px 18px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;transition:background .15s;white-space:nowrap;}
+.fc-select:hover{background:var(--gold2);}
 .fc-bot{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:var(--bg3);border-top:1px solid var(--border);gap:12px;flex-wrap:wrap;}
 .fc-tags{display:flex;gap:6px;flex-wrap:wrap;}
 .fc-tag{font-size:10px;color:var(--text3);padding:3px 8px;background:var(--bg4);border:1px solid var(--border);border-radius:2px;}
@@ -131,8 +133,77 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .fc-tag.pod{color:#7ba7e0;border-color:rgba(123,167,224,.2);background:rgba(123,167,224,.06);}
 .fc-tag.flat{color:#b07ed4;border-color:rgba(176,126,212,.2);background:rgba(176,126,212,.06);}
 .fc-tag.rec{color:#6abfa0;border-color:rgba(106,191,160,.2);background:rgba(106,191,160,.06);}
+.fc-tag-warn{color:#ff9800;background:rgba(255,152,0,.15);border-color:rgba(255,152,0,.3);}
 .fc-detail{font-size:11px;color:var(--text3);text-decoration:none;}
 .fc-detail:hover{color:var(--gold2);}
+
+/* ── PARTENAIRE / RÉSEAU SÉLECTIONNÉ (affiliation) ───────────────
+   Doctrine premium : sobre, discret, jamais "publicité" / "sponsorisé".
+   Cohérence visuelle stricte avec les cards OTA — pas de rupture. */
+.fc-partner-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:400;letter-spacing:.03em;
+  color:var(--gold2);
+  background:transparent;
+  border:1px solid rgba(212,174,74,.28);
+  padding:3px 10px;border-radius:100px;
+  margin-bottom:6px;
+}
+.fc-partner-badge::before{ content:'✦';font-size:10px;line-height:1; }
+.fc-select.partner{
+  background:transparent;color:var(--gold2);
+  border:1px solid var(--gold2);
+}
+.fc-select.partner:hover{ background:var(--gold-dim); }
+.fc-select.partner::after{
+  content:'↗';margin-left:6px;font-size:11px;opacity:.85;
+}
+.fc-partner-note{
+  font-size:10px;color:var(--text3);font-style:italic;
+  letter-spacing:.02em;margin-top:4px;
+}
+
+/* FARE COMPARE MODAL (AirFrance-like Light/Standard/Flex) */
+.fare-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);z-index:300;align-items:flex-start;justify-content:center;padding:60px 20px 20px;overflow-y:auto;}
+.fare-overlay.open{display:flex;}
+.fare-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;max-width:1080px;width:100%;padding:28px 28px 22px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:fadeUp .3s ease both;}
+.fare-modal-close{position:absolute;top:14px;right:16px;background:transparent;border:none;color:var(--text2);font-size:24px;cursor:pointer;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;transition:background .15s;}
+.fare-modal-close:hover{background:var(--bg3);color:var(--text);}
+.fare-head{margin-bottom:22px;padding-right:36px;}
+.fare-head-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:4px;}
+.fare-head-sub{font-size:13px;color:var(--text2);}
+.fare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.fare-col{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;position:relative;transition:border-color .2s,transform .2s;}
+.fare-col:hover{border-color:var(--border2);}
+.fare-col.featured{border-color:var(--gold2);background:linear-gradient(180deg,rgba(184,150,46,.06) 0%,var(--bg3) 60%);}
+.fare-col.featured::before{content:'Recommandé';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:99px;text-transform:uppercase;}
+.fare-brand{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);letter-spacing:.2px;}
+.fare-brand-tag{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.fare-price{font-family:'DM Serif Display',serif;font-size:32px;color:var(--gold2);line-height:1;}
+.fare-price-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;}
+.fare-services{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--border);padding-top:14px;}
+.fare-services li{font-size:13px;color:var(--text2);display:flex;align-items:flex-start;gap:9px;line-height:1.35;}
+.fare-services li .ic{flex-shrink:0;width:18px;height:18px;display:grid;place-items:center;font-size:12px;font-weight:700;border-radius:50%;margin-top:1px;}
+.fare-services li.ok{color:var(--text);}
+.fare-services li.ok .ic{background:rgba(106,191,160,.16);color:#6abfa0;}
+.fare-services li.ko .ic{background:rgba(160,152,144,.1);color:var(--text3);}
+.fare-services li.paid .ic{background:var(--gold-dim);color:var(--gold2);font-size:11px;}
+.fare-services li.paid{color:var(--text2);}
+.fare-select{margin-top:auto;padding:12px 18px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;transition:background .15s;letter-spacing:.2px;}
+.fare-select:hover{background:var(--gold2);}
+.fare-col.featured .fare-select{background:var(--gold);}
+.fare-state{padding:40px 20px;text-align:center;color:var(--text3);font-size:13px;}
+.fare-state .state-spinner{margin:0 auto 14px;}
+.fc-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;width:100%;}
+.fc-compare{background:transparent;border:1px solid var(--border2);color:var(--gold2);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;cursor:pointer;padding:6px 12px;border-radius:4px;letter-spacing:.3px;transition:background .15s;}
+.fc-compare:hover{background:var(--gold-dim);}
+@media(max-width:880px){
+  .fare-overlay{padding:20px 12px;align-items:flex-start;}
+  .fare-modal{padding:22px 16px 18px;}
+  .fare-grid{grid-template-columns:1fr;gap:12px;}
+  .fare-head-title{font-size:20px;}
+  .fare-col.featured::before{font-size:9px;padding:2px 10px;}
+}
 
 /* STATES */
 .state{text-align:center;padding:80px 20px;color:var(--text3);}
@@ -174,13 +245,128 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   .mobile-filter-btn{display:block;}
   .bottom-nav{display:flex;}
 }
+
+/* ────────────────────────────────────────────────────────────
+ * PRICE CALENDAR BANDEAU ±3 jours — Pascal 2026-05-27
+ * Inspiré AirFrance.fr : 7 cellules date + prix mini par jour
+ * ──────────────────────────────────────────────────────────── */
+.price-calendar{display:flex;align-items:stretch;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin-bottom:14px;}
+.pc-title{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:1.2px;text-transform:uppercase;padding:0 4px 8px;display:none;}
+.pc-cells{display:flex;flex:1;gap:6px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+.pc-cells::-webkit-scrollbar{height:4px;}
+.pc-cell{min-width:108px;flex:1;padding:10px 8px;border-radius:6px;background:var(--bg3);cursor:pointer;text-align:center;scroll-snap-align:start;transition:all .15s;border:1.5px solid transparent;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.pc-cell:hover{background:var(--bg4);border-color:var(--border);}
+.pc-cell.active{border-color:var(--gold);background:var(--bg4);box-shadow:0 0 0 1px var(--gold-dim);}
+.pc-cell.active .pc-cell-price{color:var(--gold2);}
+.pc-cell.cheapest::before{content:'Le moins cher';display:block;font-size:9px;color:var(--gold2);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px;}
+.pc-cell-date{font-size:12px;color:var(--text2);font-weight:500;}
+.pc-cell.active .pc-cell-date{color:var(--text);}
+.pc-cell-day{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.pc-cell.active .pc-cell-day{color:var(--gold2);}
+.pc-cell-price{font-size:15px;font-weight:600;color:var(--text);margin-top:3px;font-family:'DM Sans',sans-serif;font-variant-numeric:tabular-nums;}
+.pc-cell.loading .pc-cell-price{opacity:.3;}
+.pc-cell.loading .pc-cell-price::after{content:'…';}
+.pc-cell.empty .pc-cell-price{color:var(--text3);}
+.pc-cell.error .pc-cell-price{color:#ff9800 !important;}
+.pc-cell.past{opacity:.4;cursor:not-allowed;}
+.pc-cell.past:hover{background:var(--bg3);border-color:transparent;}
+.pc-nav{flex-shrink:0;width:36px;background:var(--bg3);border:none;color:var(--text2);cursor:pointer;border-radius:6px;font-size:18px;transition:all .15s;display:grid;place-items:center;}
+.pc-nav:hover{background:var(--bg4);color:var(--gold2);}
+.pc-nav:disabled{opacity:.3;cursor:not-allowed;}
+.pc-skeleton{display:flex;flex:1;gap:6px;}
+.pc-skel-cell{flex:1;min-width:108px;height:62px;background:linear-gradient(90deg,var(--bg3) 0%,var(--bg4) 50%,var(--bg3) 100%);background-size:200% 100%;animation:pcShimmer 1.2s infinite;border-radius:6px;}
+@keyframes pcShimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+@media (max-width:760px){
+  .pc-cell{min-width:84px;padding:8px 6px;}
+  .pc-cell-price{font-size:13px;}
+  .pc-cell-date{font-size:11px;}
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * MONTH POPUP — flex dates AirFrance style — Pascal 2026-05-27
+ * Bouton "Voir le mois" à droite du bandeau ±3j → ouvre popup
+ * calendrier mois entier avec prix par jour.
+ * ────────────────────────────────────────────────────────────── */
+.pc-month-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border2);color:var(--gold2);padding:8px 14px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
+.pc-month-btn:hover{background:var(--gold-dim);border-color:var(--gold);}
+.pc-month-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;}
+@media (max-width:760px){
+  .pc-month-btn{padding:6px 10px;font-size:11px;}
+  .pc-month-btn .pc-month-btn-label{display:none;}
+}
+
+.mm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999;display:grid;place-items:center;padding:16px;animation:mmFade .18s ease;}
+.mm-overlay[hidden]{display:none;}
+@keyframes mmFade{from{opacity:0;}to{opacity:1;}}
+.mm-modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);width:min(560px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:mmRise .22s ease;}
+@keyframes mmRise{from{transform:translateY(8px) scale(.98);opacity:0;}to{transform:none;opacity:1;}}
+.mm-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.mm-header h3{margin:0;flex:1;text-align:center;font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--text);letter-spacing:.5px;}
+.mm-nav{width:32px;height:32px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;border-radius:6px;font-size:18px;display:grid;place-items:center;transition:all .15s;flex-shrink:0;}
+.mm-nav:hover{background:var(--bg4);color:var(--gold2);border-color:var(--border2);}
+.mm-nav:disabled{opacity:.3;cursor:not-allowed;}
+.mm-close{width:32px;height:32px;background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:22px;line-height:1;border-radius:6px;display:grid;place-items:center;flex-shrink:0;margin-left:4px;}
+.mm-close:hover{background:var(--bg3);color:var(--text);}
+.mm-route{padding:0 18px 10px;text-align:center;font-size:11px;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;}
+.mm-route strong{color:var(--gold2);font-weight:600;}
+.mm-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 18px 8px;}
+.mm-weekdays span{text-align:center;font-size:10px;color:var(--text3);font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+.mm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 18px 14px;min-height:280px;}
+.mm-day{aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border-radius:6px;background:var(--bg3);transition:all .15s;border:1.5px solid transparent;position:relative;font-family:'DM Sans',sans-serif;}
+.mm-day:hover{background:var(--bg4);transform:translateY(-1px);}
+.mm-day.empty{background:transparent;cursor:default;}
+.mm-day.empty:hover{transform:none;}
+.mm-day.past{opacity:.28;cursor:not-allowed;}
+.mm-day.past:hover{background:var(--bg3);transform:none;}
+.mm-day.active{border-color:var(--gold);background:var(--bg4);box-shadow:0 0 0 1px var(--gold-dim);}
+.mm-day.cheapest{background:rgba(184,150,46,.18);border-color:rgba(184,150,46,.4);}
+.mm-day.cheapest:hover{background:rgba(184,150,46,.28);}
+.mm-day.cheapest::after{content:'★';position:absolute;top:3px;right:5px;color:var(--gold);font-size:9px;line-height:1;}
+.mm-day.error,.mm-day.no-price{cursor:not-allowed;opacity:.55;}
+.mm-day.error:hover,.mm-day.no-price:hover{background:var(--bg3);transform:none;}
+.mm-day-num{font-size:14px;color:var(--text);font-weight:500;font-variant-numeric:tabular-nums;line-height:1;}
+.mm-day.past .mm-day-num{color:var(--text3);}
+.mm-day-price{font-size:10px;color:var(--gold2);margin-top:3px;font-variant-numeric:tabular-nums;line-height:1;}
+.mm-day.no-price .mm-day-price,.mm-day.error .mm-day-price{color:var(--text3);}
+.mm-day-loader{width:12px;height:12px;border:2px solid var(--bg4);border-top-color:var(--gold);border-radius:50%;animation:mmSpin .8s linear infinite;margin-top:3px;}
+@keyframes mmSpin{to{transform:rotate(360deg);}}
+.mm-loading{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:36px 0;color:var(--text3);font-size:12px;}
+.mm-loading .mm-day-loader{width:22px;height:22px;margin:0;}
+.mm-error{grid-column:1/-1;padding:36px 0;text-align:center;color:var(--text3);font-size:13px;}
+.mm-error a{color:var(--gold2);text-decoration:underline;cursor:pointer;}
+.mm-footer{padding:12px 18px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--text2);}
+.mm-legend{display:inline-flex;align-items:center;gap:8px;}
+.mm-legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(184,150,46,.5);border:1px solid var(--gold);}
+.mm-legend strong{color:var(--gold2);font-weight:600;}
+@media (max-width:560px){
+  .mm-modal{max-height:94vh;}
+  .mm-grid{gap:3px;padding:0 12px 12px;min-height:240px;}
+  .mm-weekdays{padding:0 12px 6px;}
+  .mm-day-num{font-size:12px;}
+  .mm-day-price{font-size:9px;}
+  .mm-header{padding:12px 14px 10px;}
+  .mm-header h3{font-size:16px;}
+  .mm-footer{padding:10px 14px 14px;font-size:11px;}
+}
+/* Offre pré-sélectionnée (arrivée depuis page /vols/) — Pascal 2026-05-29 */
+.sel-offer{background:linear-gradient(135deg,rgba(184,150,46,0.14) 0%,var(--bg2) 70%);border:1px solid var(--border2,rgba(184,150,46,0.35));border-radius:var(--r);margin-bottom:16px;overflow:hidden;}
+.sel-offer-head{padding:8px 18px;background:var(--gold,#b8962e);color:#000;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;}
+.sel-offer-body{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:16px 18px;flex-wrap:wrap;}
+.sel-offer-airline{font-size:14px;font-weight:600;color:var(--text);}
+.sel-offer-route{font-size:13px;color:var(--text);margin-top:4px;}
+.sel-offer-meta{font-size:11.5px;color:var(--text2);margin-top:4px;}
+.sel-offer-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.sel-offer-price{font-family:'DM Serif Display',serif;font-size:30px;line-height:1;color:var(--text);}
+.flight-card.is-selected{border-color:var(--gold2,#d4ae4a);box-shadow:0 0 0 1px var(--gold2,#d4ae4a) inset;}
+@media(max-width:640px){.sel-offer-body{flex-direction:column;align-items:stretch;}.sel-offer-side{align-items:stretch;}}
 </style>
+<script src="/js/carnets.js?v=2026053113"></script>
 </head>
 <body>
 
 <div class="header">
   <a class="logo" href="/">
-    <div class="logo-hex">✈</div>
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg" aria-label="AirBizness"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
     <div class="logo-text">Air<em>Bizness</em></div>
   </a>
   <div class="header-right">
@@ -188,6 +374,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <button class="hbtn fill" onclick="location.href='/compte.html'">Compte</button>
   </div>
 </div>
+
+<h1 style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">Résultats de recherche de vols</h1>
 
 <!-- RECAP -->
 <div class="recap">
@@ -202,7 +390,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <span class="sep">·</span>
       <span id="r-pax">1 voyageur</span>
       <span class="sep">·</span>
-      <span>Business</span>
+      <span id="r-cabin">Business</span>
     </div>
   </div>
   <button class="recap-modify" id="btn-modify">Modifier la recherche</button>
@@ -304,6 +492,60 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
   <!-- RESULTS -->
   <div class="results">
+    <!-- PRICE CALENDAR BANDEAU ±3 jours — Pascal 2026-05-27 -->
+    <div class="price-calendar" id="priceCalendar" style="display:none;">
+      <button class="pc-nav" id="pcPrev" type="button" aria-label="Période précédente" title="−7 jours">‹</button>
+      <div class="pc-cells" id="pcCells">
+        <div class="pc-skeleton">
+          <div class="pc-skel-cell"></div><div class="pc-skel-cell"></div><div class="pc-skel-cell"></div>
+          <div class="pc-skel-cell"></div><div class="pc-skel-cell"></div><div class="pc-skel-cell"></div>
+          <div class="pc-skel-cell"></div>
+        </div>
+      </div>
+      <button class="pc-nav" id="pcNext" type="button" aria-label="Période suivante" title="+7 jours">›</button>
+      <button class="pc-month-btn" id="pcMonthBtnOut" type="button" title="Voir tout le mois">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+        <span class="pc-month-btn-label">Voir le mois</span>
+      </button>
+    </div>
+    <!-- PRICE CALENDAR RETOUR (round-trip only) -->
+    <div class="price-calendar" id="priceCalendarReturn" style="display:none;">
+      <button class="pc-nav" id="pcPrevRet" type="button" aria-label="Période précédente" title="−7 jours">‹</button>
+      <div class="pc-cells" id="pcCellsReturn">
+        <div class="pc-skeleton">
+          <div class="pc-skel-cell"></div><div class="pc-skel-cell"></div><div class="pc-skel-cell"></div>
+          <div class="pc-skel-cell"></div><div class="pc-skel-cell"></div><div class="pc-skel-cell"></div>
+          <div class="pc-skel-cell"></div>
+        </div>
+      </div>
+      <button class="pc-nav" id="pcNextRet" type="button" aria-label="Période suivante" title="+7 jours">›</button>
+      <button class="pc-month-btn" id="pcMonthBtnRet" type="button" title="Voir tout le mois">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+        <span class="pc-month-btn-label">Voir le mois</span>
+      </button>
+    </div>
+
+    <!-- MONTH POPUP OVERLAY — flex dates AirFrance — Pascal 2026-05-27 -->
+    <div class="mm-overlay" id="monthOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="mmTitle">
+      <div class="mm-modal">
+        <header class="mm-header">
+          <button class="mm-nav" id="mmPrev" type="button" aria-label="Mois précédent" title="Mois précédent">‹</button>
+          <h3 id="mmTitle">—</h3>
+          <button class="mm-nav" id="mmNext" type="button" aria-label="Mois suivant" title="Mois suivant">›</button>
+          <button class="mm-close" id="mmClose" type="button" aria-label="Fermer">×</button>
+        </header>
+        <div class="mm-route" id="mmRoute">—</div>
+        <div class="mm-weekdays">
+          <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+        </div>
+        <div class="mm-grid" id="mmGrid">
+          <div class="mm-loading"><span class="mm-day-loader"></span>Chargement des prix…</div>
+        </div>
+        <footer class="mm-footer">
+          <span class="mm-legend"><span class="dot"></span> Le moins cher : <strong id="mmCheapest">—</strong></span>
+        </footer>
+      </div>
+    </div>
     <div class="results-bar">
       <div class="results-count"><strong id="r-count">—</strong> vols trouvés</div>
       <div class="sort-wrap">
@@ -316,6 +558,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         </select>
       </div>
     </div>
+    <div id="selected-offer-banner"></div>
     <div id="results-list">
       <div class="state"><div class="state-spinner"></div><div class="state-title">Recherche des vols…</div><div class="state-sub">Quelques secondes</div></div>
     </div>
@@ -334,20 +577,52 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <button class="drawer-apply" onclick="closeDrawer()">Appliquer</button>
 </div>
 
-<!-- BOTTOM NAV mobile -->
+<!-- FARE COMPARE MODAL (Light/Standard/Flex — Pascal 2026-05-27) -->
+<div class="fare-overlay" id="fare-overlay" onclick="if(event.target===this)closeFareModal()">
+  <div class="fare-modal" role="dialog" aria-labelledby="fare-title" aria-modal="true">
+    <button class="fare-modal-close" onclick="closeFareModal()" aria-label="Fermer">✕</button>
+    <div class="fare-head">
+      <div class="fare-head-title" id="fare-title">Choisissez votre tarif</div>
+      <div class="fare-head-sub" id="fare-subtitle">Comparez les services inclus selon le tarif</div>
+    </div>
+    <div id="fare-body">
+      <div class="fare-state">
+        <div class="state-spinner"></div>
+        Chargement des tarifs…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV mobile : SVG line-art monochrome -->
 <div class="bottom-nav">
-  <a class="bn-item" href="/"><div class="bn-icon">🔍</div>Rechercher</a>
-  <a class="bn-item" href="/mes-alertes.html"><div class="bn-icon">🔔</div>Alertes</a>
-  <a class="bn-item" href="/mes-voyages.html"><div class="bn-icon">✈</div>Voyages</a>
-  <a class="bn-item" href="/compte.html"><div class="bn-icon">👤</div>Compte</a>
+  <a class="bn-item" href="/"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>Rechercher</a>
+  <a class="bn-item" href="/mes-alertes.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>Alertes</a>
+  <a class="bn-item" href="/mes-voyages.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>Voyages</a>
+  <a class="bn-item" href="/compte.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>Compte</a>
 </div>
 
 <script>
+// Concierge hôtelier — persiste on_behalf_of dès l'arrivée sur la page (Pascal 2026-05-24)
+(function(){
+  try {
+    const _u = new URLSearchParams(location.search);
+    const obh = _u.get('on_behalf_of');
+    if (obh){
+      sessionStorage.setItem('ab_on_behalf_of', obh);
+      const gn = _u.get('guest_name'); if (gn) sessionStorage.setItem('ab_guest_name', gn);
+      const ge = _u.get('guest_email'); if (ge) sessionStorage.setItem('ab_guest_email', ge);
+      const gr = _u.get('guest_ref'); if (gr) sessionStorage.setItem('ab_guest_ref', gr);
+    }
+  } catch(e){}
+})();
 const API = '/api';
 const CITIES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',NRT:'Tokyo',HKG:'Hong Kong',BKK:'Bangkok',SYD:'Sydney',GRU:'São Paulo',DEL:'Delhi',BOM:'Mumbai',DOH:'Doha',ICN:'Séoul',CPT:'Cape Town',NBO:'Nairobi'};
 const AIRPORTS = ['CDG','ORY','LYS','NCE','LHR','AMS','FRA','MAD','DXB','SIN','JFK','LAX','MIA','SFO','ORD','DXB','NRT','HKG','BKK','SYD','GRU','DEL','BOM','DOH','ICN','CPT','NBO'];
 const DESTS = ['','JFK','LAX','MIA','SFO','ORD','DXB','SIN','NRT','HKG','BKK','SYD','GRU','DEL','BOM','DOH','ICN','CPT','NBO'];
 const CABIN_LABELS = {private_suite:{l:'Suite privée',c:'suite'},full_flat_pod:{l:'Flat Bed Pod',c:'pod'},full_flat:{l:'Full Flat',c:'flat'},recliner:{l:'Recliner',c:'rec'},standard:{l:'Standard',c:''},unknown:{l:'Business',c:''}};
+const FR_DAYS_FULL   = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const FR_MONTHS_FULL = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 
 let AVG = {};
 let allDeals = [];
@@ -360,7 +635,21 @@ const qTo = (params.get('to') || '').toUpperCase();
 const qDate = params.get('date') || '';
 const qDateRet = params.get('date_ret') || '';
 const qTrip = params.get('trip') || 'one_way';
-const qPax = params.get('pax') || '1';
+// Pax v2 : nouveau format (adults/children/infants/cabin), fallback ancien (pax)
+const qAdults = parseInt(params.get('adults') || params.get('pax') || '1', 10);
+const qChildren = parseInt(params.get('children') || '0', 10);
+const qInfants = parseInt(params.get('infants') || '0', 10);
+const qCabin = (params.get('cabin') || 'economy').toLowerCase();
+const qPax = String(qAdults + qChildren + qInfants);
+// 2026-05-29 fix Pascal: offre pré-sélectionnée depuis une page /vols/ → on la
+// retrouve et on l'affiche en bandeau "Offre sélectionnée" en haut des résultats.
+const qOfferId = params.get('offer_id') || '';
+const CABIN_LABEL_RES = {
+  economy: 'Économique',
+  premium_economy: 'Premium éco',
+  business: 'Affaires',
+  first: 'Première'
+};
 
 // ----- Fill recap -----
 function fmtDate(d) {
@@ -371,7 +660,14 @@ document.getElementById('r-from').textContent = (CITIES[qFrom]||qFrom) + ' (' + 
 document.getElementById('r-to').textContent = qTo ? ((CITIES[qTo]||qTo) + ' (' + qTo + ')') : 'Toutes destinations';
 const dStr = qTrip === 'round_trip' && qDateRet ? `${fmtDate(qDate)||'—'} → ${fmtDate(qDateRet)||'—'}` : (fmtDate(qDate) || 'Toutes dates');
 document.getElementById('r-dates').textContent = dStr;
-document.getElementById('r-pax').textContent = qPax + ' voyageur' + (parseInt(qPax)>1?'s':'');
+// Recap voyageurs détaillé
+const _paxParts = [];
+if (qAdults) _paxParts.push(qAdults + ' adulte' + (qAdults>1?'s':''));
+if (qChildren) _paxParts.push(qChildren + ' enfant' + (qChildren>1?'s':''));
+if (qInfants) _paxParts.push(qInfants + ' bébé' + (qInfants>1?'s':''));
+document.getElementById('r-pax').textContent = _paxParts.join(' · ') || (qPax + ' voyageur');
+const _cabEl = document.getElementById('r-cabin');
+if (_cabEl) _cabEl.textContent = CABIN_LABEL_RES[qCabin] || 'Affaires';
 document.title = `${qFrom} → ${qTo||'?'} · AirBizness`;
 
 // ----- Modify panel -----
@@ -442,8 +738,20 @@ function reSearch(e) {
   const dr = document.getElementById('m-date-ret').value;
   if (trip === 'round_trip' && dr) p.set('date_ret', dr);
   p.set('trip', trip);
-  p.set('pax', document.getElementById('m-pax').value);
-  p.set('cabin', 'business');
+  // Propage les pax détaillés tels quels (modify garde le total dans m-pax pour rétro-compat)
+  const mPaxTotal = parseInt(document.getElementById('m-pax').value, 10) || qAdults;
+  // Si modify a changé le total, on bascule en "tous adultes" sinon on conserve la répartition
+  if (mPaxTotal === (qAdults + qChildren + qInfants)) {
+    p.set('adults', qAdults);
+    p.set('children', qChildren);
+    p.set('infants', qInfants);
+  } else {
+    p.set('adults', mPaxTotal);
+    p.set('children', 0);
+    p.set('infants', 0);
+  }
+  p.set('cabin', qCabin);
+  p.set('pax', mPaxTotal);
   location.href = '/resultats.html?' + p.toString();
 }
 
@@ -454,12 +762,52 @@ async function loadResults() {
       const ar = await fetch(`${API}/deals/averages`);
       AVG = await ar.json();
     } catch(e) {}
-    let url = `${API}/deals?origin=${qFrom}&limit=80`;
-    if (qTo) url += `&destination=${qTo}`;
-    if (qDate) url += `&date=${qDate}`;
+    // 2026-06-02 Pascal: bascule sur TravelPayouts/Aviasales (au lieu de Duffel).
+    // Endpoint /api/aviasales/search renvoie le MÊME schema cards/calendar.
+    let url = `${API}/aviasales/search?from=${encodeURIComponent(qFrom)}&to=${encodeURIComponent(qTo)}&date=${encodeURIComponent(qDate)}&pax=${encodeURIComponent(qPax)}&cabin=${encodeURIComponent(qCabin)}&adults=${qAdults}&children=${qChildren}&infants=${qInfants}&limit=30`;
     const r = await fetch(url);
-    const d = await r.json();
-    allDeals = d.deals || [];
+    const data = await r.json();
+    allDeals = data.cards || [];
+    // Si la cabine demandée ne renvoie rien, on retombe sur la recherche large
+    if (!allDeals.length && qCabin && qCabin !== 'any') {
+      let url2 = `${API}/aviasales/search?from=${encodeURIComponent(qFrom)}&to=${encodeURIComponent(qTo)}&date=${encodeURIComponent(qDate)}&pax=${encodeURIComponent(qPax)}&adults=${qAdults}&children=${qChildren}&infants=${qInfants}&limit=30`;
+      try {
+        const r2 = await fetch(url2);
+        const d2 = await r2.json();
+        allDeals = d2.cards || [];
+      } catch(e) {}
+    }
+    // Peupler le bandeau ±3j avec les données du calendrier unifié
+    const cellsEl = document.getElementById('pcCells');
+    const wrapEl = document.getElementById('priceCalendar');
+    if (cellsEl && wrapEl && data.calendar) {
+      // Extraire les 7 cellules autour de qDate (J-3 .. J+3)
+      const refIdx = data.calendar.findIndex(c => c.date === qDate);
+      const startIdx = Math.max(0, refIdx - 3);
+      const endIdx = Math.min(data.calendar.length, refIdx + 4);
+      const bandCells = data.calendar.slice(startIdx, endIdx);
+      // Transformer le format calendar (status) en format cells (error)
+      const transformedCells = bandCells.map(c => {
+        let error = null;
+        if (c.status === 'past') error = 'past';
+        else if (c.status === 'no_offer') error = 'no_offers';
+        else if (c.status === 'error') error = c.error || 'unknown';
+        return {
+          date: c.date,
+          min_price: c.min_price,
+          offers_count: c.offers_count,
+          loading: false,
+          error: error,
+        };
+      });
+      const bandData = {
+        cells: transformedCells,
+        cheapest_date: data.cheapest_date,
+      };
+      renderPriceCalendar(bandData, qDate, cellsEl, {target:'date'});
+      wrapEl.style.display = 'flex';
+    }
+    await loadSelectedOffer();
     if (!allDeals.length) {
       renderEmpty();
       return;
@@ -472,7 +820,7 @@ async function loadResults() {
   }
 }
 
-function fmtPrice(p) { return new Intl.NumberFormat('fr-FR').format(Math.round(p)) + ' €'; }
+function fmtPrice(p) { return window.fmtEur(p); }
 function fmtDur(m) { const h = Math.floor(m/60), mn = m%60; return mn ? `${h}h ${mn}` : `${h}h`; }
 function fmtTime(iso) {
   if (!iso) return '--:--';
@@ -482,12 +830,6 @@ function arrTime(depIso, durMin) {
   if (!depIso) return '--:--';
   return new Date(new Date(depIso).getTime() + durMin*60000).toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
 }
-function getPct(price, dest) {
-  const a = AVG[dest] || 0;
-  if (!a || a < price) return 0;
-  return Math.round((1 - price/a) * 100);
-}
-
 function buildAirlineFilter() {
   const counts = {};
   allDeals.forEach(d => { counts[d.airline_name] = (counts[d.airline_name]||0) + 1; });
@@ -510,13 +852,41 @@ function getActiveFilters() {
   };
 }
 
+// 2026-05-29 fix Pascal: déduplication des offres quasi-identiques.
+// Symptôme observé : 2 cartes Gulf Air identiques (même départ 11:20, même prix 503€)
+// ne différant que par une heure d'arrivée incohérente (07:50 vs 01:30, artefact data).
+// Clé = compagnie + heure de départ (à la minute) + prix arrondi. On garde l'offre
+// la PLUS COHÉRENTE : durée connue (>0) et nb d'escales renseigné priment.
+function dedupeDeals(deals) {
+  const coherence = (d) => {
+    let s = 0;
+    if (Number(d.duration_minutes) > 0) s += 2;            // durée fiable
+    if (d.stops !== null && d.stops !== undefined) s += 1; // escales connues
+    if (d.offer_id) s += 1;                                // offre réservable
+    return s;
+  };
+  const best = new Map();
+  for (const d of deals) {
+    const dep = (d.departure_at || '').slice(0, 16); // YYYY-MM-DDTHH:MM
+    const price = d.price != null ? Number(d.price).toFixed(2) : '?';
+    const key = `${(d.airline_code || d.airline_name || '').toUpperCase()}|${dep}|${price}`;
+    const prev = best.get(key);
+    if (!prev || coherence(d) > coherence(prev)) best.set(key, d);
+  }
+  // Conserve l'ordre d'apparition initial (stabilité visuelle)
+  const kept = new Set(best.values());
+  return deals.filter(d => kept.has(d));
+}
+
 function applyFilters() {
   const f = getActiveFilters();
   filteredDeals = allDeals.filter(d => {
     if (f.stops === 'direct' && d.stops > 0) return false;
     if (f.stops === 'onestop' && d.stops > 1) return false;
     if (f.price < 10000 && d.price > f.price) return false;
-    if (f.cabin !== 'any' && d.seat_type !== f.cabin) return false;
+    // Filtre cabine : ne s'applique QUE si le vol a un seat_type renseigné.
+    // Sinon (seat_type null, cas fréquent), on ne masque pas le vol — évite le "0 vol".
+    if (f.cabin !== 'any' && d.seat_type && d.seat_type !== f.cabin) return false;
     if (f.wifi && !d.wifi) return false;
     if (f.airlines.length && !f.airlines.includes(d.airline_name)) return false;
     if (f.time !== 'any' && d.departure_at) {
@@ -527,10 +897,15 @@ function applyFilters() {
     }
     return true;
   });
+  filteredDeals = dedupeDeals(filteredDeals);
   if (f.sort === 'score') filteredDeals.sort((a,b) => b.score_deal - a.score_deal);
   if (f.sort === 'price') filteredDeals.sort((a,b) => a.price - b.price);
   if (f.sort === 'duration') filteredDeals.sort((a,b) => a.duration_minutes - b.duration_minutes);
   if (f.sort === 'departure') filteredDeals.sort((a,b) => (a.departure_at||'').localeCompare(b.departure_at||''));
+  // L'offre pré-sélectionnée remonte toujours en tête de liste (mise en avant).
+  if (selectedOffer) {
+    filteredDeals.sort((a,b) => (b.offer_id===selectedOffer.offer_id?1:0) - (a.offer_id===selectedOffer.offer_id?1:0));
+  }
   renderList();
 }
 
@@ -542,14 +917,44 @@ function renderList() {
     return;
   }
   list.innerHTML = filteredDeals.map(d => {
-    const pct = getPct(d.price, d.destination);
-    const cls = pct >= 60 ? 'exc' : pct >= 30 ? 'good' : '';
+    const cls = '';
     const cab = CABIN_LABELS[d.seat_type] || CABIN_LABELS.unknown;
-    const stopsLabel = d.stops === 0 ? 'Vol direct' : (d.stops + ' escale' + (d.stops>1?'s':''));
-    return `<div class="flight-card ${cls}">
+    const _stops = (d.stops === null || d.stops === undefined) ? null : Number(d.stops);
+    const stopsLabel = _stops === 0 ? 'Vol direct'
+                     : (_stops === null || isNaN(_stops)) ? 'Voir détail'
+                     : (_stops + ' escale' + (_stops > 1 ? 's' : ''));
+
+    // ── Détection source (OTA direct vs Partenaire affiliation) ──
+    // Cohérence UX premium : badge sobre, jamais "sponsorisé".
+    const isPartner = d.source === 'affiliate';
+    const partnerBadge = isPartner
+      ? `<div class="fc-partner-badge">Partenaire sélectionné</div>` : '';
+    // Bouton "Comparer les tarifs" : visible uniquement pour OTA bookables
+    // (pas les affiliés qui redirigent hors-site). Cohérent AirFrance/UX premium.
+    const compareBtn = isPartner
+      ? ''
+      : `<button class="fc-compare" onclick="openFareModal('${d.offer_id}', ${d.price || 0}, ${JSON.stringify(d.airline_name || '').replace(/"/g, '&quot;')})">Comparer les tarifs</button>`;
+    const selectBtn = isPartner
+      ? `<button class="fc-select partner" onclick="goToPartner(this, ${JSON.stringify(d).replace(/"/g, '&quot;')})">Voir l'offre</button>`
+      : `<button class="fc-select" onclick="selectDeal('${d.offer_id}')">Sélectionner</button>`;
+    const partnerNote = isPartner
+      ? `<div class="fc-partner-note">Réservation via notre réseau partenaire</div>` : '';
+
+    // Hooks data-attributes pour cross-sell futur (hôtel/transfert post-vol,
+    // alertes intelligentes, deals privés Signature). Pas exploités encore.
+    const dataHooks = `data-provider="${d.provider||''}" data-dest="${d.destination}" data-price="${d.price}" data-cabin="${d.cabin_class||''}"`;
+
+    const depDate = d.departure_at ? new Date(d.departure_at) : null;
+    const dateHeader = depDate && !isNaN(depDate.getTime())
+      ? `<div class="fc-date-strip">${FR_DAYS_FULL[depDate.getDay()]} ${depDate.getDate()} ${FR_MONTHS_FULL[depDate.getMonth()]} ${depDate.getFullYear()}</div>`
+      : '';
+    const selCls = (selectedOffer && d.offer_id === selectedOffer.offer_id) ? ' is-selected' : '';
+    return `<div class="flight-card ${cls}${selCls}" ${dataHooks}>
+      ${dateHeader}
       <div class="fc-main">
         <div class="fc-airline">
-          <div class="fc-airline-name">${d.airline_name}</div>
+          ${partnerBadge}
+          <div class="fc-airline-name">${d.airline_name || d._title || ''}</div>
           <div class="fc-airline-code">${d.airline_code || ''}</div>
         </div>
         <div class="fc-route">
@@ -557,33 +962,219 @@ function renderList() {
           <div class="fc-mid">
             <div class="fc-dur">${fmtDur(d.duration_minutes)}</div>
             <div class="fc-line"></div>
-            <div class="fc-stop ${d.stops===0?'fc-direct':'fc-escale'}">${stopsLabel}</div>
+            <div class="fc-stop ${_stops===0?'fc-direct':'fc-escale'}">${stopsLabel}</div>
           </div>
           <div class="fc-pt"><div class="fc-time">${arrTime(d.departure_at, d.duration_minutes)}</div><div class="fc-iata">${d.destination}</div></div>
         </div>
         <div class="fc-pb">
-          ${AVG[d.destination] && AVG[d.destination] > d.price ? `<div class="fc-orig">${fmtPrice(AVG[d.destination])}</div>` : ''}
-          <div class="fc-price">${fmtPrice(d.price)}</div>
-          ${pct > 0 ? `<div class="fc-pct ${cls||'good'}">— ${pct} %</div>` : ''}
-          <button class="fc-select" onclick="selectDeal('${d.offer_id}')">Sélectionner</button>
+          <div class="fc-price">${window.fmtEur(d.price)}</div>
+          <div class="fc-actions">
+            ${selectBtn}
+            ${compareBtn}
+          </div>
+          ${partnerNote}
         </div>
       </div>
       <div class="fc-bot">
         <div class="fc-tags">
-          <div class="fc-tag ${cab.c}">${cab.l}</div>
-          ${d.wifi ? '<div class="fc-tag">📶 Wifi</div>' : ''}
+          ${cab && cab.l ? `<div class="fc-tag ${cab.c}">${cab.l}</div>` : ''}
+          ${d.wifi ? '<div class="fc-tag">Wifi</div>' : ''}
           ${d.fare_brand ? '<div class="fc-tag">'+d.fare_brand+'</div>' : ''}
+
         </div>
-        <a class="fc-detail" href="/vol.html?id=${d.offer_id}">Voir le détail →</a>
+        ${isPartner
+          ? ''
+          : `<a class="fc-detail" href="javascript:void(0)" onclick="selectDeal('${d.offer_id}')">Voir le détail →</a>`}
       </div>
     </div>`;
   }).join('');
 }
 
+// ─── FARE COMPARE MODAL (Light/Standard/Flex) ──────────────────────────────
+// Pascal 2026-05-27 — calque AirFrance.fr résultats.
+// Backend: GET /api/flights/fare-options/{offer_id} → groupe fares par brand.
+const FARE_BRAND_TITLES = {
+  light: 'Light',
+  standard: 'Standard',
+  flex: 'Flex',
+};
+
+function _fareSvcRow(label, state, payable, currency) {
+  // state: 'allowed' | 'paid' | 'not_allowed' | 'unknown' | true/false
+  let cls = 'ko', icon = '✕', text = label;
+  if (state === true || state === 'allowed' || state === 'free') {
+    cls = 'ok'; icon = '✓';
+  } else if (state === 'paid') {
+    cls = 'paid'; icon = '€';
+    if (payable && currency) text = label + ' (' + payable + ' ' + currency + ')';
+  } else if (state === false || state === 'not_allowed') {
+    cls = 'ko'; icon = '✕';
+  } else {
+    // unknown
+    cls = 'ko'; icon = '–';
+  }
+  return `<li class="${cls}"><span class="ic">${icon}</span><span>${text}</span></li>`;
+}
+
+function renderFareModal(payload, basePrice, airlineName) {
+  const body = document.getElementById('fare-body');
+  const subtitle = document.getElementById('fare-subtitle');
+  if (airlineName) subtitle.textContent = airlineName + ' · Services inclus selon le tarif';
+
+  if (!payload || !payload.fares || !payload.fares.length) {
+    body.innerHTML = `<div class="fare-state">
+      <div style="color:var(--text);font-size:15px;margin-bottom:6px;">Tarif unique pour ce vol</div>
+      <div>Cette compagnie ne propose pas plusieurs tarifs sur ce trajet.<br>
+      Cliquez « Sélectionner » sur la carte du vol pour continuer.</div>
+    </div>`;
+    return;
+  }
+
+  const fares = payload.fares;
+  // On marque "featured" le Standard s'il existe, sinon le médian.
+  let featuredIdx = fares.findIndex(f => f.brand === 'standard');
+  if (featuredIdx < 0) featuredIdx = Math.min(1, fares.length - 1);
+
+  body.innerHTML = `<div class="fare-grid">${fares.map((f, i) => {
+    const s = f.services || {};
+    const featured = i === featuredIdx ? 'featured' : '';
+    const checkedLabel = (s.checked_bag_count && s.checked_bag_count > 1)
+      ? `${s.checked_bag_count} bagages en soute (23 kg)`
+      : 'Bagage en soute 23 kg';
+    return `<div class="fare-col ${featured}">
+      <div>
+        <div class="fare-brand">${FARE_BRAND_TITLES[f.brand] || f.brand_label || 'Tarif'}</div>
+        <div class="fare-brand-tag">${(f.brand_raw || '').toUpperCase()}</div>
+      </div>
+      <div>
+        <div class="fare-price">${f.currency === 'EUR' ? window.fmtEur(parseFloat(f.total_amount)) : (parseFloat(f.total_amount).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + ' ' + f.currency}</div>
+        <div class="fare-price-sub">par voyageur</div>
+      </div>
+      <ul class="fare-services">
+        ${_fareSvcRow('Bagage cabine 12 kg', s.carry_on_bag === true)}
+        ${_fareSvcRow(checkedLabel, s.checked_bag === true || s.checked_bag_count > 0)}
+        ${_fareSvcRow('Sélection du siège', s.seat_selection === 'allowed' || s.seat_selection === 'free' ? true : (s.seat_selection === 'paid' ? 'paid' : false))}
+        ${_fareSvcRow('Modification du billet', s.modification, s.modification_penalty, s.modification_currency)}
+        ${_fareSvcRow('Remboursement', s.refund, s.refund_penalty, s.refund_currency)}
+      </ul>
+      <button class="fare-select" onclick="selectFare('${f.offer_id}')">Sélectionner ce tarif</button>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+async function openFareModal(cacheOfferId, basePrice, airlineName) {
+  const overlay = document.getElementById('fare-overlay');
+  const body = document.getElementById('fare-body');
+  const subtitle = document.getElementById('fare-subtitle');
+  if (subtitle && airlineName) subtitle.textContent = airlineName + ' · Comparaison des tarifs';
+  body.innerHTML = `<div class="fare-state"><div class="state-spinner"></div>Chargement des tarifs…</div>`;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  try {
+    const r = await fetch(`${API}/flights/fare-options/${encodeURIComponent(cacheOfferId)}?passengers=${qAdults || 1}&cabin_class=${encodeURIComponent(qCabin)}`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    // Stocke la signature + le mapping offer_id pour selectFare
+    window.__currentFares = data;
+    window.__currentFareBase = { cacheOfferId, basePrice, airlineName };
+    renderFareModal(data, basePrice, airlineName);
+  } catch (err) {
+    console.error('fare-options', err);
+    body.innerHTML = `<div class="fare-state">
+      <div style="color:var(--text);font-size:15px;margin-bottom:6px;">Impossible de charger les tarifs</div>
+      <div>Vous pouvez tout de même sélectionner le vol au prix affiché.<br>
+      <button class="fare-select" style="margin-top:14px;max-width:240px;" onclick="closeFareModal();selectDeal('${cacheOfferId}')">Continuer au prix ${window.fmtEur(basePrice)}</button></div>
+    </div>`;
+  }
+}
+function closeFareModal() {
+  document.getElementById('fare-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function selectFare(offerId) {
+  closeFareModal();
+  // Le nouveau offer_id provient de Duffel live (pas du cache `deals`).
+  // On clone la card source dans sessionStorage sous le nouveau key pour que
+  // flight-passengers.html ait un fallback si l'offer n'est pas dans /deals.
+  try {
+    sessionStorage.setItem('flight_selected_fare_offer', offerId);
+    const base = window.__currentFareBase || {};
+    const fares = (window.__currentFares || {}).fares || [];
+    const picked = fares.find(f => f.offer_id === offerId);
+    const sourceDeal = base.cacheOfferId ? allDeals.find(d => d.offer_id === base.cacheOfferId) : null;
+    if (sourceDeal && picked) {
+      const clone = { ...sourceDeal,
+        offer_id: offerId,
+        price: parseFloat(picked.total_amount) || sourceDeal.price,
+        currency: picked.currency || sourceDeal.currency,
+        fare_brand: picked.brand_raw || picked.brand,
+      };
+      sessionStorage.setItem('flight_offer_' + offerId, JSON.stringify(clone));
+    }
+  } catch(e){}
+  selectDeal(offerId);
+}
+window.openFareModal = openFareModal;
+window.closeFareModal = closeFareModal;
+window.selectFare = selectFare;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('fare-overlay').classList.contains('open')) closeFareModal();
+});
+
 function selectDeal(offerId) {
-  location.href = '/vol.html?id=' + encodeURIComponent(offerId);
+  // 2026-05-24 : redirige vers le tunnel vol passagers→checkout→confirmation
+  // au lieu de '/?deal=' (dead-end). On porte le pax pour pré-remplir le form.
+  const p = new URLSearchParams();
+  p.set('offer', offerId);
+  // Pax v2 — porte tout vers passagers/checkout
+  p.set('adults', qAdults);
+  if (qChildren > 0) p.set('children', qChildren);
+  if (qInfants > 0) p.set('infants', qInfants);
+  p.set('cabin', qCabin);
+  if (qFrom) p.set('from', qFrom);
+  if (qTo) p.set('to', qTo);
+  if (qDate) p.set('date', qDate);
+  // Concierge hôtelier — propage on_behalf_of vers la page passagers (Pascal 2026-05-24)
+  try {
+    const obh = sessionStorage.getItem('ab_on_behalf_of');
+    if (obh){
+      p.set('on_behalf_of', obh);
+      const gn = sessionStorage.getItem('ab_guest_name'); if (gn) p.set('guest_name', gn);
+      const ge = sessionStorage.getItem('ab_guest_email'); if (ge) p.set('guest_email', ge);
+      const gr = sessionStorage.getItem('ab_guest_ref'); if (gr) p.set('guest_ref', gr);
+    }
+  } catch(e){}
+  // Cache la carte sélectionnée pour éviter un round-trip API côté passagers.html
+  try {
+    const deal = allDeals.find(d => d.offer_id === offerId);
+    if (deal) sessionStorage.setItem('flight_offer_' + offerId, JSON.stringify(deal));
+  } catch(e) {}
+  location.href = '/flight-passengers.html?' + p.toString();
 }
 window.selectDeal = selectDeal;
+
+/* ── Click partenaire : redirige via /api/track-click (tracking + log) ──
+   Anti-rupture UX : ouvert dans le même onglet pour cohérence.
+   Le /api/track-click log puis 302 vers le deeplink partenaire instantanément. */
+function goToPartner(btn, deal) {
+  if (!deal || !deal.deeplink_url) {
+    console.warn('Partner deal sans deeplink_url', deal);
+    return;
+  }
+  try { btn.disabled = true; btn.textContent = 'Redirection…'; } catch(e){}
+  const params = new URLSearchParams({
+    provider: deal.provider || 'unknown',
+    deeplink: deal.deeplink_url,
+    offer_id: deal.offer_id || '',
+    origin: deal.origin || '',
+    destination: deal.destination || '',
+    price: deal.price || 0,
+    currency: deal.currency || 'EUR',
+  });
+  // Redirection immédiate, le tracking se fait côté serveur
+  location.href = '/api/track-click?' + params.toString();
+}
+window.goToPartner = goToPartner;
 
 function renderEmpty() {
   document.getElementById('r-count').textContent = '0';
@@ -599,6 +1190,54 @@ function renderError() {
       <div class="state-title">Erreur de chargement</div>
       <div class="state-sub">Réessayez dans un instant.</div>
     </div>`;
+}
+
+// ─── OFFRE PRÉ-SÉLECTIONNÉE (Pascal 2026-05-29) ────────────────────────────
+// Si on arrive depuis une page /vols/ avec ?offer_id=XXX, on récupère l'offre
+// précise via /api/deals/by-id et on l'affiche dans un bandeau en haut, + on la
+// remonte/met en avant dans la liste. Continuité : je clique une offre → je la retrouve.
+let selectedOffer = null;
+async function loadSelectedOffer() {
+  const banner = document.getElementById('selected-offer-banner');
+  if (!banner || !qOfferId) return;
+  try {
+    const r = await fetch(`${API}/deals/by-id?offer_id=${encodeURIComponent(qOfferId)}`);
+    const d = await r.json();
+    const off = (d.deals || [])[0];
+    if (!off) return;
+    selectedOffer = off;
+    // Injecte l'offre dans allDeals si absente (offre live/cache non listée), pour
+    // qu'elle soit cliquable/sélectionnable comme les autres.
+    if (!allDeals.some(x => x.offer_id === off.offer_id)) {
+      allDeals.unshift(off);
+    }
+    const _st = (off.stops === null || off.stops === undefined) ? null : Number(off.stops);
+    const stopTxt = _st === 0 ? 'Vol direct'
+                  : (_st === null || isNaN(_st)) ? 'Escale(s) — voir détail'
+                  : (_st + ' escale' + (_st > 1 ? 's' : ''));
+    const durTxt = (off.duration_minutes && off.duration_minutes > 0) ? (' · ' + fmtDur(off.duration_minutes)) : '';
+    const cabName = CABIN_LABEL_RES[(off.cabin_class || '').toLowerCase()] || (off.cabin_class || '');
+    const depT = fmtTime(off.departure_at);
+    const arrT = (off.duration_minutes && off.duration_minutes > 0)
+      ? arrTime(off.departure_at, off.duration_minutes)
+      : (off.arrival_at ? fmtTime(off.arrival_at) : '--:--');
+    const route = `${off.origin || qFrom} ${depT} → ${off.destination || qTo} ${arrT}`;
+    banner.innerHTML =
+      `<div class="sel-offer">
+        <div class="sel-offer-head">Offre sélectionnée</div>
+        <div class="sel-offer-body">
+          <div class="sel-offer-main">
+            <div class="sel-offer-airline">${off.airline_name || 'Compagnie'}${off.airline_code ? ' · ' + off.airline_code : ''}</div>
+            <div class="sel-offer-route">${route}</div>
+            <div class="sel-offer-meta">${stopTxt}${durTxt}${cabName ? ' · ' + cabName : ''}</div>
+          </div>
+          <div class="sel-offer-side">
+            <div class="sel-offer-price">${off.price ? fmtPrice(off.price) : '—'}</div>
+            <button class="fc-select" onclick="selectDeal('${off.offer_id}')">Réserver cette offre</button>
+          </div>
+        </div>
+      </div>`;
+  } catch(e) { /* bandeau best-effort, ne bloque jamais la liste */ }
 }
 
 // ----- Filter listeners -----
@@ -648,12 +1287,296 @@ function closeDrawer() {
 }
 window.closeDrawer = closeDrawer;
 
+/* ────────────────────────────────────────────────────────────
+ * PRICE CALENDAR BANDEAU ±3 jours — Pascal 2026-05-27
+ * Charge /api/flights/price-calendar et rend 7 cellules cliquables.
+ * Cellule active = qDate, "Le moins cher" = data.cheapest_date.
+ * Click → location.search updated → re-render résultats.
+ * ──────────────────────────────────────────────────────────── */
+const PC_FR_DAYS = ['dim','lun','mar','mer','jeu','ven','sam'];
+const PC_FR_MONTHS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+
+function pcFormatPrice(p) {
+  if (p == null) return '—';
+  return window.fmtEur(p);
+}
+
+function pcParseDate(s) {
+  // YYYY-MM-DD → Date locale (sans décalage TZ)
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function pcTodayIso() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+async function loadPriceCalendar(from, to, refDate, pax, cabin, opts) {
+  opts = opts || {};
+  const cellsEl   = document.getElementById(opts.cellsId || 'pcCells');
+  const wrapEl    = document.getElementById(opts.wrapId  || 'priceCalendar');
+  if (!from || !to || !refDate) { wrapEl.style.display = 'none'; return; }
+  wrapEl.style.display = 'flex';
+  try {
+    // 2026-05-29 fix Pascal: fallback aligné sur la promesse de la page (Affaires),
+    // jamais 'economy' — évite que le bandeau calendrier parle d'une autre classe
+    // que les cartes (l'ancien écart 1493€ éco vs 503€ business).
+    const url = `${API}/flights/price-calendar?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&date=${encodeURIComponent(refDate)}&pax=${encodeURIComponent(pax||1)}&cabin=${encodeURIComponent(cabin||'business')}&days=3`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    renderPriceCalendar(data, refDate, cellsEl, opts);
+  } catch(e) {
+    console.warn('[price-calendar] load KO', e);
+    wrapEl.style.display = 'none';
+  }
+}
+
+function renderPriceCalendar(data, refDate, cellsEl, opts) {
+  opts = opts || {};
+  if (!cellsEl || !data || !Array.isArray(data.cells)) return;
+  cellsEl.innerHTML = '';
+  const today = pcTodayIso();
+  data.cells.forEach(cell => {
+    const div = document.createElement('div');
+    div.className = 'pc-cell';
+    const isPast = cell.date < today || cell.error === 'past';
+    if (isPast) div.classList.add('past');
+    if (cell.date === refDate) div.classList.add('active');
+    if (cell.date === data.cheapest_date && cell.min_price != null) div.classList.add('cheapest');
+    if (cell.error && cell.error !== 'past' && !cell.min_price) div.classList.add('error');
+    if (cell.min_price == null && !cell.error) div.classList.add('empty');
+    const d = pcParseDate(cell.date);
+    const day = PC_FR_DAYS[d.getDay()];
+    const month = PC_FR_MONTHS[d.getMonth()];
+    const isErr = cell.error && cell.error !== 'past' && cell.min_price == null;
+    const priceLabel = isErr ? 'Indispo' : pcFormatPrice(cell.min_price);
+    if (isErr) div.title = 'Limite API momentanée — réessayez dans quelques secondes';
+    div.innerHTML = `
+      <div class="pc-cell-day">${day}.</div>
+      <div class="pc-cell-date">${d.getDate()} ${month}</div>
+      <div class="pc-cell-price">${priceLabel}</div>
+    `;
+    if (!isPast) {
+      div.addEventListener('click', () => pcSwitchToDate(cell.date, opts.target || 'date'));
+    }
+    cellsEl.appendChild(div);
+  });
+}
+
+function pcSwitchToDate(newDate, paramName) {
+  const params = new URLSearchParams(location.search);
+  if (params.get(paramName) === newDate) return; // no-op
+  params.set(paramName, newDate);
+  location.search = params.toString();
+}
+
+function pcShiftWeek(deltaDays, paramName) {
+  const params = new URLSearchParams(location.search);
+  const cur = params.get(paramName);
+  if (!cur) return;
+  const d = pcParseDate(cur);
+  d.setDate(d.getDate() + deltaDays);
+  const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  if (iso < pcTodayIso()) return; // pas de date passée
+  params.set(paramName, iso);
+  location.search = params.toString();
+}
+
+// Hook nav buttons + initial load
+document.getElementById('pcPrev').addEventListener('click', () => pcShiftWeek(-7, 'date'));
+document.getElementById('pcNext').addEventListener('click', () => pcShiftWeek(7, 'date'));
+document.getElementById('pcPrevRet').addEventListener('click', () => pcShiftWeek(-7, 'date_ret'));
+document.getElementById('pcNextRet').addEventListener('click', () => pcShiftWeek(7, 'date_ret'));
+
+// 2026-06-02 Pascal: bandeau désormais peuplé par loadResults() via /api/vols/search
+// L'ancien appel séparé est neutralisé pour éviter le double fetch.
+// if (qDate && qTo) {
+//   loadPriceCalendar(qFrom, qTo, qDate, qPax, qCabin, {cellsId:'pcCells', wrapId:'priceCalendar', target:'date'});
+// }
+// if (qTrip === 'round_trip' && qDateRet && qTo) {
+//   loadPriceCalendar(qTo, qFrom, qDateRet, qPax, qCabin, {cellsId:'pcCellsReturn', wrapId:'priceCalendarReturn', target:'date_ret'});
+// }
+
+/* ────────────────────────────────────────────────────────────
+ * MONTH POPUP (flex dates AirFrance) — Pascal 2026-05-27
+ * Bouton "Voir le mois" → popup calendrier mois entier
+ * Click sur une case → close + switch sur cette date (reload résultats)
+ * ──────────────────────────────────────────────────────────── */
+const MM_MONTHS_FR = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+
+const mmState = {
+  direction: 'outbound',  // 'outbound' ou 'return'
+  from: null, to: null,
+  year: null, month: null,
+  pax: 1, cabin: 'economy',
+  currentRefDate: null,   // date sélectionnée (active highlight)
+};
+
+async function openMonthModal(direction){
+  mmState.direction = direction;
+  const params = new URLSearchParams(location.search);
+  // Sur resultats.html, on récupère du URL : pour le retour on inverse from/to (le retour part de qTo→qFrom)
+  if (direction === 'outbound'){
+    mmState.from = params.get('from');
+    mmState.to   = params.get('to');
+    mmState.currentRefDate = params.get('date');
+  } else {
+    mmState.from = params.get('to');
+    mmState.to   = params.get('from');
+    mmState.currentRefDate = params.get('date_ret');
+  }
+  mmState.pax = params.get('pax') || 1;
+  mmState.cabin = params.get('cabin') || 'business';
+  if (!mmState.from || !mmState.to || !mmState.currentRefDate){
+    console.warn('[month-modal] missing params'); return;
+  }
+  const [y,m] = mmState.currentRefDate.split('-').map(Number);
+  mmState.year = y; mmState.month = m;
+  document.getElementById('monthOverlay').hidden = false;
+  document.body.style.overflow = 'hidden';
+  await renderMonth();
+}
+
+function closeMonthModal(){
+  document.getElementById('monthOverlay').hidden = true;
+  document.body.style.overflow = '';
+}
+
+function mmCanNavPrev(){
+  // Pas de navigation vers mois passé
+  const today = new Date();
+  const ty = today.getFullYear(), tm = today.getMonth()+1;
+  if (mmState.year < ty) return false;
+  if (mmState.year === ty && mmState.month <= tm) return false;
+  return true;
+}
+function mmCanNavNext(){
+  // Duffel ne supporte généralement pas >11 mois
+  const today = new Date();
+  const diff = (mmState.year - today.getFullYear())*12 + (mmState.month - today.getMonth() - 1);
+  return diff < 10;
+}
+function mmUpdateNavState(){
+  document.getElementById('mmPrev').disabled = !mmCanNavPrev();
+  document.getElementById('mmNext').disabled = !mmCanNavNext();
+}
+
+async function renderMonth(){
+  const titleEl = document.getElementById('mmTitle');
+  const routeEl = document.getElementById('mmRoute');
+  const gridEl  = document.getElementById('mmGrid');
+  const cheapEl = document.getElementById('mmCheapest');
+  titleEl.textContent = `${MM_MONTHS_FR[mmState.month-1]} ${mmState.year}`;
+  const arrow = (mmState.direction === 'outbound') ? '→' : '←';
+  routeEl.innerHTML = `<strong>${mmState.from}</strong> ${arrow} <strong>${mmState.to}</strong>`;
+  cheapEl.textContent = '—';
+  gridEl.innerHTML = '<div class="mm-loading"><span class="mm-day-loader"></span>Chargement des prix…</div>';
+  mmUpdateNavState();
+  const monthStr = `${mmState.year}-${String(mmState.month).padStart(2,'0')}`;
+  try {
+    const url = `${API}/flights/price-month?from=${encodeURIComponent(mmState.from)}&to=${encodeURIComponent(mmState.to)}&month=${encodeURIComponent(monthStr)}&pax=${encodeURIComponent(mmState.pax)}&cabin=${encodeURIComponent(mmState.cabin)}`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    drawMonthGrid(data);
+  } catch(e){
+    console.warn('[month-modal] load KO', e);
+    gridEl.innerHTML = `<div class="mm-error">Données indisponibles pour ce mois. <a onclick="closeMonthModal()">Fermer</a></div>`;
+  }
+}
+
+function drawMonthGrid(data){
+  const grid = document.getElementById('mmGrid');
+  const cheapEl = document.getElementById('mmCheapest');
+  grid.innerHTML = '';
+  const y = mmState.year, m = mmState.month;
+  const firstDow = (new Date(Date.UTC(y, m-1, 1)).getUTCDay() + 6) % 7; // Lundi=0
+  const lastDay = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const byDate = {};
+  (data.days || []).forEach(d => { byDate[d.date] = d; });
+  const today = pcTodayIso();
+  // empty cells avant le 1er
+  for (let i=0; i<firstDow; i++){
+    const e = document.createElement('div'); e.className = 'mm-day empty'; grid.appendChild(e);
+  }
+  for (let day=1; day<=lastDay; day++){
+    const dateStr = `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'mm-day';
+    const info = byDate[dateStr];
+    const isPast = dateStr < today;
+    const hasError = info && info.error && info.error !== 'past';
+    const hasPrice = info && info.min_price != null;
+    if (isPast) cell.classList.add('past');
+    else if (hasError && !hasPrice) cell.classList.add('error');
+    else if (!hasPrice) cell.classList.add('no-price');
+    if (dateStr === mmState.currentRefDate) cell.classList.add('active');
+    if (data.cheapest_date && dateStr === data.cheapest_date && hasPrice) cell.classList.add('cheapest');
+    cell.innerHTML = `
+      <div class="mm-day-num">${day}</div>
+      <div class="mm-day-price">${hasPrice ? pcFormatPrice(info.min_price) : '—'}</div>
+    `;
+    if (!isPast && hasPrice){
+      cell.addEventListener('click', () => selectMonthDate(dateStr));
+      cell.style.cursor = 'pointer';
+    }
+    grid.appendChild(cell);
+  }
+  if (data.cheapest_price && data.cheapest_date){
+    const d = pcParseDate(data.cheapest_date);
+    cheapEl.textContent = `${pcFormatPrice(data.cheapest_price)} le ${d.getDate()} ${PC_FR_MONTHS[d.getMonth()]}`;
+  } else {
+    cheapEl.textContent = '—';
+  }
+}
+
+function selectMonthDate(newDate){
+  const direction = mmState.direction;
+  const params = new URLSearchParams(location.search);
+  params.set(direction === 'outbound' ? 'date' : 'date_ret', newDate);
+  closeMonthModal();
+  location.search = params.toString();
+}
+
+function mmShiftMonth(delta){
+  let m = mmState.month + delta;
+  let y = mmState.year;
+  if (m < 1){ m = 12; y--; }
+  if (m > 12){ m = 1; y++; }
+  mmState.month = m; mmState.year = y;
+  renderMonth();
+}
+
+// Wire buttons (outbound + return) + modal nav + close
+document.getElementById('pcMonthBtnOut').addEventListener('click', () => openMonthModal('outbound'));
+document.getElementById('pcMonthBtnRet').addEventListener('click', () => openMonthModal('return'));
+document.getElementById('mmClose').addEventListener('click', closeMonthModal);
+document.getElementById('mmPrev').addEventListener('click', () => { if (mmCanNavPrev()) mmShiftMonth(-1); });
+document.getElementById('mmNext').addEventListener('click', () => { if (mmCanNavNext()) mmShiftMonth(1); });
+document.getElementById('monthOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'monthOverlay') closeMonthModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('monthOverlay').hidden) closeMonthModal();
+});
+
+// Pré-warming async : kick off un fetch mois en background pendant que l'user regarde les résultats.
+// Au moment où il clique "Voir le mois", la réponse est en cache (<100ms).
+function preWarmMonth(from, to, refDate, pax, cabin){
+  if (!from || !to || !refDate) return;
+  const monthStr = refDate.slice(0, 7);
+  fetch(`${API}/flights/price-month?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&month=${encodeURIComponent(monthStr)}&pax=${encodeURIComponent(pax||1)}&cabin=${encodeURIComponent(cabin||'business')}`)
+    .catch(() => {});  // fire & forget
+}
+if (qDate && qTo) preWarmMonth(qFrom, qTo, qDate, qPax, qCabin);
+if (qTrip === 'round_trip' && qDateRet && qTo) preWarmMonth(qTo, qFrom, qDateRet, qPax, qCabin);
+
+
 loadResults();
 </script>
 <script defer src="/cookies.js"></script>
 
-<!-- ── Bizzi chat bubble (added 2026-05-09) ── -->
-<script src="https://bizzi.fr/bizzi-loader.js" defer></script>
-<div data-bizzi-mount="chat" data-bizzi-tenant="airbizness"></div>
 </body>
 </html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandbox Resilience — AirBizness Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;--orange:#e0a060;--red:#e87a7a;--blue:#6f9fff;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+/* Top admin bar */
+.adm-bar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.adm-bar h1{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-0.01em;}
+.adm-bar h1 em{font-style:italic;color:var(--gold2);}
+.adm-bar-meta{display:flex;gap:18px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.adm-bar-meta strong{color:var(--gold2);}
+.adm-cleanup-btn{padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:inherit;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+.adm-cleanup-btn:hover{background:rgba(232,122,122,0.1);color:var(--red);border-color:rgba(232,122,122,0.3);}
+
+/* Main layout 2 col */
+.adm-wrap{max-width:1500px;margin:0 auto;padding:24px 28px;display:grid;grid-template-columns:1fr 480px;gap:24px;}
+@media(max-width:1100px){.adm-wrap{grid-template-columns:1fr;}}
+
+/* Scenarios grid */
+.scenarios-section h2{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold2);margin-bottom:14px;}
+.scenarios-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(max-width:700px){.scenarios-grid{grid-template-columns:1fr;}}
+.scenario-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;cursor:pointer;transition:border-color .15s,transform .1s;}
+.scenario-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.scenario-card.running{border-color:var(--blue);background:rgba(111,159,255,0.05);}
+.scenario-card.success{border-color:var(--green);}
+.scenario-card.failed{border-color:var(--red);}
+.scenario-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+.scenario-id{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--gold2);letter-spacing:0.1em;}
+.scenario-sev{padding:2px 8px;border-radius:99px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;}
+.scenario-sev.info{background:rgba(111,159,255,0.12);color:var(--blue);}
+.scenario-sev.warn{background:rgba(224,160,96,0.12);color:var(--orange);}
+.scenario-sev.critical{background:rgba(232,122,122,0.12);color:var(--red);}
+.scenario-name{font-family:'DM Serif Display',serif;font-size:14.5px;color:var(--text);line-height:1.3;margin-bottom:5px;}
+.scenario-desc{font-size:11.5px;color:var(--text3);line-height:1.5;margin-bottom:10px;}
+.scenario-patterns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
+.pattern-chip{padding:2px 7px;background:var(--bg3);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--text3);}
+.scenario-run-btn{width:100%;padding:8px;background:var(--gold);color:#000;border:none;border-radius:6px;font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;}
+.scenario-run-btn:hover{background:var(--gold2);}
+.scenario-run-btn:disabled{opacity:0.5;cursor:wait;}
+
+/* Result panel (right side) */
+.result-panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;height:fit-content;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow-y:auto;}
+.result-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:13px;}
+.result-head{padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.result-head h3{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:6px;}
+.result-meta{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
+.result-meta strong{color:var(--gold2);}
+
+.timeline-list{list-style:none;padding:0;margin:0;}
+.timeline-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.timeline-item:last-child{border-bottom:none;}
+.timeline-icon{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:10px;font-weight:700;}
+.timeline-icon.ok{background:rgba(74,222,128,0.15);color:var(--green);}
+.timeline-icon.warn{background:rgba(224,160,96,0.15);color:var(--orange);}
+.timeline-icon.fail,.timeline-icon.error{background:rgba(232,122,122,0.15);color:var(--red);}
+.timeline-icon.info{background:rgba(111,159,255,0.15);color:var(--blue);}
+.timeline-icon.critical{background:rgba(232,122,122,0.2);color:var(--red);}
+.timeline-content{flex:1;min-width:0;}
+.timeline-step{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2);margin-bottom:2px;}
+.timeline-detail{font-size:12.5px;color:var(--text);line-height:1.5;}
+
+.alerts-section{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);}
+.alerts-section h4{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold2);margin-bottom:10px;}
+.alert-line{padding:10px 12px;background:var(--bg3);border-left:3px solid var(--text3);border-radius:5px;margin-bottom:8px;font-size:12px;}
+.alert-line.warn{border-left-color:var(--orange);}
+.alert-line.critical{border-left-color:var(--red);}
+.alert-line.info{border-left-color:var(--blue);}
+.alert-line strong{color:var(--text);}
+
+/* Sandbox notice */
+.sandbox-notice{padding:12px 18px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;font-size:12px;color:var(--green);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.sandbox-notice svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="adm-bar">
+  <h1>Sandbox <em>Resilience</em></h1>
+  <div class="adm-bar-meta">
+    <span>Scénarios : <strong id="scn-count">—</strong></span>
+    <span>Patterns testés : <strong id="pat-count">—</strong></span>
+    <span>Runs : <strong id="run-count">0</strong></span>
+    <span>Succès : <strong id="success-count" style="color:var(--green);">0</strong></span>
+    <button class="adm-cleanup-btn" onclick="runAll()" style="background:var(--gold-dim);color:var(--gold2);border-color:var(--border2);">▶ Run all 60</button>
+    <a href="/admin-conciergerie.html" class="adm-cleanup-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Conciergerie →</a>
+    <button class="adm-cleanup-btn" onclick="cleanup()">Reset sandbox</button>
+  </div>
+</div>
+
+<div class="adm-wrap">
+
+  <div class="scenarios-section">
+    <div class="sandbox-notice">
+      <svg viewBox="0 0 24 24"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>Mode SANDBOX activé. <strong>Aucune vraie réservation, aucun débit Stripe</strong>, aucun appel Duffel/HBX réel. Toutes données isolées (is_sandbox=true).</span>
+    </div>
+
+    <h2>Cliquez un scénario pour le simuler</h2>
+    <div class="scenarios-grid" id="scenarios-grid">
+      <div style="grid-column:1/-1;padding:40px;text-align:center;color:var(--text3);">Chargement des scénarios…</div>
+    </div>
+  </div>
+
+  <aside class="result-panel" id="result-panel">
+    <div class="result-empty">
+      Sélectionnez un scénario à gauche pour voir le résultat de la simulation ici.
+    </div>
+  </aside>
+
+</div>
+
+<script>
+let runCount = 0;
+let successCount = 0;
+let allScenarios = [];
+
+async function loadScenarios(){
+  const r = await fetch('/api/sandbox/scenarios');
+  const data = await r.json();
+  allScenarios = data.scenarios;
+  const grid = document.getElementById('scenarios-grid');
+  document.getElementById('scn-count').textContent = data.scenarios.length;
+  // Compte patterns uniques testés
+  const patternsCovered = new Set();
+  data.scenarios.forEach(s => (s.patterns_tested||[]).forEach(p => patternsCovered.add(p)));
+  document.getElementById('pat-count').textContent = patternsCovered.size + ' / 12';
+
+  grid.innerHTML = data.scenarios.map(s => `
+    <div class="scenario-card" id="card-${s.id}">
+      <div class="scenario-head">
+        <div class="scenario-id">${s.id}</div>
+        <div class="scenario-sev ${s.severity}">${s.severity}</div>
+      </div>
+      <div class="scenario-name">${esc(s.name)}</div>
+      <div class="scenario-desc">${esc(s.description)}</div>
+      <div class="scenario-patterns">
+        ${(s.patterns_tested||[]).map(p => `<span class="pattern-chip">${p}</span>`).join('')}
+      </div>
+      <button class="scenario-run-btn" onclick="runScenario('${s.id}')">▶ Simuler</button>
+    </div>
+  `).join('');
+}
+
+async function runAll(){
+  if (!confirm(`Exécuter les ${allScenarios.length} scénarios en cascade ? (~${Math.ceil(allScenarios.length*0.4)}s)`)) return;
+  for (const s of allScenarios){
+    await runScenario(s.id, true);
+    await new Promise(r => setTimeout(r, 150));
+  }
+  alert(`✓ ${allScenarios.length} scénarios exécutés. Succès : ${successCount}/${runCount}`);
+}
+
+async function runScenario(scenarioId, silent){
+  const card = document.getElementById('card-'+scenarioId);
+  card.classList.remove('success','failed');
+  card.classList.add('running');
+  const btn = card.querySelector('.scenario-run-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳…';
+
+  try {
+    const r = await fetch('/api/sandbox/simulate/'+scenarioId, {method:'POST'});
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    runCount++;
+    document.getElementById('run-count').textContent = runCount;
+
+    // Anticipation : tout sauf 'failed' nul est un succès (la gestion d'échec est aussi un succès)
+    card.classList.remove('running');
+    const isHandled = data.timeline && data.timeline.length > 0 && !data.timeline.some(t => t.status === 'error' && t.step === 'scenario_unknown_category');
+    if (isHandled){
+      card.classList.add('success');
+      successCount++;
+      document.getElementById('success-count').textContent = successCount;
+    } else {
+      card.classList.add('failed');
+    }
+
+    if (!silent) renderResult(data);
+  } catch(e){
+    card.classList.remove('running');
+    card.classList.add('failed');
+    if (!silent) document.getElementById('result-panel').innerHTML = `<div class="result-empty">Erreur: ${esc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↻ Re-simuler';
+  }
+}
+
+function renderResult(data){
+  const panel = document.getElementById('result-panel');
+  const u = data.user || {};
+  const tlHtml = (data.timeline||[]).map(t => `
+    <li class="timeline-item">
+      <div class="timeline-icon ${t.status}">${iconForStatus(t.status)}</div>
+      <div class="timeline-content">
+        <div class="timeline-step">${esc(t.step)}</div>
+        <div class="timeline-detail">${esc(t.detail || '')}</div>
+      </div>
+    </li>
+  `).join('');
+
+  const alertsHtml = (data.alerts_generated||[]).map(a => `
+    <div class="alert-line ${a.severity}">
+      <strong>[${a.severity.toUpperCase()}] ${esc(a.alert_type)}</strong>
+      ${a.payload?.action_required ? `<div style="margin-top:4px;color:var(--text2);font-size:11.5px;">${esc(a.payload.action_required)}</div>` : ''}
+    </div>
+  `).join('');
+
+  panel.innerHTML = `
+    <div class="result-head">
+      <h3>${esc(data.scenario.name)}</h3>
+      <div class="result-meta">
+        Ref : <strong>${esc(data.ref)}</strong> ·
+        User : ${esc(u.first||'?')} ${esc(u.last||'?')} (${esc(u.country||'?')}) ·
+        Expected : <strong>${esc(data.expected)}</strong>
+      </div>
+    </div>
+    <ul class="timeline-list">${tlHtml}</ul>
+    ${alertsHtml ? `<div class="alerts-section"><h4>Alertes conciergerie générées (${data.alerts_generated.length})</h4>${alertsHtml}</div>` : ''}
+  `;
+  panel.scrollTop = 0;
+}
+
+function iconForStatus(s){
+  return {ok:'✓',warn:'!',fail:'✗',error:'✗',info:'i',critical:'!'}[s] || '·';
+}
+
+async function cleanup(){
+  if (!confirm('Reset toutes les données sandbox ? (Ne touche pas aux vraies résa)')) return;
+  const r = await fetch('/api/sandbox/cleanup', {method:'POST'});
+  const d = await r.json();
+  alert(`✓ ${d.deleted_bookings} bookings + ${d.deleted_alerts} alerts supprimés.`);
+  document.getElementById('result-panel').innerHTML = '<div class="result-empty">Sandbox vidée. Lancez un nouveau scénario.</div>';
+  document.querySelectorAll('.scenario-card').forEach(c => c.className='scenario-card');
+}
+
+function esc(s){
+  return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+loadScenarios();
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Réservation activité — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<script src="/i18n.js" defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-hex{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:13px;color:#000;}
+.logo-text{font-size:19px;font-weight:600;color:var(--text);}
+.back{color:var(--text2);font-size:13px;text-decoration:none;}
+
+.main{padding:88px 0 60px;}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 380px;gap:36px;}
+@media(max-width:880px){.wrap{grid-template-columns:1fr;}}
+
+.title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:6px;}
+.title em{font-style:italic;color:var(--gold2);}
+.sub{color:var(--text2);font-size:13px;margin-bottom:24px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:18px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:14px;}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+.field{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.field-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.field input{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;}
+
+#payment-element{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:8px;}
+
+.submit-btn{width:100%;margin-top:18px;padding:16px;background:var(--gold);border:none;color:#000;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border-radius:8px;}
+.submit-btn:hover:not(:disabled){background:var(--gold2);}
+.submit-btn:disabled{opacity:0.5;cursor:wait;}
+
+.recap-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;position:sticky;top:84px;}
+.recap-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:6px;}
+.recap-activity{font-weight:600;font-size:15px;margin-bottom:14px;}
+.recap-meta{font-size:12px;color:var(--text2);padding:6px 0;display:flex;justify-content:space-between;border-top:1px solid var(--border);}
+.recap-meta:first-of-type{border-top:none;}
+.recap-meta b{color:var(--text);}
+.recap-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.recap-total-amount{font-family:'DM Serif Display',serif;font-size:26px;color:var(--gold2);}
+
+.notice{background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:12px 16px;font-size:11px;color:var(--gold2);margin-bottom:18px;line-height:1.5;}
+.notice::before{content:'✦ ';}
+.error{background:rgba(220,80,80,0.1);border:1px solid rgba(220,80,80,0.3);color:#f88;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:14px;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<header class="header">
+  <a href="/" class="logo">
+    <div class="logo-hex">AB</div>
+    <div class="logo-text">AirBizness</div>
+  </a>
+  <a href="javascript:history.back()" class="back">← Retour</a>
+</header>
+
+<main class="main">
+  <div class="wrap" id="root">
+    <div class="card" style="grid-column:1/-1; text-align:center; padding:40px;">Chargement…</div>
+  </div>
+</main>
+
+<script>
+const STRIPE_PK = 'pk_test_51Q6SzlLOMF4anoUmpKZSCcCNXkAJWoUOgwhpZ55KHwSr2GZ7zlGS0WkUYJqWtv5OZ5qXIqIfNyixOcXyxhXJfA5j00WGY0nIaH';
+const stripe = Stripe(STRIPE_PK);
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+const p = new URLSearchParams(location.search);
+const params = {
+  rate_key: p.get('rate_key'),
+  activity_code: p.get('code'),
+  activity_name: p.get('name') || '',
+  destination_code: p.get('dest') || '',
+  operation_date: p.get('date'),
+  price: parseFloat(p.get('price') || '0'),
+  adults: parseInt(p.get('adults') || '1'),
+};
+
+// Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+const ON_BEHALF_OF = p.get('on_behalf_of') || sessionStorage.getItem('ab_on_behalf_of') || '';
+const GUEST_NAME = p.get('guest_name') || sessionStorage.getItem('ab_guest_name') || '';
+const GUEST_EMAIL = p.get('guest_email') || sessionStorage.getItem('ab_guest_email') || '';
+const GUEST_REF = p.get('guest_ref') || sessionStorage.getItem('ab_guest_ref') || '';
+if (ON_BEHALF_OF){
+  try {
+    sessionStorage.setItem('ab_on_behalf_of', ON_BEHALF_OF);
+    if (GUEST_NAME) sessionStorage.setItem('ab_guest_name', GUEST_NAME);
+    if (GUEST_EMAIL) sessionStorage.setItem('ab_guest_email', GUEST_EMAIL);
+    if (GUEST_REF) sessionStorage.setItem('ab_guest_ref', GUEST_REF);
+  } catch(e){}
+}
+
+let elements = null, airbiznessRef = null, paymentIntentId = null, stripeInited = false;
+
+if (!params.rate_key || !params.activity_code || !params.price) {
+  $('#root').innerHTML = '<div class="card" style="grid-column:1/-1">Paramètres manquants. <a href="/activites.html" style="color:var(--gold2)">Retour activités</a></div>';
+} else {
+  render();
+}
+
+function render(){
+  $('#root').innerHTML = `
+    <div>
+      <h1 class="title">Finaliser <em>la réservation</em></h1>
+      <p class="sub">Vous restez sur AirBizness — paiement sécurisé 3D Secure.</p>
+      <div class="notice">Réservation activité directe sur AirBizness</div>
+
+      <div class="card">
+        <div class="card-title">Vos informations</div>
+        <div class="field-grid">
+          <div class="field"><div class="field-label">Prénom</div><input id="firstName" type="text" placeholder="Jean"></div>
+          <div class="field"><div class="field-label">Nom</div><input id="lastName" type="text" placeholder="Dupont"></div>
+          <div class="field"><div class="field-label">Email</div><input id="email" type="email" placeholder="vous@email.com"></div>
+          <div class="field"><div class="field-label">Téléphone</div><input id="phone" type="tel" placeholder="+33 6 12 34 56 78"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Paiement sécurisé</div>
+        <div id="payment-element">Initialisation après saisie de vos informations…</div>
+      </div>
+
+      <button class="submit-btn" id="payBtn" onclick="submitPayment()" disabled>
+        Confirmer · ${params.price.toFixed(0)}€
+      </button>
+      <div id="error" class="error" style="display:none"></div>
+    </div>
+
+    <aside>
+      <div class="recap-card">
+        <div class="recap-title">Récapitulatif</div>
+        <div class="recap-activity">${esc(params.activity_name)}</div>
+        <div class="recap-meta"><span>Date</span><b>${esc(params.operation_date || '—')}</b></div>
+        <div class="recap-meta"><span>Voyageurs</span><b>${params.adults} adulte${params.adults>1?'s':''}</b></div>
+        <div class="recap-meta"><span>Destination</span><b>${esc(params.destination_code)}</b></div>
+        <div class="recap-total">
+          <span style="color:var(--text2)">Total</span>
+          <span class="recap-total-amount">${params.price.toFixed(0)}€</span>
+        </div>
+      </div>
+    </aside>
+  `;
+
+  ['firstName','lastName','email','phone'].forEach(k => {
+    const v = localStorage.getItem('ab_' + k);
+    if (v) $('#' + k).value = v;
+  });
+  ['firstName','lastName','email'].forEach(k => {
+    $('#' + k).addEventListener('input', maybeInitStripe);
+  });
+  setTimeout(maybeInitStripe, 100);
+}
+
+async function maybeInitStripe(){
+  if (stripeInited) return;
+  const fn = $('#firstName').value.trim();
+  const ln = $('#lastName').value.trim();
+  const em = $('#email').value.trim();
+  if (!fn || !ln || !em) return;
+  stripeInited = true;
+
+  try {
+    const r = await fetch('/api/hbx/activity-booking/payment-intent', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        rate_key: params.rate_key,
+        gross_price: params.price,
+        currency: 'EUR',
+        user_email: em,
+        holder_name: fn,
+        holder_surname: ln,
+        user_phone: $('#phone').value.trim(),
+        activity_code: params.activity_code,
+        activity_name: params.activity_name,
+        modality_code: '',
+        destination_code: params.destination_code,
+        operation_date: params.operation_date,
+        adults: params.adults,
+        children: 0,
+        // Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+        on_behalf_of: ON_BEHALF_OF || null,
+        guest_name: GUEST_NAME || null,
+        guest_email: GUEST_EMAIL || null,
+        guest_ref: GUEST_REF || null,
+      }),
+    });
+    if (!r.ok) { const err = await r.json(); throw new Error(err.detail || 'Erreur paiement'); }
+    const data = await r.json();
+    airbiznessRef = data.airbizness_ref;
+    paymentIntentId = data.payment_intent_id;
+
+    elements = stripe.elements({ clientSecret: data.client_secret, appearance: {
+      theme: 'night', variables: { colorPrimary: '#b8962e', colorBackground: '#1e1e1e', colorText:'#f0ece4', borderRadius:'6px' }
+    }});
+    const pe = elements.create('payment');
+    pe.mount('#payment-element');
+    pe.on('ready', () => { $('#payBtn').disabled = false; });
+  } catch(e){
+    stripeInited = false;
+    showError(e.message);
+  }
+}
+
+async function submitPayment(){
+  const fn = $('#firstName').value.trim();
+  const ln = $('#lastName').value.trim();
+  const em = $('#email').value.trim();
+  if (!fn || !ln || !em) { showError('Veuillez remplir vos informations.'); return; }
+  if (!elements) { showError('Paiement non initialisé.'); return; }
+
+  localStorage.setItem('ab_firstName', fn);
+  localStorage.setItem('ab_lastName', ln);
+  localStorage.setItem('ab_email', em);
+  localStorage.setItem('ab_phone', $('#phone').value.trim());
+
+  $('#payBtn').disabled = true;
+  $('#payBtn').textContent = 'Paiement en cours…';
+  hideError();
+
+  const { error, paymentIntent } = await stripe.confirmPayment({ elements, redirect:'if_required' });
+  if (error){
+    showError(error.message);
+    $('#payBtn').disabled = false;
+    $('#payBtn').textContent = `Confirmer · ${params.price.toFixed(0)}€`;
+    return;
+  }
+  if (paymentIntent && paymentIntent.status === 'succeeded'){
+    try {
+      const r = await fetch('/api/hbx/activity-booking/confirm', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ airbizness_ref: airbiznessRef, payment_intent_id: paymentIntentId }),
+      });
+      if (!r.ok){ const err = await r.json(); throw new Error(err.detail || 'Erreur finalisation'); }
+      location.href = `/activity-confirmation.html?ref=${airbiznessRef}`;
+    } catch(e){
+      showError('Paiement OK mais erreur finalisation. Ref: ' + airbiznessRef);
+      $('#payBtn').disabled = false;
+    }
+  }
+}
+
+function showError(m){ $('#error').style.display='block'; $('#error').textContent=m; }
+function hideError(){ $('#error').style.display='none'; }
+</script>
+<div id="ab-footer"></div>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Réclamer votre fiche — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.55;}
+
+.wrap{max-width:880px;margin:0 auto;padding:30px 24px 80px;}
+
+.hero{text-align:center;margin-bottom:32px;}
+.hero-tag{display:inline-block;background:var(--gold-dim);color:var(--gold2);padding:5px 14px;border-radius:99px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;margin-bottom:18px;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:36px;line-height:1.1;margin-bottom:10px;letter-spacing:-0.01em;}
+.hero h1 em{font-style:italic;color:var(--gold2);}
+.hero p{color:var(--text2);font-size:15px;max-width:580px;margin:0 auto;}
+
+.hotel-preview{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px;}
+.hotel-img{aspect-ratio:16/8;background:var(--bg3);position:relative;overflow:hidden;}
+.hotel-img img{width:100%;height:100%;object-fit:cover;}
+.hotel-img-badge{position:absolute;top:14px;left:14px;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);padding:5px 12px;border-radius:99px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#fff;}
+.hotel-body{padding:24px 28px;}
+.hotel-name{font-family:'DM Serif Display',serif;font-size:26px;line-height:1.2;margin-bottom:8px;letter-spacing:-0.01em;}
+.hotel-stars{color:var(--gold2);font-size:14px;margin-bottom:6px;}
+.hotel-addr{color:var(--text2);font-size:13px;margin-bottom:18px;}
+.hotel-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.stat{background:var(--bg3);padding:12px 14px;border-radius:8px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:3px;}
+.stat-value{font-size:15px;color:var(--text);}
+.stat-value strong{color:var(--gold2);font-family:'DM Serif Display',serif;font-size:18px;}
+
+.benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px;}
+@media(max-width:560px){.benefits{grid-template-columns:1fr;}}
+.benefit{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.benefit-ic{width:32px;height:32px;background:var(--gold-dim);color:var(--gold2);border-radius:8px;display:grid;place-items:center;margin-bottom:10px;font-size:15px;}
+.benefit h3{font-family:'DM Serif Display',serif;font-size:15px;margin-bottom:5px;}
+.benefit p{color:var(--text2);font-size:12.5px;line-height:1.5;}
+
+.claim-form{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:28px;}
+.claim-form h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;}
+.claim-form h2 em{font-style:italic;color:var(--gold2);}
+.claim-form .lead{color:var(--text2);font-size:13px;margin-bottom:20px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;}
+.field input:focus,.field select:focus{border-color:var(--border2);}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+.btn-claim{width:100%;background:var(--gold);color:#000;border:none;padding:14px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.3px;margin-top:10px;}
+.btn-claim:hover{background:var(--gold2);}
+.btn-claim:disabled{opacity:0.5;cursor:not-allowed;}
+.note{font-size:12px;color:var(--text3);margin-top:14px;line-height:1.6;}
+
+.loading{padding:80px 20px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.error{background:rgba(220,80,80,0.1);border:1px solid rgba(220,80,80,0.3);color:#f88;padding:14px 18px;border-radius:8px;font-size:13px;margin-top:14px;}
+.success{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:#7ddc94;padding:14px 18px;border-radius:8px;font-size:13px;margin-top:14px;line-height:1.6;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<div class="wrap" id="root">
+  <div class="loading"><div class="spinner"></div>Vérification du lien…</div>
+</div>
+
+<div id="ab-footer"></div>
+
+<script>
+const token = new URLSearchParams(location.search).get('token') || '';
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function stars(n){ return n ? '★'.repeat(n) + ' '+n+' étoiles' : ''; }
+
+async function load(){
+  if (!token){
+    document.getElementById('root').innerHTML = `
+      <div class="hero">
+        <div class="hero-tag">Lien manquant</div>
+        <h1>Aucun token de <em>réclamation</em></h1>
+        <p>Cliquez sur le lien reçu par email pour réclamer votre fiche.</p>
+      </div>`;
+    return;
+  }
+  try {
+    const r = await fetch('/api/claim/verify/' + encodeURIComponent(token));
+    if (r.status === 410){
+      document.getElementById('root').innerHTML = errorScreen('Lien expiré',
+        'Ce lien de réclamation a expiré (validité 90 jours). Contactez partenariats@airbizness.com pour recevoir un nouveau lien.');
+      return;
+    }
+    if (!r.ok){
+      document.getElementById('root').innerHTML = errorScreen('Lien invalide',
+        'Ce lien de réclamation n\'est pas valide ou a déjà été utilisé.');
+      return;
+    }
+    const d = await r.json();
+    if (d.status === 'claimed'){
+      document.getElementById('root').innerHTML = `
+        <div class="hero">
+          <div class="hero-tag">✓ Déjà réclamée</div>
+          <h1>Cette fiche est déjà <em>réclamée</em></h1>
+          <p>L'établissement ${esc(d.hotel_name)} a déjà été revendiqué par ${esc(d.claimed_by_name||d.claimed_by_email)}.</p>
+        </div>
+        <div style="text-align:center;margin-top:18px;">
+          <a href="/hotel-manager.html?token=${encodeURIComponent(token)}" style="display:inline-block;background:var(--gold);color:#000;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600;">Accéder à l'extranet manager</a>
+        </div>
+      `;
+      return;
+    }
+    render(d);
+  } catch(e){
+    document.getElementById('root').innerHTML = errorScreen('Erreur', e.message);
+  }
+}
+
+function errorScreen(title, msg){
+  return `<div class="hero">
+    <div class="hero-tag" style="background:rgba(220,80,80,0.15);color:#f88;">Erreur</div>
+    <h1>${esc(title)}</h1>
+    <p>${esc(msg)}</p>
+  </div>`;
+}
+
+function render(d){
+  document.getElementById('root').innerHTML = `
+    <div class="hero">
+      <div class="hero-tag">Programme partenaires AirBizness</div>
+      <h1>Réclamez la fiche de <em>${esc(d.hotel_name)}</em></h1>
+      <p>Vous gérerez vos photos, votre description, vos politiques et accéderez à des conditions de partenariat direct.</p>
+    </div>
+
+    <div class="hotel-preview">
+      ${d.main_image_url ? `
+        <div class="hotel-img">
+          <img src="${esc(d.main_image_url)}" alt="${esc(d.hotel_name)}">
+          <div class="hotel-img-badge">Aperçu fiche actuelle</div>
+        </div>` : ''}
+      <div class="hotel-body">
+        <div class="hotel-name">${esc(d.hotel_name)}</div>
+        ${d.category_stars ? `<div class="hotel-stars">${stars(d.category_stars)}</div>` : ''}
+        <div class="hotel-addr">${esc(d.address || '')}${d.city ? ', ' + esc(d.city) : ''}${d.country_code ? ' · '+esc(d.country_code) : ''}</div>
+        <div class="hotel-stats">
+          <div class="stat"><div class="stat-label">Code AirBizness</div><div class="stat-value"><strong>${d.hotel_code}</strong></div></div>
+          <div class="stat"><div class="stat-label">Photos en ligne</div><div class="stat-value"><strong>${d.images_count||0}</strong></div></div>
+          <div class="stat"><div class="stat-label">Équipements</div><div class="stat-value"><strong>${d.facilities_count||0}</strong></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="benefits">
+      <div class="benefit"><div class="benefit-ic">📸</div><h3>Gérez vos photos</h3><p>Uploadez vos vraies photos professionnelles. Choisissez celle mise en avant.</p></div>
+      <div class="benefit"><div class="benefit-ic">📝</div><h3>Votre description</h3><p>Écrivez vous-même votre histoire en français, anglais ou arabe.</p></div>
+      <div class="benefit"><div class="benefit-ic">🤝</div><h3>Partenariat direct</h3><p>Commission inférieure aux wholesalers. Plus de marge pour vous.</p></div>
+      <div class="benefit"><div class="benefit-ic">✓</div><h3>Badge vérifié</h3><p>"Fiche vérifiée par l'établissement" : confiance + meilleur ranking.</p></div>
+    </div>
+
+    <div class="claim-form">
+      <h2>Confirmer la <em>réclamation</em></h2>
+      <p class="lead">Renseignez vos informations. L'email doit correspondre au domaine de votre établissement pour validation automatique.</p>
+      <form id="claimForm" onsubmit="submitClaim(event)">
+        <div class="field-grid">
+          <div class="field">
+            <label>Prénom et nom</label>
+            <input type="text" id="manager_name" placeholder="Sami Tazi" required>
+          </div>
+          <div class="field">
+            <label>Votre rôle</label>
+            <select id="manager_role" required>
+              <option value="owner">Propriétaire</option>
+              <option value="manager" selected>Directeur / Manager</option>
+              <option value="reception">Réception</option>
+              <option value="marketing">Marketing</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email professionnel</label>
+          <input type="email" id="manager_email" placeholder="contact@votrehotel.com" required>
+        </div>
+        <div class="field">
+          <label>Téléphone direct (facultatif)</label>
+          <input type="tel" id="manager_phone" placeholder="+212 5 24 ...">
+        </div>
+        <button type="submit" class="btn-claim">Réclamer ma fiche</button>
+        <p class="note">En réclamant, vous confirmez être autorisé à représenter cet établissement.
+        AirBizness peut demander un justificatif (Kbis, contrat de travail) pour les bookings en partenariat direct.</p>
+      </form>
+      <div id="result"></div>
+    </div>
+  `;
+}
+
+async function submitClaim(e){
+  e.preventDefault();
+  const btn = document.querySelector('.btn-claim');
+  btn.disabled = true; btn.textContent = 'Vérification…';
+  const body = {
+    token,
+    manager_name: document.getElementById('manager_name').value.trim(),
+    manager_role: document.getElementById('manager_role').value,
+    manager_email: document.getElementById('manager_email').value.trim(),
+    manager_phone: document.getElementById('manager_phone').value.trim() || null,
+  };
+  try {
+    const r = await fetch('/api/claim/activate', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Erreur');
+    const verifiedMsg = d.auto_verified
+      ? '✓ <strong>Vérification automatique validée</strong> (email correspond au domaine de l\'hôtel).'
+      : 'Réclamation enregistrée. Vous accédez à l\'extranet en mode pré-vérifié — un membre de notre équipe confirmera votre rôle sous 24h.';
+    document.getElementById('result').innerHTML = `
+      <div class="success">
+        ${verifiedMsg}<br><br>
+        <a href="${d.manager_url}" style="display:inline-block;background:var(--gold);color:#000;padding:10px 20px;border-radius:7px;text-decoration:none;font-weight:600;">Accéder à l'extranet →</a>
+      </div>`;
+    setTimeout(() => location.href = d.manager_url, 2000);
+  } catch(e){
+    document.getElementById('result').innerHTML = `<div class="error">${esc(e.message)}</div>`;
+    btn.disabled = false;
+    btn.textContent = 'Réclamer ma fiche';
+  }
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Séjour confirmé — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;}
+.wrap{max-width:760px;margin:0 auto;padding:32px 24px 80px;}
+
+.success-hero{text-align:center;margin-bottom:32px;}
+.success-ic{width:72px;height:72px;border-radius:50%;background:rgba(74,222,128,0.15);border:2px solid var(--green);display:grid;place-items:center;font-size:32px;color:var(--green);margin:0 auto 18px;}
+h1{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:10px;letter-spacing:-0.01em;}
+h1 em{font-style:italic;color:var(--gold2);}
+.success-ref{display:inline-block;background:var(--bg2);border:1px solid var(--border2);padding:6px 14px;border-radius:99px;font-family:monospace;color:var(--gold2);font-size:13px;margin-bottom:10px;}
+.success-sub{color:var(--text2);font-size:14px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;}
+.card h2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:14px;display:flex;align-items:center;gap:10px;letter-spacing:-0.01em;}
+.card-ic{width:32px;height:32px;border-radius:8px;background:var(--gold-dim);display:grid;place-items:center;color:var(--gold2);font-size:15px;}
+.row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border);}
+.row:last-child{border-bottom:none;}
+.row span{color:var(--text2);}
+.row b{color:var(--text);}
+
+.flight-action{margin-top:14px;padding:14px 16px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;font-size:13px;color:#f5b347;line-height:1.6;}
+.flight-action a{display:inline-block;margin-top:8px;background:var(--gold);color:#000;padding:10px 18px;border-radius:7px;font-weight:600;font-size:13px;text-decoration:none;}
+.flight-action a:hover{background:var(--gold2);}
+
+.total-card{background:linear-gradient(135deg,var(--gold-dim) 0%,var(--bg2) 80%);border:1px solid var(--border2);border-radius:14px;padding:24px;text-align:center;margin-bottom:18px;}
+.total-card .label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:6px;}
+.total-card .amount{font-family:'DM Serif Display',serif;font-size:42px;color:var(--gold2);line-height:1;}
+.total-card .saved{font-size:12px;color:var(--green);margin-top:8px;}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
+.btn{padding:12px 22px;border:1px solid var(--border2);background:transparent;color:var(--gold2);border-radius:8px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;}
+.btn:hover{background:var(--gold-dim);}
+.btn-prim{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600;}
+.btn-prim:hover{background:var(--gold2);}
+
+.loading{padding:80px 24px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<div class="wrap">
+  <div id="content"><div class="loading"><div class="spinner"></div>Confirmation du séjour…</div></div>
+</div>
+
+<div id="ab-footer"></div>
+
+<script>
+const ref = new URLSearchParams(location.search).get('ref') || '';
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function load(){
+  if (!ref){
+    document.getElementById('content').innerHTML = '<div class="loading">Référence manquante.</div>';
+    return;
+  }
+  try {
+    const r = await fetch('/api/pack/booking/' + encodeURIComponent(ref));
+    if (!r.ok) throw new Error('Réservation introuvable');
+    const d = await r.json();
+    render(d);
+  } catch(e){
+    document.getElementById('content').innerHTML = `<div class="loading">Erreur : ${esc(e.message)}</div>`;
+  }
+}
+
+function fmtFlightTime(d){
+  const iso = d.flight_departure_at || d.flight_departure_date;
+  if (!iso) return '';
+  const dt = new Date(iso);
+  if (isNaN(dt.getTime())) return '';
+  const pad = n => n.toString().padStart(2,'0');
+  const fr_days = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+  const fr_months = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  let s = `${fr_days[dt.getDay()]} ${dt.getDate()} ${fr_months[dt.getMonth()]}`;
+  if (iso.length > 10) s += ` · ${pad(dt.getHours())}h${pad(dt.getMinutes())}`;
+  if (d.flight_duration_minutes){
+    const h = Math.floor(d.flight_duration_minutes/60), m = d.flight_duration_minutes%60;
+    s += ` · ${h}h${m?pad(m):''}`;
+  }
+  return s;
+}
+
+function renderOptionsCard(d){
+  // Pascal 2026-05-25 : bagages distincts aller/retour + sièges
+  const bagOut = Array.isArray(d.baggage_outbound_per_passenger) ? d.baggage_outbound_per_passenger
+               : Array.isArray(d.baggage_per_passenger) ? d.baggage_per_passenger : [];
+  const bagIn  = Array.isArray(d.baggage_inbound_per_passenger)  ? d.baggage_inbound_per_passenger  : [];
+  const hasBagOut = bagOut.some(b => b && b !== 'none');
+  const hasBagIn  = bagIn.some(b  => b && b !== 'none');
+  const seats = (d.selected_seats && typeof d.selected_seats === 'object') ? d.selected_seats : {};
+  const hasSeats = (seats.outbound && Object.keys(seats.outbound).length)
+                 || (seats.inbound  && Object.keys(seats.inbound).length);
+  // Pascal 2026-05-25 allbyleg : nouveaux flags par leg (cabin_premium_outbound/inbound, flex_ticket_outbound/inbound, transfer_*_price)
+  const hasTransferHbx = !!(d.transfer_rate_key && d.transfer_price > 0);
+  const hasTransferOut = !!(d.transfer_outbound_price && d.transfer_outbound_price > 0);
+  const hasTransferIn  = !!(d.transfer_inbound_price  && d.transfer_inbound_price  > 0);
+  const hasCabinPerLeg = !!(d.cabin_premium_outbound || d.cabin_premium_inbound);
+  const hasFlexPerLeg  = !!(d.flex_ticket_outbound   || d.flex_ticket_inbound);
+  const has = !!(d.late_checkin || d.cabin_premium || d.flex_ticket
+              || hasCabinPerLeg || hasFlexPerLeg
+              || d.insurance || d.flight_insurance_outbound || d.flight_insurance_inbound
+              || (d.transfer && d.transfer !== 'none')
+              || hasBagOut || hasBagIn || hasSeats || d.special_requests
+              || hasTransferHbx || hasTransferOut || hasTransferIn);
+  if (!has) return '';
+
+  const lines = [];
+  const _bagPrice = b => b === '15kg' ? '25' : b === '23kg' ? '45' : b === '30kg' ? '65' : '';
+  if (d.late_checkin) lines.push(['Late check-in (arrivée après 20h)', '25 €']);
+  if (hasBagOut){
+    bagOut.forEach((b, i) => {
+      if (!b || b === 'none') return;
+      lines.push([`Aller — Voyageur ${i+1} bagage soute ${esc(b)}`, _bagPrice(b) + ' €']);
+    });
+  }
+  if (hasBagIn){
+    bagIn.forEach((b, i) => {
+      if (!b || b === 'none') return;
+      lines.push([`Retour — Voyageur ${i+1} bagage soute ${esc(b)}`, _bagPrice(b) + ' €']);
+    });
+  }
+  if (hasSeats){
+    if (seats.outbound){
+      Object.entries(seats.outbound).forEach(([i, sid]) =>
+        lines.push([`Aller — Voyageur ${parseInt(i)+1} siège ${esc(String(sid).replace('seat_',''))}`, '']));
+    }
+    if (seats.inbound){
+      Object.entries(seats.inbound).forEach(([i, sid]) =>
+        lines.push([`Retour — Voyageur ${parseInt(i)+1} siège ${esc(String(sid).replace('seat_',''))}`, '']));
+    }
+  }
+  const adults = parseInt(d.adults) || 1;
+  // Assurances par vol (Pascal 2026-05-25) — affichées juste après bagages/sièges (regroupe les "options vol")
+  if (d.flight_insurance_outbound) lines.push([`Assurance vol aller (×${adults})`, (12*adults) + ' €']);
+  if (d.flight_insurance_inbound)  lines.push([`Assurance vol retour (×${adults})`, (12*adults) + ' €']);
+  // ── Cabin premium PAR LEG (Pascal 2026-05-25 allbyleg) ──
+  if (d.cabin_premium_outbound) lines.push([`Bagage cabine premium 10kg — vol aller (×${adults})`, (15*adults) + ' €']);
+  if (d.cabin_premium_inbound)  lines.push([`Bagage cabine premium 10kg — vol retour (×${adults})`, (15*adults) + ' €']);
+  if (!d.cabin_premium_outbound && !d.cabin_premium_inbound && d.cabin_premium){
+    // rétrocompat ancienne API (global)
+    lines.push([`Bagage cabine premium 10kg (×${adults})`, (15*adults) + ' €']);
+  }
+  // ── Flex ticket PAR LEG ──
+  if (d.flex_ticket_outbound) lines.push([`Tarif flex — vol aller (×${adults})`, (49*adults) + ' €']);
+  if (d.flex_ticket_inbound)  lines.push([`Tarif flex — vol retour (×${adults})`, (49*adults) + ' €']);
+  if (!d.flex_ticket_outbound && !d.flex_ticket_inbound && d.flex_ticket){
+    lines.push([`Tarif flexible (×${adults})`, (49*adults) + ' €']);
+  }
+  // ── Transferts PAR LEG (Pascal 2026-05-25 allbyleg) ──
+  if (hasTransferOut){
+    const label = d.transfer_outbound_label || 'Transfert vol aller (aéroport → hôtel)';
+    lines.push([label, Number(d.transfer_outbound_price).toFixed(0) + ' €']);
+    const meta = d.transfer_outbound_meta || {};
+    const subParts = [];
+    if (meta.vehicle) subParts.push(meta.vehicle);
+    if (meta.duration_min) subParts.push(meta.duration_min + ' min');
+    if (meta.max_pax) subParts.push('jusqu\'à ' + meta.max_pax + ' pax');
+    if (subParts.length) lines.push(['↳ ' + subParts.join(' · '), '']);
+  }
+  if (hasTransferIn){
+    const label = d.transfer_inbound_label || 'Transfert vol retour (hôtel → aéroport)';
+    lines.push([label, Number(d.transfer_inbound_price).toFixed(0) + ' €']);
+    const meta = d.transfer_inbound_meta || {};
+    const subParts = [];
+    if (meta.vehicle) subParts.push(meta.vehicle);
+    if (meta.duration_min) subParts.push(meta.duration_min + ' min');
+    if (meta.max_pax) subParts.push('jusqu\'à ' + meta.max_pax + ' pax');
+    if (subParts.length) lines.push(['↳ ' + subParts.join(' · '), '']);
+  }
+  // Rétrocompat : ancien format transfer (Pascal 2026-05-24 — global)
+  if (!hasTransferOut && !hasTransferIn){
+    if (hasTransferHbx){
+      const meta = d.transfer_meta || {};
+      const label = d.transfer_label || 'Transfert sélectionné';
+      lines.push([label, Number(d.transfer_price).toFixed(0) + ' €']);
+      const subParts = [];
+      if (meta.vehicle) subParts.push(meta.vehicle);
+      if (meta.duration_min) subParts.push(meta.duration_min + ' min');
+      if (meta.max_pax) subParts.push('jusqu\'à ' + meta.max_pax + ' pax');
+      if (subParts.length) lines.push(['↳ ' + subParts.join(' · '), '']);
+      if (meta.included && meta.included.length){
+        lines.push(['↳ Inclus : ' + meta.included.join(' · '), '']);
+      }
+      if (d.transfer_booking_ref){
+        lines.push(['↳ Référence transfert', d.transfer_booking_ref]);
+      }
+    } else if (d.transfer === 'oneway') {
+      lines.push(['Transfert aéroport-hôtel (aller)', '35 €']);
+    } else if (d.transfer === 'roundtrip') {
+      lines.push(['Transfert aéroport-hôtel (aller-retour)', '60 €']);
+    }
+  }
+  if (d.insurance) lines.push([`Assurance multirisque séjour (×${adults})`, (35*adults) + ' €']);
+
+  const optTotal = parseFloat(d.options_total || 0);
+  const optTotalHtml = optTotal > 0
+    ? `<div class="row" style="border-top:1px solid var(--border2);margin-top:8px;padding-top:12px;"><span style="color:var(--gold2);font-weight:500;">Total options</span><b style="color:var(--gold2);">+${optTotal.toFixed(0)} €</b></div>`
+    : '';
+
+  return `
+    <div class="card">
+      <h2><div class="card-ic">✦</div>Options & services</h2>
+      ${lines.map(([lbl, p]) => `<div class="row"><span>${esc(lbl)}</span><b>${esc(p)}</b></div>`).join('')}
+      ${d.special_requests ? `<div class="row"><span>Demande spéciale</span><b style="text-align:right;max-width:60%;">${esc(d.special_requests)}</b></div>` : ''}
+      ${optTotalHtml}
+    </div>
+  `;
+}
+
+function render(d){
+  const nights = d.hotel_check_in && d.hotel_check_out
+    ? Math.max(1, Math.round((new Date(d.hotel_check_out) - new Date(d.hotel_check_in))/86400000))
+    : 1;
+  const ad = parseInt(d.adults)||1;
+  const flightTotal = ((parseFloat(d.flight_price)||0) + (parseFloat(d.flight_return_price)||0)) * ad;
+  const sub = flightTotal + (parseFloat(d.hotel_price)||0);
+  const saved = sub - parseFloat(d.total_amount);
+
+  const isCancelled = d.status === 'cancelled';
+  const isMock = !!d.is_mock;
+  const passengers = Array.isArray(d.passengers) ? d.passengers : [];
+  const stopsStr = d.flight_stops === 0 ? 'Direct' : d.flight_stops === 1 ? '1 escale' : d.flight_stops ? `${d.flight_stops} escales` : '';
+  const flightTimeStr = fmtFlightTime(d);
+
+  document.getElementById('content').innerHTML = `
+    <div class="success-hero">
+      <div class="success-ic" style="${isCancelled?'background:rgba(220,80,80,0.15);border-color:#dc5050;color:#dc5050;':''}">${isCancelled ? '✕' : '✓'}</div>
+      <h1>${isCancelled ? 'Séjour annulé' : `Votre séjour est <em>confirmé</em>`}</h1>
+      <div class="success-ref">${esc(d.airbizness_ref)}</div>
+      <div class="success-sub">${isCancelled
+        ? 'Le remboursement Stripe a été initié.'
+        : `Bonjour ${esc(d.holder_name)}, votre confirmation a été envoyée à ${esc(d.user_email)}.`}</div>
+      ${isMock ? `<div style="display:inline-block;margin-top:10px;padding:5px 12px;background:var(--gold-dim);color:var(--gold2);border-radius:99px;font-size:11px;letter-spacing:0.8px;text-transform:uppercase;">Mode démo · Réservation simulée</div>` : ''}
+    </div>
+
+    <div class="card">
+      <h2><div class="card-ic">✈</div>${d.trip_type === 'round_trip' ? 'Vols' : 'Vol'} ${esc(d.flight_cabin||'Business')}</h2>
+      <div class="row" style="border-bottom:1px solid var(--border2);padding-bottom:10px;"><span style="color:var(--gold2);font-weight:500;">${d.trip_type === 'round_trip' ? 'Vol aller' : 'Trajet'}</span><b>${esc(d.flight_origin)} → ${esc(d.flight_destination)}</b></div>
+      <div class="row"><span>Départ</span><b>${esc(flightTimeStr || d.flight_departure_date || '—')}</b></div>
+      <div class="row"><span>Compagnie</span><b>${esc(d.flight_airline||'Multi-compagnies')}</b></div>
+      ${stopsStr ? `<div class="row"><span>Escales</span><b>${esc(stopsStr)}</b></div>` : ''}
+      ${d.duffel_pnr ? `<div class="row"><span>Référence vol (PNR)</span><b style="font-family:monospace;">${esc(d.duffel_pnr)}</b></div>` : ''}
+
+      ${d.trip_type === 'round_trip' && d.flight_return_offer_token ? (() => {
+        const ret = {
+          flight_departure_at: d.flight_return_departure_at,
+          flight_departure_date: d.flight_return_date,
+          flight_duration_minutes: d.flight_return_duration_minutes,
+        };
+        const retTimeStr = fmtFlightTime(ret);
+        const retStops = d.flight_return_stops === 0 ? 'Direct' : d.flight_return_stops === 1 ? '1 escale' : d.flight_return_stops ? `${d.flight_return_stops} escales` : '';
+        return `
+        <div class="row" style="border-top:1px solid var(--border2);padding-top:14px;margin-top:6px;"><span style="color:var(--gold2);font-weight:500;">Vol retour</span><b>${esc(d.flight_destination)} → ${esc(d.flight_origin)}</b></div>
+        <div class="row"><span>Départ retour</span><b>${esc(retTimeStr || d.flight_return_date || '—')}</b></div>
+        <div class="row"><span>Compagnie</span><b>${esc(d.flight_return_airline||'Multi-compagnies')}</b></div>
+        ${retStops ? `<div class="row"><span>Escales</span><b>${esc(retStops)}</b></div>` : ''}
+        ${d.flight_return_pnr ? `<div class="row"><span>Référence vol retour (PNR)</span><b style="font-family:monospace;">${esc(d.flight_return_pnr)}</b></div>` : ''}
+        `;
+      })() : (d.flight_return_date && d.trip_type !== 'round_trip' ? `<div class="row"><span>Retour</span><b>${esc(d.flight_return_date)}</b></div>` : '')}
+
+      ${d.flight_deeplink && !isCancelled && !isMock ? `
+      <div class="flight-action">
+        <strong>Étape suivante :</strong> finalisez l'émission de votre billet via notre partenaire.
+        Votre place est déjà payée chez AirBizness.<br>
+        <a href="${esc(d.flight_deeplink)}" target="_blank" rel="noopener">Finaliser le vol →</a>
+      </div>` : ''}
+    </div>
+
+    <div class="card">
+      <h2><div class="card-ic">🏨</div>Hôtel · Chambre</h2>
+      ${d.hotel_main_photo ? `<div style="width:100%;aspect-ratio:16/9;border-radius:8px;background:var(--bg3);overflow:hidden;margin-bottom:14px;"><img src="${esc(d.hotel_main_photo)}" alt="" style="width:100%;height:100%;object-fit:cover;"></div>` : ''}
+      <div class="row"><span>Établissement</span><b>${esc(d.hotel_name)}</b></div>
+      ${d.hotel_room_name ? `<div class="row"><span>Chambre</span><b>${esc(d.hotel_room_name)}</b></div>` : ''}
+      ${d.hotel_board_name ? `<div class="row"><span>Repas</span><b>${esc(d.hotel_board_name)}</b></div>` : ''}
+      <div class="row"><span>Annulation</span><b>${d.hotel_is_refundable !== false ? 'Annulation gratuite (selon délai)' : 'Non remboursable'}</b></div>
+      <div class="row"><span>Référence hôtel</span><b style="font-family:monospace;font-size:12px;">${esc(d.hbx_reference||'—')}</b></div>
+      <div class="row"><span>Arrivée</span><b>${esc(d.hotel_check_in)}</b></div>
+      <div class="row"><span>Départ</span><b>${esc(d.hotel_check_out)}</b></div>
+      <div class="row"><span>Durée</span><b>${nights} nuit${nights>1?'s':''}</b></div>
+    </div>
+
+    ${renderOptionsCard(d)}
+
+    <div class="card">
+      <h2><div class="card-ic">👤</div>Voyageurs (${passengers.length || d.adults || 1})</h2>
+      ${passengers.length ? passengers.map((p, i) => `
+        <div class="row">
+          <span>Voyageur ${i+1}</span>
+          <b>${esc((p.first_name||'') + ' ' + (p.last_name||''))}${p.passport_number ? ` · <span style="font-family:monospace;font-weight:400;font-size:12px;color:var(--text2);">passeport ${esc(p.passport_number)}</span>` : ''}</b>
+        </div>
+      `).join('') : `<div class="row"><span>Titulaire</span><b>${esc(d.holder_name||'')} ${esc(d.holder_surname||'')}</b></div>`}
+    </div>
+
+    <div class="total-card">
+      <div class="label">Total payé</div>
+      <div class="amount">${parseFloat(d.total_amount).toFixed(0)}€</div>
+      ${saved > 0 ? `<div class="saved">✓ Économie pack : −${saved.toFixed(0)}€ vs séparé</div>` : ''}
+    </div>
+
+    <div class="actions">
+      <a href="/api/pack/${esc(d.airbizness_ref)}/voucher.pdf" target="_blank" class="btn btn-prim">📄 Télécharger mon voucher PDF</a>
+      <a href="/mes-voyages.html" class="btn">Voir mes voyages</a>
+      <a href="/" class="btn">Retour accueil</a>
+      ${!isCancelled ? `<button class="btn" onclick="cancelPack()">Annuler ce séjour</button>` : ''}
+    </div>
+  `;
+}
+
+async function cancelPack(){
+  if (!confirm('Annuler ce séjour ? Le remboursement sera effectué automatiquement.')) return;
+  const email = prompt('Pour confirmer, entrez votre email de réservation :');
+  if (!email) return;
+  try {
+    const r = await fetch('/api/pack/cancel', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({airbizness_ref: ref, email_confirm: email}),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Annulation impossible');
+    alert(`Séjour annulé. Remboursement : ${d.stripe_refunded ? 'OK' : 'en cours'}`);
+    location.reload();
+  } catch(e){
+    alert('Erreur : ' + e.message);
+  }
+}
+
+load();
+</script>
+</body>
+</html>

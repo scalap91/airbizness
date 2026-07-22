@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="google-site-verification" content="mPjKOFEzqb0WNWWJc_h1pQaBW-_Vid87r5fE_EWoGBg" />
+<title>AirBizness — Bientôt disponible</title>
+<meta name="description" content="AirBizness — la marketplace de voyage premium arrive bientôt. Vols Business, hôtels curated, activités, transferts.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;}
+
+/* HEADER minimal */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:48px;height:34px;display:grid;place-items:center;flex-shrink:0;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;overflow:visible;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:21px;font-weight:400;letter-spacing:-0.005em;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;font-weight:400;}
+.header-right{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);}
+
+/* HERO plein écran */
+.hero{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;text-align:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:url('/images/destinations/rak.jpg'),linear-gradient(135deg,#1a1410 0%,#0a0a0a 100%);background-size:cover;background-position:center;}
+.hero-bg.b{opacity:0;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.4) 0%,rgba(15,15,15,0.65) 50%,rgba(15,15,15,0.95) 100%);}
+.hero-content{position:relative;z-index:2;max-width:780px;}
+
+.tag{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);border-radius:99px;color:#fff;font-size:11px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:32px;}
+.tag .pulse{width:7px;height:7px;background:var(--gold2);border-radius:50%;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+
+h1{font-family:'DM Serif Display',serif;font-size:clamp(36px,6vw,68px);line-height:1.05;color:#fff;margin-bottom:20px;letter-spacing:-0.01em;text-shadow:0 4px 24px rgba(0,0,0,0.5);}
+h1 em{font-style:italic;color:var(--gold2);}
+.lead{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,0.88);max-width:580px;margin:0 auto 40px;line-height:1.6;font-weight:300;}
+
+/* Countdown / signaux */
+.signals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;max-width:640px;margin:0 auto 48px;}
+.signal{background:rgba(255,255,255,0.04);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 14px;}
+.signal-value{font-family:'DM Serif Display',serif;font-size:32px;color:var(--gold2);line-height:1;margin-bottom:6px;}
+.signal-label{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.7);}
+
+/* Newsletter */
+.form{max-width:480px;margin:0 auto;display:flex;gap:8px;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);border-radius:99px;padding:5px;}
+.form input{flex:1;background:transparent;border:none;outline:none;padding:13px 22px;color:#fff;font-family:inherit;font-size:14px;}
+.form input::placeholder{color:rgba(255,255,255,0.5);}
+.form button{padding:13px 24px;background:var(--gold);border:none;color:#000;font-family:inherit;font-size:13.5px;font-weight:600;border-radius:99px;cursor:pointer;letter-spacing:0.3px;white-space:nowrap;transition:background .15s;}
+.form button:hover{background:var(--gold2);}
+.form-hint{font-size:11px;color:rgba(255,255,255,0.55);margin-top:12px;}
+.form-success{background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.3);color:#7ddc94;padding:14px 22px;border-radius:99px;font-size:13px;display:none;}
+
+/* Destinations preview */
+.destinations{padding:60px 24px;background:var(--bg);}
+.destinations h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,3vw,32px);text-align:center;margin-bottom:8px;color:var(--text);}
+.destinations h2 em{font-style:italic;color:var(--gold2);}
+.destinations p{text-align:center;color:var(--text2);font-size:14px;margin-bottom:36px;}
+.dest-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.dest{aspect-ratio:3/4;position:relative;border-radius:14px;overflow:hidden;cursor:default;}
+.dest img{width:100%;height:100%;object-fit:cover;}
+.dest-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%);}
+.dest-info{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;}
+.dest-iata{font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,0.7);margin-bottom:4px;}
+.dest-name{font-family:'DM Serif Display',serif;font-size:19px;letter-spacing:-0.01em;}
+
+/* Footer */
+.footer{padding:50px 24px 30px;text-align:center;border-top:1px solid var(--border);background:var(--bg);}
+.footer-inner{max-width:780px;margin:0 auto;}
+.footer-brand{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-size:16px;font-weight:500;margin-bottom:14px;}
+.footer-brand .mini{width:22px;height:22px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.footer-text{color:var(--text3);font-size:12px;line-height:1.7;margin-bottom:16px;}
+.footer-text strong{color:var(--text2);}
+.footer-contact{color:var(--text2);font-size:12px;}
+.footer-contact a{color:var(--gold2);text-decoration:none;}
+.footer-bot{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);}
+
+@media(max-width:560px){
+  .header{padding:0 16px;}
+  .hero{padding:90px 16px 50px;}
+  .signals{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .signal-value{font-size:24px;}
+  .form{flex-direction:column;border-radius:14px;}
+  .form input{text-align:center;}
+  .form button{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg" aria-label="AirBizness"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+  <div class="header-right">Bientôt disponible</div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="tag"><span class="pulse"></span>Construction en cours · lancement imminent</div>
+    <h1>Le voyage <em>premium</em><br>arrive bientôt.</h1>
+    <p class="lead">Nous finalisons l'expérience AirBizness : vols Business, hôtels curated et activités signature, dans une seule maison. Sans intermédiaire, sans détour.</p>
+
+    <div class="signals">
+      <div class="signal"><div class="signal-value">7 200</div><div class="signal-label">Destinations</div></div>
+      <div class="signal"><div class="signal-value">300 K+</div><div class="signal-label">Hôtels indexés</div></div>
+      <div class="signal"><div class="signal-value">4</div><div class="signal-label">Verticales voyage</div></div>
+      <div class="signal"><div class="signal-value">21</div><div class="signal-label">Pays au lancement</div></div>
+    </div>
+
+    <form class="form" id="newsletter" onsubmit="subscribe(event)">
+      <input type="email" id="email" placeholder="Votre email — soyez prévenu(e) du lancement" required>
+      <button type="submit">Me prévenir</button>
+    </form>
+    <div class="form-success" id="success">✓ Merci. Vous serez informé dès l'ouverture.</div>
+    <p class="form-hint">Une seule notification de lancement. Aucun spam.</p>
+  </div>
+</section>
+
+<section class="destinations">
+  <h2>Premières <em>destinations</em></h2>
+  <p>Paris · Madrid · Londres — nouvelles destinations ouvertes chaque semaine</p>
+  <div class="dest-grid">
+    <a href="/destinations/paris" class="dest" style="text-decoration:none;color:inherit;"><img src="/images/destinations/par.jpg" alt="Paris"><div class="dest-overlay"></div><div class="dest-info"><div class="dest-iata">FRANCE</div><div class="dest-name">Paris</div></div></a>
+    <a href="/destinations/madrid" class="dest" style="text-decoration:none;color:inherit;"><img src="/images/destinations/mad.jpg" alt="Madrid"><div class="dest-overlay"></div><div class="dest-info"><div class="dest-iata">ESPAGNE</div><div class="dest-name">Madrid</div></div></a>
+    <a href="/destinations/londres" class="dest" style="text-decoration:none;color:inherit;"><img src="/images/destinations/lon.jpg" alt="Londres"><div class="dest-overlay"></div><div class="dest-info"><div class="dest-iata">UK</div><div class="dest-name">Londres</div></div></a>
+  </div>
+</section>
+
+<!-- TOP DESTINATIONS SSR (internal linking pour Google) -->
+<section class="top-destinations-ssr" style="padding:50px 24px;background:var(--bg2);border-top:1px solid var(--border);">
+  <div style="max-width:1080px;margin:0 auto;text-align:center;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:clamp(22px,3vw,28px);color:var(--text);margin-bottom:6px;letter-spacing:-0.01em;">Top destinations <em style="color:var(--gold2);font-style:italic;">business</em></h2>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:24px;">Nos villes signature pour le voyage premium d'affaires.</p>
+    <style>.top-destinations-ssr .td-link{padding:9px 18px;background:var(--bg);border:1px solid var(--border);border-radius:99px;color:var(--text2);text-decoration:none;font-size:13px;transition:all .15s;display:inline-block;margin:4px;}.top-destinations-ssr .td-link:hover{border-color:var(--gold2);color:var(--gold2);}</style>
+    <div>
+      <a href="/destinations/paris" class="td-link">Paris</a>
+      <a href="/destinations/londres" class="td-link">Londres</a>
+      <a href="/destinations/new-york" class="td-link">New York</a>
+      <a href="/destinations/dubai" class="td-link">Dubai</a>
+      <a href="/destinations/singapore" class="td-link">Singapour</a>
+      <a href="/destinations/tokyo" class="td-link">Tokyo</a>
+      <a href="/destinations/geneve" class="td-link">Genève</a>
+      <a href="/destinations/zurich" class="td-link">Zurich</a>
+      <a href="/destinations/hong-kong" class="td-link">Hong Kong</a>
+      <a href="/destinations/shanghai" class="td-link">Shanghai</a>
+      <a href="/destinations/sydney" class="td-link">Sydney</a>
+      <a href="/destinations/sao-paulo" class="td-link">São Paulo</a>
+      <a href="/destinations/mumbai" class="td-link">Mumbai</a>
+      <a href="/destinations/bangkok" class="td-link">Bangkok</a>
+      <a href="/destinations/seoul" class="td-link">Séoul</a>
+      <a href="/destinations/berlin" class="td-link">Berlin</a>
+      <a href="/destinations/milano" class="td-link">Milan</a>
+      <a href="/destinations/amsterdam" class="td-link">Amsterdam</a>
+      <a href="/destinations/madrid" class="td-link">Madrid</a>
+      <a href="/destinations/lisbon" class="td-link">Lisbonne</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="mini"></div>AirBizness</div>
+    <div class="footer-text">
+      Marketplace de voyage premium en cours de finalisation.<br>
+      <strong>Partenariats hôteliers, presse, investisseurs :</strong>
+    </div>
+    <div class="footer-contact">
+      <a href="mailto:partenariats@airbizness.com">partenariats@airbizness.com</a> ·
+      <a href="mailto:presse@airbizness.com">presse@airbizness.com</a>
+    </div>
+    <div class="footer-bot">© AirBizness 2026 · Société européenne · Opérations MENA et Asie du Sud-Est</div>
+  </div>
+</footer>
+
+<script>
+function subscribe(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  if (!email) return;
+  document.getElementById('newsletter').style.display = 'none';
+  document.getElementById('success').style.display = 'inline-block';
+  // Best-effort POST (silencieux)
+  try {
+    fetch('/api/newsletter/subscribe', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, source:'coming-soon'})
+    }).catch(() => {});
+  } catch(e){}
+}
+</script>
+</body>
+</html>

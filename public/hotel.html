@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Hôtel — AirBizness</title>
+<meta name="description" content="Réservez votre hôtel directement sur AirBizness. Curated, premium, sans détour.">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --orange:#b8962e;--orange-h:#d4ae4a;
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --r:6px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden;line-height:1.6;}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
+.logo-hex{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:13px;color:#000;}
+.logo-text{font-size:19px;font-weight:600;color:var(--text);}
+.back-link{color:var(--text2);font-size:13px;text-decoration:none;display:flex;align-items:center;gap:6px;}
+.back-link:hover{color:var(--gold2);}
+
+/* CONTAINER */
+.main{padding:64px 0 80px;max-width:1200px;margin:0 auto;}
+
+/* HERO HOTEL */
+.hero-photo{position:relative;height:60vh;min-height:400px;max-height:560px;width:100%;background:#1a1a1a;overflow:hidden;}
+.hero-photo img{width:100%;height:100%;object-fit:cover;}
+.hero-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(15,15,15,0.95) 100%);}
+.hero-overlay{position:absolute;left:32px;right:32px;bottom:32px;z-index:2;}
+.hero-cat{display:inline-block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);background:rgba(0,0,0,0.5);padding:4px 12px;border:1px solid var(--border2);border-radius:99px;margin-bottom:12px;}
+.hero-name{font-family:'DM Serif Display',serif;font-size:42px;line-height:1.05;color:#fff;text-shadow:0 4px 24px rgba(0,0,0,0.6);}
+.hero-city{font-size:15px;color:rgba(255,255,255,0.85);margin-top:8px;text-shadow:0 2px 12px rgba(0,0,0,0.4);}
+@media(max-width:720px){.hero-photo{height:42vh;min-height:300px;}.hero-overlay{left:18px;right:18px;bottom:24px;}.hero-name{font-size:30px;}}
+
+/* CONTENT GRID */
+.content-wrap{display:grid;grid-template-columns:1fr 380px;gap:48px;padding:48px 32px;}
+@media(max-width:880px){.content-wrap{grid-template-columns:1fr;padding:30px 18px;gap:32px;}}
+
+/* MAIN COL */
+.section{margin-bottom:36px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);margin-bottom:14px;}
+.section-title em{font-style:italic;color:var(--gold2);}
+.description{font-size:15px;line-height:1.75;color:var(--text2);white-space:pre-line;}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:14px;}
+.gallery-img{aspect-ratio:1/1;background:#1a1a1a;cursor:pointer;overflow:hidden;border-radius:4px;}
+.gallery-img img{width:100%;height:100%;object-fit:cover;transition:transform .25s;}
+.gallery-img:hover img{transform:scale(1.05);}
+
+/* FACILITIES */
+.facilities{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px 18px;margin-top:14px;}
+.facility{font-size:13px;color:var(--text2);padding:6px 0;border-top:1px solid var(--border);}
+.facility:nth-child(-n+3){border-top:none;}
+@media(max-width:600px){.facility:nth-child(-n+3){border-top:1px solid var(--border);}.facility:nth-child(-n+1){border-top:none;}}
+
+/* SIDEBAR — RÉSERVATION */
+.booking-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;position:sticky;top:84px;}
+.booking-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:18px;}
+.booking-form{display:flex;flex-direction:column;gap:12px;}
+.bf-field{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.bf-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.bf-field input,.bf-field select{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;}
+.bf-field input[type=date]{color-scheme:dark;}
+.bf-search{margin-top:8px;padding:14px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.4px;cursor:pointer;border-radius:8px;}
+.bf-search:hover{background:var(--gold2);}
+.bf-search:disabled{opacity:0.6;cursor:wait;}
+
+.rates-result{margin-top:24px;}
+.rate-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+.rate-card:hover{border-color:var(--border2);}
+.rate-board{font-size:11px;color:var(--gold2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px;}
+.rate-price{font-family:'DM Serif Display',serif;font-size:24px;color:var(--text);line-height:1;}
+.rate-class{font-size:11px;color:var(--text3);margin-top:6px;}
+.rate-cta{margin-top:10px;padding:10px;background:var(--gold);border:none;color:#000;font-weight:600;font-size:13px;cursor:pointer;border-radius:6px;width:100%;letter-spacing:0.3px;}
+.rate-cta:hover{background:var(--gold2);}
+
+.no-rates{padding:20px;text-align:center;color:var(--text3);font-size:13px;font-style:italic;}
+
+/* META */
+.meta-row{display:flex;align-items:center;gap:12px;color:var(--text3);font-size:13px;margin-bottom:18px;flex-wrap:wrap;}
+.meta-row .sep{color:var(--text3);}
+
+/* NOTICE NATIVE */
+.notice-native{background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:12px 16px;font-size:12px;color:var(--gold2);margin-bottom:18px;line-height:1.5;}
+
+/* LOADING */
+.loading{padding:80px 24px;text-align:center;color:var(--text3);}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<script src="/i18n.js" defer></script>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<header class="header">
+  <a href="/" class="logo">
+    <div class="logo-hex">AB</div>
+    <div class="logo-text">AirBizness</div>
+  </a>
+  <a href="javascript:history.back()" class="back-link">← Retour</a>
+</header>
+
+<main class="main" id="main">
+  <div class="loading"><div class="loading-spinner"></div>Chargement de la fiche…</div>
+</main>
+
+<script>
+// URL: /hotel.html?code=4492&checkin=2026-08-15&checkout=2026-08-17&adults=2
+
+function $(s){ return document.querySelector(s); }
+function escape(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function loadHotel(){
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const checkin = p.get('checkin');
+  const checkout = p.get('checkout');
+  const adults = parseInt(p.get('adults') || '2');
+
+  if (!code) {
+    $('#main').innerHTML = '<div class="loading">Code hôtel manquant. <a href="/hotels.html" style="color:var(--gold2)">Retour à la liste</a></div>';
+    return;
+  }
+
+  try {
+    const r = await fetch(`/api/hotels/${code}`);
+    if (!r.ok) throw new Error('Hôtel introuvable');
+    const data = await r.json();
+    renderHotel(data.hotel, {code, checkin, checkout, adults});
+  } catch(e){
+    $('#main').innerHTML = `<div class="loading">${escape(e.message)}<br><br><a href="/hotels.html" style="color:var(--gold2)">Retour à la liste</a></div>`;
+  }
+}
+
+function renderHotel(h, params){
+  const mainImage = h.main_image || 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1600&q=80';
+  const gallery = (h.all_images || []).slice(1, 7);
+
+  const facilitiesList = (h.facilities || []).filter(f => f.name).slice(0, 12);
+  const description = h.description || '';
+
+  $('#main').innerHTML = `
+    <div class="hero-photo">
+      <img src="${escape(mainImage)}" alt="${escape(h.name)}" loading="eager">
+      <div class="hero-overlay">
+        ${h.category ? `<div class="hero-cat">${escape(h.category)}</div>` : ''}
+        <h1 class="hero-name">${escape(h.name)}</h1>
+        <div class="hero-city">${escape(h.address || '')} · ${escape(h.city || '')}</div>
+      </div>
+    </div>
+
+    <div class="content-wrap">
+      <div>
+        <div class="notice-native">
+          Réservation directe sur AirBizness — confirmation immédiate à votre nom.
+        </div>
+
+        ${description ? `
+        <div class="section">
+          <h2 class="section-title">À propos <em>de l'adresse</em></h2>
+          <p class="description">${escape(description)}</p>
+        </div>` : ''}
+
+        ${gallery.length ? `
+        <div class="section">
+          <h2 class="section-title">Galerie</h2>
+          <div class="gallery">
+            ${gallery.map(url => `<div class="gallery-img"><img src="${escape(url)}" alt="" loading="lazy"></div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        ${facilitiesList.length ? `
+        <div class="section">
+          <h2 class="section-title">Équipements <em>& services</em></h2>
+          <div class="facilities">
+            ${facilitiesList.map(f => `<div class="facility">${escape(f.name)}</div>`).join('')}
+          </div>
+        </div>` : ''}
+      </div>
+
+      <aside>
+        <div class="booking-card">
+          <div class="booking-title">Vérifier la disponibilité</div>
+          <form class="booking-form" onsubmit="return checkAvailability(event, ${h.code})">
+            <div class="bf-field">
+              <div class="bf-label">Arrivée</div>
+              <input type="date" id="checkIn" value="${escape(params.checkin || '')}" required>
+            </div>
+            <div class="bf-field">
+              <div class="bf-label">Départ</div>
+              <input type="date" id="checkOut" value="${escape(params.checkout || '')}" required>
+            </div>
+            <div class="bf-field">
+              <div class="bf-label">Voyageurs</div>
+              <select id="adults">
+                <option value="1" ${params.adults===1?'selected':''}>1 adulte</option>
+                <option value="2" ${params.adults===2?'selected':''}>2 adultes</option>
+                <option value="3" ${params.adults===3?'selected':''}>3 adultes</option>
+                <option value="4" ${params.adults===4?'selected':''}>4 adultes</option>
+              </select>
+            </div>
+            <button type="submit" class="bf-search" id="searchBtn">Voir les tarifs</button>
+          </form>
+
+          <div class="rates-result" id="ratesResult"></div>
+        </div>
+      </aside>
+    </div>
+  `;
+
+  // Pré-fill dates si absentes
+  if (!params.checkin) {
+    const d = new Date(); d.setDate(d.getDate()+30);
+    $('#checkIn').value = d.toISOString().slice(0,10);
+    const d2 = new Date(d); d2.setDate(d2.getDate()+3);
+    $('#checkOut').value = d2.toISOString().slice(0,10);
+  }
+  // Auto-check si dates fournies
+  if (params.checkin && params.checkout) {
+    checkAvailability(null, h.code);
+  }
+}
+
+async function checkAvailability(e, code){
+  if (e) e.preventDefault();
+  const checkIn = $('#checkIn').value;
+  const checkOut = $('#checkOut').value;
+  const adults = parseInt($('#adults').value);
+  const btn = $('#searchBtn');
+  const result = $('#ratesResult');
+
+  if (!checkIn || !checkOut) return false;
+
+  btn.disabled = true;
+  btn.textContent = 'Recherche…';
+  result.innerHTML = '<div class="no-rates">Vérification des disponibilités…</div>';
+
+  try {
+    const url = `/api/hotels/${code}/availability?check_in=${checkIn}&check_out=${checkOut}&adults=${adults}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    renderRates(data.rates || []);
+  } catch(err){
+    result.innerHTML = `<div class="no-rates">Erreur : ${escape(err.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Voir les tarifs';
+  }
+  return false;
+}
+
+function renderRates(rates){
+  const result = $('#ratesResult');
+  if (!rates.length) {
+    result.innerHTML = `<div class="no-rates">Aucune disponibilité pour ces dates. Essayez d'autres dates.</div>`;
+    return;
+  }
+  rates.sort((a,b) => (a.price || 0) - (b.price || 0));
+  result.innerHTML = rates.slice(0, 4).map((r,i) => `
+    <div class="rate-card">
+      ${r.board_name ? `<div class="rate-board">${escape(r.board_name)}</div>` : ''}
+      <div class="rate-price">${(r.price || 0).toFixed(0)}${r.currency==='EUR'?'€':' '+escape(r.currency)}</div>
+      ${r.rate_class ? `<div class="rate-class">${r.rate_class === 'NRF' ? 'Non remboursable' : 'Annulable selon conditions'}</div>` : ''}
+      <button class="rate-cta" onclick="proceedToReservation('${escape(r.rate_key||'')}', ${r.price || 0})">Réserver chez AirBizness</button>
+    </div>
+  `).join('');
+}
+
+function proceedToReservation(rateKey, price){
+  // Tunnel checkout native AirBizness
+  const p = new URLSearchParams(location.search);
+  const params = new URLSearchParams({
+    rate_key: rateKey,
+    code: p.get('code') || '',
+    name: $('.hero-name')?.textContent || '',
+    dest: '',
+    checkin: $('#checkIn').value,
+    checkout: $('#checkOut').value,
+    adults: $('#adults').value,
+  });
+  location.href = '/checkout.html?' + params.toString();
+}
+
+loadHotel();
+</script>
+
+<div id="ab-footer"></div>
+</body>
+</html>

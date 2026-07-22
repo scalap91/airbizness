@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Personnalisez votre voyage — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:44px;height:32px;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;}
+.steps{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text3);}
+.step{display:flex;align-items:center;gap:6px;}
+.step.on{color:var(--gold2);}
+.step-dot{width:18px;height:18px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:grid;place-items:center;font-size:10px;font-weight:600;}
+.step.on .step-dot{background:var(--gold);color:#000;border-color:var(--gold);}
+.step.done .step-dot{background:var(--green);color:#000;border-color:var(--green);}
+.step-sep{width:18px;height:1px;background:var(--border);}
+@media(max-width:720px){.steps{display:none;}}
+
+.main{padding:32px 0 80px;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 380px;gap:30px;}
+@media(max-width:980px){.wrap{grid-template-columns:1fr;padding:0 16px;}}
+
+.page-title{font-family:'DM Serif Display',serif;font-size:30px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:5px;}
+.page-title em{color:var(--gold2);font-style:italic;}
+.page-sub{color:var(--text2);font-size:13.5px;margin-bottom:24px;}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px 26px;margin-bottom:16px;}
+.section-head{display:flex;align-items:center;gap:11px;margin-bottom:18px;}
+.section-num{width:28px;height:28px;border-radius:50%;background:var(--gold-dim);color:var(--gold2);font-family:'DM Serif Display',serif;font-size:14px;display:grid;place-items:center;border:1px solid var(--border2);}
+.section-title{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-0.005em;}
+/* Sections vol par leg — visuels sejour.html */
+.vol-leg-section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px 26px;margin-bottom:16px;}
+.vol-leg-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.vol-leg-icon{font-size:22px;color:var(--gold2);}
+.vol-leg-title{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-0.005em;}
+.vol-leg-title em{color:var(--gold2);font-style:italic;}
+.vol-leg-sub{font-size:12.5px;color:var(--text2);margin-top:2px;}
+.vol-leg-block{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px;}
+.vol-leg-block:first-of-type{margin-top:0;}
+.vol-leg-block h3{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:10px;}
+
+/* Séparation visuelle Duffel vs AirBizness */
+.svc-section-header{margin:14px 0 10px;padding:8px 14px 8px 12px;border-radius:8px;display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;}
+.svc-section-header.svc-airline{background:rgba(80,140,210,0.10);border:1px solid rgba(80,140,210,0.28);color:#7ab2e8;}
+.svc-section-header.svc-airbizness{background:var(--gold-dim);border:1px solid var(--border2);color:var(--gold2);}
+.svc-section-header .svc-badge-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.svc-section-header.svc-airline .svc-badge-dot{background:#7ab2e8;}
+.svc-section-header.svc-airbizness .svc-badge-dot{background:var(--gold2);}
+.svc-section-header .svc-tag{margin-left:auto;font-size:10px;color:var(--text3);font-weight:400;letter-spacing:0.5px;text-transform:none;}
+@media (max-width:560px){
+  .svc-section-header{font-size:10px;padding:6px 10px;}
+  .svc-section-header .svc-tag{display:none;}
+}
+.section-hint{font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.55;}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field-grid.three{grid-template-columns:.6fr 1fr 1fr;}
+.field-grid.full{grid-template-columns:1fr;}
+@media(max-width:560px){.field-grid,.field-grid.three{grid-template-columns:1fr;}}
+.field{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;transition:border-color .15s;}
+.field:focus-within{border-color:var(--gold2);}
+.field-label{font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:3px;}
+.field-label.req::after{content:" *";color:var(--gold2);}
+.field input,.field select{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;}
+.field input[type=date]{color-scheme:dark;}
+.field select{cursor:pointer;appearance:none;}
+
+.pax-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:18px 18px 14px;margin-bottom:12px;}
+.pax-card-title{font-family:'JetBrains Mono','DM Sans',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:12px;}
+
+.submit-btn{width:100%;padding:16px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;letter-spacing:0.3px;cursor:pointer;border-radius:9px;transition:background .15s;margin-top:8px;}
+.submit-btn:hover:not(:disabled){background:var(--gold2);}
+.submit-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Options vol */
+.opt-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:14px;transition:border-color .15s;}
+.opt-card.on{border-color:var(--border2);}
+.opt-main{flex:1;min-width:0;}
+.opt-title{font-size:13.5px;color:var(--text);font-weight:500;}
+.opt-desc{font-size:11.5px;color:var(--text3);margin-top:3px;line-height:1.45;}
+.opt-price{font-family:'DM Serif Display',serif;font-size:15px;color:var(--gold2);white-space:nowrap;}
+.opt-toggle{position:relative;width:44px;height:24px;border-radius:99px;background:var(--bg4);border:1px solid var(--border);cursor:pointer;flex:0 0 auto;transition:background .15s,border-color .15s;}
+.opt-toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--text2);transition:left .15s,background .15s;}
+.opt-toggle.on{background:var(--gold-dim);border-color:var(--gold2);}
+.opt-toggle.on::after{left:22px;background:var(--gold2);}
+.opt-toggle input{display:none;}
+.opt-pax-baggage-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--border);}
+.opt-pax-baggage-row:last-child{border-bottom:none;}
+.opt-pax-baggage-row span{font-size:13px;color:var(--text);}
+.opt-pax-baggage-row select{background:var(--bg4);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:12.5px;padding:7px 10px;cursor:pointer;min-width:180px;}
+.opt-pax-baggage-row select:focus{outline:none;border-color:var(--gold2);}
+
+/* Sièges */
+.seat-section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:inherit;font-size:12px;padding:7px 12px;border-radius:6px;cursor:pointer;}
+.btn-ghost:hover{border-color:var(--gold2);color:var(--gold2);}
+.empty{padding:30px 12px;text-align:center;color:var(--text3);font-size:13px;}
+.empty b{display:block;color:var(--text2);font-size:13.5px;margin-bottom:5px;}
+.loading{padding:40px 12px;text-align:center;color:var(--text3);}
+.loading .spinner{margin:0 auto 12px;}
+
+/* Transfer */
+.opt-radio-group{display:flex;flex-direction:column;gap:8px;}
+.opt-radio{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s;}
+.opt-radio.on{border-color:var(--border2);background:var(--gold-dim);}
+.opt-radio input{accent-color:var(--gold2);}
+.opt-radio span{font-size:13px;color:var(--text);}
+
+.recap-section-label{font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);padding:14px 0 4px;border-top:1px solid var(--border);margin-top:6px;}
+.recap-row.opt{font-size:12.5px;padding:5px 0;}
+.recap-row.opt span{color:var(--text2);}
+.recap-row.opt strong{color:var(--text);font-weight:500;}
+.recap-row.subtotal{padding-top:10px;font-size:13px;}
+
+/* Récap sidebar */
+.recap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;position:sticky;top:78px;overflow:hidden;}
+.recap-head{padding:18px 22px;background:linear-gradient(180deg,var(--gold-dim) 0%,transparent 100%);border-bottom:1px solid var(--border);}
+.recap-route{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);}
+.recap-route .ar{color:var(--gold2);font-size:16px;}
+.recap-airline{font-size:12px;color:var(--text2);margin-top:4px;}
+.recap-body{padding:18px 22px;}
+.recap-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:9px 0;font-size:13px;color:var(--text2);}
+.recap-row strong{color:var(--text);font-weight:500;}
+.recap-row.total{border-top:1px solid var(--border);padding-top:14px;margin-top:6px;font-size:15px;}
+.recap-row.total strong{color:var(--gold2);font-family:'DM Serif Display',serif;font-size:22px;line-height:1;}
+.recap-mock{font-size:11px;color:var(--text3);padding:10px 22px 0;line-height:1.4;font-style:italic;}
+.recap-leg-label{font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold2);padding:10px 0 2px;}
+
+.state{padding:60px 20px;text-align:center;color:var(--text3);}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.err{color:#e87a7a;}
+</style>
+<!-- Carnet partagé (Pascal 2026-05-31) : composant Seats (id → designator) -->
+<script src="/js/carnets.js?v=2026053113"></script>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg" aria-label="AirBizness"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+  <div class="steps">
+    <div class="step done"><div class="step-dot">1</div>Vol</div>
+    <div class="step-sep"></div>
+    <div class="step on"><div class="step-dot">2</div>Personnaliser</div>
+    <div class="step-sep"></div>
+    <div class="step"><div class="step-dot">3</div>Paiement</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="wrap">
+    <div>
+      <h1 class="page-title">Personnalisez votre <em>voyage</em></h1>
+      <p class="page-sub">Renseignez les informations exactement comme sur la pièce d'identité de chaque passager.</p>
+
+      <div id="form-area">
+        <div class="state"><div class="spinner"></div>Chargement du vol…</div>
+      </div>
+    </div>
+
+    <aside id="recap-area"></aside>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+const params = new URLSearchParams(location.search);
+const OFFER_ID = params.get('offer') || '';
+const ADULTS = Math.max(1, parseInt(params.get('adults') || '1', 10));
+// Pax v2 (Pascal 2026-05-26) — pré-stocké, UI complète enfants/bébés à venir
+const CHILDREN = Math.max(0, parseInt(params.get('children') || '0', 10));
+const INFANTS = Math.max(0, parseInt(params.get('infants') || '0', 10));
+const Q_CABIN = (params.get('cabin') || 'business').toLowerCase();
+try {
+  sessionStorage.setItem('ab_pax_v2', JSON.stringify({
+    adults: ADULTS, children: CHILDREN, infants: INFANTS, cabin: Q_CABIN
+  }));
+} catch(e){}
+const Q_FROM = params.get('from') || '';
+const Q_TO = params.get('to') || '';
+const Q_DATE = params.get('date') || '';
+// Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+const ON_BEHALF_OF = params.get('on_behalf_of') || sessionStorage.getItem('ab_on_behalf_of') || '';
+const GUEST_NAME = params.get('guest_name') || sessionStorage.getItem('ab_guest_name') || '';
+const GUEST_EMAIL = params.get('guest_email') || sessionStorage.getItem('ab_guest_email') || '';
+const GUEST_REF = params.get('guest_ref') || sessionStorage.getItem('ab_guest_ref') || '';
+if (ON_BEHALF_OF){
+  try {
+    sessionStorage.setItem('ab_on_behalf_of', ON_BEHALF_OF);
+    if (GUEST_NAME) sessionStorage.setItem('ab_guest_name', GUEST_NAME);
+    if (GUEST_EMAIL) sessionStorage.setItem('ab_guest_email', GUEST_EMAIL);
+    if (GUEST_REF) sessionStorage.setItem('ab_guest_ref', GUEST_REF);
+  } catch(e){}
+}
+
+const CITIES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',NRT:'Tokyo',HKG:'Hong Kong',BKK:'Bangkok',SYD:'Sydney',GRU:'São Paulo',DEL:'Delhi',BOM:'Mumbai',DOH:'Doha',ICN:'Séoul',CPT:'Cape Town',NBO:'Nairobi',CMN:'Casablanca',RAK:'Marrakech'};
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function fmtPrice(p){ return (window.fmtEur || (v => new Intl.NumberFormat('fr-FR').format(v) + ' €'))(Number(p)); }
+function fmtDur(m){ if(!m) return '—'; const h=Math.floor(m/60),mn=m%60; return mn?`${h}h ${mn}`:`${h}h`; }
+function fmtTime(iso){ if(!iso) return '--:--'; return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function arrTime(dep, dur){ if(!dep) return '--:--'; return new Date(new Date(dep).getTime() + (dur||0)*60000).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }
+
+// Audit 2026-05-27 sev 3 #94 : countdown TTL offer Duffel.
+// Affiche un bandeau persistant en haut de la page avec temps restant avant
+// expiration de l'offer (généralement 15-30 min). Quand expiré → CTA "Reprendre".
+let _offerExpiryTimer = null;
+function startOfferExpiryCountdown(expiresAtIso){
+  try {
+    const expTs = new Date(expiresAtIso).getTime();
+    if (!expTs || isNaN(expTs)) return;
+    let banner = document.getElementById('offer-expiry-banner');
+    if (!banner){
+      banner = document.createElement('div');
+      banner.id = 'offer-expiry-banner';
+      banner.style.cssText = 'position:sticky;top:0;z-index:100;padding:8px 14px;background:#1a1d24;border-bottom:1px solid var(--border, #333);color:#ffc107;font-size:12px;text-align:center;font-family:inherit;';
+      document.body.insertBefore(banner, document.body.firstChild);
+    }
+    function tick(){
+      const ms = expTs - Date.now();
+      if (ms <= 0){
+        banner.innerHTML = '⏳ <strong>Cette offre a expiré.</strong> <a href="javascript:history.back()" style="color:#ff7;">Recommencer la sélection</a>';
+        banner.style.background = '#3a1414';
+        banner.style.color = '#ff8a8a';
+        if (_offerExpiryTimer){ clearInterval(_offerExpiryTimer); _offerExpiryTimer = null; }
+        return;
+      }
+      const m = Math.floor(ms/60000);
+      const s = Math.floor((ms%60000)/1000);
+      banner.innerHTML = `⏳ Offre valable encore <strong>${m}min ${String(s).padStart(2,'0')}s</strong> — confirmez le paiement avant expiration.`;
+    }
+    tick();
+    if (_offerExpiryTimer) clearInterval(_offerExpiryTimer);
+    _offerExpiryTimer = setInterval(tick, 1000);
+  } catch(_) {}
+}
+
+// Audit 2026-05-27 sev 4 #28 : rend les champs passeport obligatoires
+function markPassportRequired(){
+  document.querySelectorAll('input[name^="passportNumber_"], input[name^="passportExpiry_"]').forEach(el => {
+    el.required = true;
+    const label = el.closest('.field') && el.closest('.field').querySelector('.field-label');
+    if (label && !label.classList.contains('req')) label.classList.add('req');
+  });
+  const hint = document.querySelector('#form-area .field-hint');
+  if (hint && !hint.dataset.passportNoticed){
+    hint.dataset.passportNoticed = '1';
+    hint.innerHTML = '<strong style="color:#ffc107;">Vol international : les détails du passeport sont obligatoires pour ce vol.</strong>';
+  }
+}
+
+let DEAL = null;
+let IS_ROUNDTRIP = false;       // détecté via offer.slices.length >= 2
+let OFFER_FULL = null;           // détail offer Duffel (loadDuffelServices.offerData)
+
+// Services Duffel réels par leg (P1 juridique Pascal 2026-05-26)
+const DUFFEL_SVCS = { outbound: null, inbound: null };
+const duffelSelectedByLeg = { outbound: [], inbound: [] };
+
+// État options vol — par leg (aligné sejour.html allbyleg)
+const OPTIONS = {
+  // Bagages hardcoded fallback × adults — par leg
+  baggage_outbound: new Array(ADULTS).fill(null),
+  baggage_inbound:  new Array(ADULTS).fill(null),
+  // Options par leg
+  cabin_premium_outbound: false,
+  cabin_premium_inbound: false,
+  flex_ticket_outbound: false,
+  flex_ticket_inbound: false,
+  flight_insurance_outbound: false,
+  flight_insurance_inbound: false,
+  // Transfer dynamique par leg (HBX)
+  // outbound = "aéroport → ville" (arrivée), inbound = "ville → aéroport" (départ)
+  transfer_outbound_mode: 'none',  // 'none' | 'with_transfer'
+  transfer_outbound_address: '',
+  transfer_outbound_rate_key: null,
+  transfer_outbound_price: 0,
+  transfer_outbound_label: null,
+  transfer_outbound_meta: null,
+  transfer_inbound_mode: 'none',
+  transfer_inbound_address: '',
+  transfer_inbound_rate_key: null,
+  transfer_inbound_price: 0,
+  transfer_inbound_label: null,
+  transfer_inbound_meta: null,
+  _transfer_cache: {},
+};
+
+// Sièges sélectionnés par leg : {outbound:{0:'seat_1A'}, inbound:{0:'seat_5C'}}
+let selectedSeats = { outbound: {}, inbound: {} };
+let _seatMapCache = {};                                   // (oid+aircraft) → seat map
+let _seatPriceByLeg = { outbound: {}, inbound: {} };      // leg → {seatId: price}
+let _activeSeatPaxByLeg = { outbound: 0, inbound: 0 };
+
+const OPT_PRICES = {
+  cabin_premium_per_pax: 15,
+  flex_ticket_per_pax: 49,
+  flight_insurance_per_pax: 12,   // assurance par vol (par leg)
+  baggage: { none: 0, '15kg': 25, '23kg': 45, '30kg': 65 },
+};
+
+function _bagWeightLabel(svc){
+  const md = svc.metadata || {};
+  const w = md.maximum_weight_kg || md.maximum_weight || null;
+  const ty = (md.type || '').toLowerCase();
+  let label;
+  if (w) label = `${w} kg`;
+  else label = 'Bagage';
+  if (ty === 'carry_on' || ty === 'hand') label += ' (cabine)';
+  else if (ty === 'checked') label += ' (soute)';
+  return label;
+}
+
+// ── Chargement services Duffel réels (P1 juridique Pascal 2026-05-26) ──
+async function loadDuffelServices(offerId){
+  if (!offerId || offerId.startsWith('MOCK-')) return null;
+  try {
+    const r = await fetch(`/api/duffel/offer_with_services/${encodeURIComponent(offerId)}`);
+    if (!r.ok){
+      console.warn('[duffel.svcs] HTTP', r.status, '— fallback hardcoded');
+      return null;
+    }
+    const data = await r.json();
+    // Audit 2026-05-27 sev 3 #94 : expose expires_at pour countdown TTL
+    // Audit 2026-05-27 sev 4 #28 : expose passport requis vols intl
+    if (data.expires_at) {
+      try { startOfferExpiryCountdown(data.expires_at); } catch(_) {}
+    }
+    if (data.passenger_identity_documents_required) {
+      try { markPassportRequired(); } catch(_) {}
+    }
+    return {
+      offer_id: data.offer_id,
+      passengers: data.passengers || [],
+      slices: data.slices || [],
+      baggage: (data.available_services && data.available_services.baggage) || [],
+      seat: (data.available_services && data.available_services.seat) || [],
+      expires_at: data.expires_at || null,
+      passport_required: !!data.passenger_identity_documents_required,
+    };
+  } catch(e){
+    console.warn('[duffel.svcs] fetch fail:', e);
+    return null;
+  }
+}
+
+// Ventile les services Duffel par leg (aller/retour) en se basant sur segment_ids.
+// L'offer Duffel a slices=[outbound, inbound]. Chaque slice a des segments.
+// On crée une map segmentId → leg. Un service avec un segment_id dans inbound = inbound.
+function _splitDuffelByLeg(fullSvcs){
+  const result = { outbound: null, inbound: null };
+  if (!fullSvcs) return result;
+  const slices = fullSvcs.slices || [];
+  // Map segment_id → leg
+  const segLeg = {};
+  if (slices[0] && Array.isArray(slices[0].segments)){
+    slices[0].segments.forEach(s => { if (s && s.id) segLeg[s.id] = 'outbound'; });
+  }
+  if (slices[1] && Array.isArray(slices[1].segments)){
+    slices[1].segments.forEach(s => { if (s && s.id) segLeg[s.id] = 'inbound'; });
+  }
+  function pickLeg(svc){
+    const sids = svc.segment_ids || [];
+    for (const sid of sids){
+      if (segLeg[sid]) return segLeg[sid];
+    }
+    return 'outbound'; // fallback
+  }
+  // outbound bucket (toujours présent)
+  result.outbound = {
+    offer_id: fullSvcs.offer_id,
+    passengers: fullSvcs.passengers || [],
+    slices: slices,
+    baggage: [],
+    seat: [],
+  };
+  // inbound bucket seulement si 2 slices
+  if (slices.length >= 2){
+    result.inbound = {
+      offer_id: fullSvcs.offer_id,
+      passengers: fullSvcs.passengers || [],
+      slices: slices,
+      baggage: [],
+      seat: [],
+    };
+  }
+  (fullSvcs.baggage || []).forEach(svc => {
+    const leg = pickLeg(svc);
+    if (result[leg]) result[leg].baggage.push(svc);
+    // Si services multi-segments couvrant les 2 legs : on le met sur outbound (fallback)
+  });
+  (fullSvcs.seat || []).forEach(svc => {
+    const leg = pickLeg(svc);
+    if (result[leg]) result[leg].seat.push(svc);
+  });
+  return result;
+}
+
+function computeOptionsTotal(){
+  let t = 0;
+  // Cabin premium par leg
+  if (OPTIONS.cabin_premium_outbound) t += OPT_PRICES.cabin_premium_per_pax * ADULTS;
+  if (OPTIONS.cabin_premium_inbound)  t += OPT_PRICES.cabin_premium_per_pax * ADULTS;
+  // Flex ticket par leg
+  if (OPTIONS.flex_ticket_outbound) t += OPT_PRICES.flex_ticket_per_pax * ADULTS;
+  if (OPTIONS.flex_ticket_inbound)  t += OPT_PRICES.flex_ticket_per_pax * ADULTS;
+  // Assurance vol par leg
+  if (OPTIONS.flight_insurance_outbound) t += OPT_PRICES.flight_insurance_per_pax * ADULTS;
+  if (OPTIONS.flight_insurance_inbound)  t += OPT_PRICES.flight_insurance_per_pax * ADULTS;
+  // Transferts par leg (HBX)
+  t += Number(OPTIONS.transfer_outbound_price || 0);
+  t += Number(OPTIONS.transfer_inbound_price || 0);
+  // Bagages : Duffel prio sinon hardcoded — par leg
+  for (const leg of ['outbound', 'inbound']){
+    const svcs = DUFFEL_SVCS[leg];
+    if (svcs && svcs.baggage && svcs.baggage.length > 0){
+      for (const s of (duffelSelectedByLeg[leg] || [])){
+        t += Number(s._price || 0) * Number(s.quantity || 1);
+      }
+    } else {
+      const bag = (leg === 'inbound') ? OPTIONS.baggage_inbound : OPTIONS.baggage_outbound;
+      (bag || []).forEach(b => { if (b && OPT_PRICES.baggage[b]) t += OPT_PRICES.baggage[b]; });
+    }
+  }
+  // Sièges
+  for (const leg of ['outbound', 'inbound']){
+    const sel = selectedSeats[leg] || {};
+    Object.values(sel).forEach(sid => {
+      const p = (_seatPriceByLeg[leg] || {})[sid] || 0;
+      t += Number(p) || 0;
+    });
+  }
+  return t;
+}
+
+async function loadOffer(){
+  if(!OFFER_ID){ renderError('Aucun vol sélectionné. Retournez aux résultats.'); return; }
+  // Services Duffel réels en parallèle
+  const svcsPromise = loadDuffelServices(OFFER_ID).then(d => {
+    OFFER_FULL = d;
+    const split = _splitDuffelByLeg(d);
+    DUFFEL_SVCS.outbound = split.outbound;
+    DUFFEL_SVCS.inbound = split.inbound;
+    // Détecte roundtrip via slices.length
+    if (d && d.slices && d.slices.length >= 2){
+      IS_ROUNDTRIP = true;
+    }
+  });
+  // Cache sessionStorage
+  try {
+    const cached = sessionStorage.getItem('flight_offer_' + OFFER_ID);
+    if (cached) { DEAL = JSON.parse(cached); await svcsPromise; _detectRoundtripFromDeal(); render(); return; }
+  } catch(e){}
+  // Fallback : refetch /api/deals
+  try {
+    let url = `${API}/deals?limit=80`;
+    if (Q_FROM) url += `&origin=${encodeURIComponent(Q_FROM)}`;
+    if (Q_TO) url += `&destination=${encodeURIComponent(Q_TO)}`;
+    if (Q_DATE) url += `&date=${encodeURIComponent(Q_DATE)}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const match = (d.deals||[]).find(x => x.offer_id === OFFER_ID);
+    if (match) { DEAL = match; sessionStorage.setItem('flight_offer_' + OFFER_ID, JSON.stringify(match)); await svcsPromise; _detectRoundtripFromDeal(); render(); return; }
+    DEAL = {
+      offer_id: OFFER_ID, is_mock: OFFER_ID.startsWith('MOCK-'),
+      origin: Q_FROM || '—', destination: Q_TO || '—',
+      airline_name: 'Compagnie', airline_code: '',
+      price: 0, currency: 'EUR',
+      departure_at: null, duration_minutes: 0, stops: 0,
+    };
+    await svcsPromise;
+    _detectRoundtripFromDeal();
+    render();
+  } catch(e){
+    renderError('Erreur de chargement du vol.');
+  }
+}
+
+function _detectRoundtripFromDeal(){
+  // Si Duffel a déjà répondu, on a IS_ROUNDTRIP. Sinon fallback : si DEAL.return_at ou DEAL.is_round_trip
+  if (IS_ROUNDTRIP) return;
+  if (DEAL && (DEAL.return_at || DEAL.is_round_trip || DEAL.trip_type === 'round_trip')){
+    IS_ROUNDTRIP = true;
+  }
+  // Override URL : ?trip=rt|roundtrip|round_trip pour forcer roundtrip
+  // Fix B2 Pascal 2026-05-31 : resultats.html envoie 'round_trip' (underscore),
+  // sans ce variant la condition était fausse → checkout récap "Aller simple" en AR.
+  const _t = params.get('trip');
+  if (_t === 'rt' || _t === 'roundtrip' || _t === 'round_trip'){
+    IS_ROUNDTRIP = true;
+  }
+}
+
+function render(){
+  renderRecap();
+  // Pascal 2026-05-31 : charge voyageurs enregistrés AVANT le renderForm
+  // pour que paxCardHTML voie SAVED_PASSENGERS et propose le dropdown.
+  loadSavedPassengers().then(() => renderForm()).catch(() => renderForm());
+}
+
+// Helper escape HTML pour les noms dans <option>
+function escapeHtmlPax(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderRecap(){
+  const el = document.getElementById('recap-area');
+  const from = (CITIES[DEAL.origin]||DEAL.origin);
+  const to = (CITIES[DEAL.destination]||DEAL.destination);
+  const flightTotal = (DEAL.price||0) * ADULTS;
+  const optTotal = computeOptionsTotal();
+
+  // Lignes options par leg (séparation Duffel vs AirBizness, sejour-style)
+  const legs = IS_ROUNDTRIP ? ['outbound', 'inbound'] : ['outbound'];
+  const legLines = { outbound: [], inbound: [] };
+
+  legs.forEach(leg => {
+    const lines = [];
+    // Bagages (Duffel ou fallback)
+    const svcs = DUFFEL_SVCS[leg];
+    if (svcs && svcs.baggage && svcs.baggage.length > 0){
+      (duffelSelectedByLeg[leg] || []).forEach(s => {
+        lines.push(`<div class="recap-row opt"><span>${esc(s._label || 'Bagage')}</span><strong>${fmtPrice(Number(s._price || 0))}</strong></div>`);
+      });
+    } else {
+      const bag = (leg === 'inbound') ? OPTIONS.baggage_inbound : OPTIONS.baggage_outbound;
+      bag.forEach((b, i) => {
+        if (b && OPT_PRICES.baggage[b]){
+          lines.push(`<div class="recap-row opt"><span>Bagage soute V${i+1} (${b})</span><strong>${fmtPrice(OPT_PRICES.baggage[b])}</strong></div>`);
+        }
+      });
+    }
+    // Sièges
+    const sel = selectedSeats[leg] || {};
+    let seatTotal = 0;
+    Object.entries(sel).forEach(([paxIdx, sid]) => {
+      const price = (_seatPriceByLeg[leg] || {})[sid] || 0;
+      seatTotal += Number(price);
+      if (sid){
+        lines.push(`<div class="recap-row opt"><span>Siège V${parseInt(paxIdx)+1} · ${sid.replace('seat_','')}</span><strong>${price > 0 ? fmtPrice(price) : '✓'}</strong></div>`);
+      }
+    });
+    // Cabin premium
+    if (OPTIONS['cabin_premium_' + leg]) lines.push(`<div class="recap-row opt"><span>Bagage cabine premium ×${ADULTS}</span><strong>${fmtPrice(OPT_PRICES.cabin_premium_per_pax * ADULTS)}</strong></div>`);
+    // Flex
+    if (OPTIONS['flex_ticket_' + leg]) lines.push(`<div class="recap-row opt"><span>Tarif flexible ×${ADULTS}</span><strong>${fmtPrice(OPT_PRICES.flex_ticket_per_pax * ADULTS)}</strong></div>`);
+    // Assurance vol
+    if (OPTIONS['flight_insurance_' + leg]) lines.push(`<div class="recap-row opt"><span>Assurance vol ×${ADULTS}</span><strong>${fmtPrice(OPT_PRICES.flight_insurance_per_pax * ADULTS)}</strong></div>`);
+    // Transfer
+    const trMode = OPTIONS['transfer_' + leg + '_mode'];
+    const trPrice = Number(OPTIONS['transfer_' + leg + '_price'] || 0);
+    if (trMode !== 'none' && OPTIONS['transfer_' + leg + '_rate_key'] && trPrice > 0){
+      const lbl = OPTIONS['transfer_' + leg + '_label'] || 'Transfert';
+      const dirLbl = (leg === 'outbound') ? 'Aéro → Ville' : 'Ville → Aéro';
+      lines.push(`<div class="recap-row opt"><span>Transfert ${dirLbl} · ${esc(lbl)}</span><strong>${fmtPrice(trPrice)}</strong></div>`);
+    }
+    legLines[leg] = lines;
+  });
+
+  let optionsBlock = '';
+  if (legLines.outbound.length || legLines.inbound.length){
+    optionsBlock = `<div class="recap-section-label">Options</div>`;
+    if (legLines.outbound.length){
+      optionsBlock += `<div class="recap-leg-label">Vol aller</div>${legLines.outbound.join('')}`;
+    }
+    if (legLines.inbound.length){
+      optionsBlock += `<div class="recap-leg-label">Vol retour</div>${legLines.inbound.join('')}`;
+    }
+    optionsBlock += `<div class="recap-row subtotal"><span>Sous-total options</span><strong>${fmtPrice(optTotal)}</strong></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="recap">
+      <div class="recap-head">
+        <div class="recap-route"><span>${from} (${DEAL.origin||'?'})</span><span class="ar">${IS_ROUNDTRIP ? '⇄' : '→'}</span><span>${to} (${DEAL.destination||'?'})</span></div>
+        <div class="recap-airline">${DEAL.airline_name||''}${DEAL.airline_code?' · '+DEAL.airline_code:''}${IS_ROUNDTRIP ? ' · Aller-retour' : ' · Aller simple'}</div>
+      </div>
+      <div class="recap-body">
+        <div class="recap-row"><span>Date aller</span><strong>${fmtDate(DEAL.departure_at)}</strong></div>
+        <div class="recap-row"><span>Horaires aller</span><strong>${fmtTime(DEAL.departure_at)} → ${arrTime(DEAL.departure_at, DEAL.duration_minutes)}</strong></div>
+        <div class="recap-row"><span>Durée</span><strong>${fmtDur(DEAL.duration_minutes)} · ${DEAL.stops>0?(DEAL.stops+' escale'+(DEAL.stops>1?'s':'')):'Vol direct'}</strong></div>
+        <div class="recap-row"><span>Voyageurs</span><strong>${ADULTS} adulte${ADULTS>1?'s':''}</strong></div>
+        <div class="recap-row subtotal"><span>Sous-total vol</span><strong>${fmtPrice(flightTotal)}</strong></div>
+        ${optionsBlock}
+        <div class="recap-row total"><span>Total</span><strong>${fmtPrice(flightTotal + optTotal)}</strong></div>
+      </div>
+      ${DEAL.is_mock ? `<div class="recap-mock">Réservation de démonstration · paiement en mode test.</div>` : ''}
+    </div>
+  `;
+  // Sécurité : désactiver le CTA tant qu'on n'a pas de prix valide (anti-paiement 0€, DGCCRF)
+  const _btn = document.querySelector('#pax-form .submit-btn');
+  if (_btn) {
+    const _total = flightTotal + optTotal;
+    if (!_total || _total <= 0 || !DEAL || !DEAL.departure_at) {
+      _btn.disabled = true;
+      _btn.title = 'Total indisponible — recharger l\'offre';
+    } else {
+      _btn.disabled = false;
+      _btn.removeAttribute('title');
+    }
+  }
+}
+
+function renderError(msg){
+  document.getElementById('form-area').innerHTML = `<div class="state err">${msg}</div>`;
+}
+
+function paxCardHTML(i){
+  // Pascal 2026-05-31 : si user connecté + voyageurs enregistrés, propose un dropdown.
+  // Auto-sélectionne le titulaire (is_self) pour le voyageur 1.
+  const isLogged = (window.Auth && window.Auth.isLoggedIn());
+  let dropdownHtml = '';
+  if (isLogged && SAVED_PASSENGERS.length > 0) {
+    const selfId = (SAVED_PASSENGERS.find(p => p.is_self) || {}).id;
+    const defaultSel = (i === 0 && selfId) ? String(selfId) : '';
+    const opts = SAVED_PASSENGERS
+      .filter(p => p.type === 'adult')
+      .map(p => `<option value="${p.id}" ${String(p.id)===defaultSel?'selected':''}>${escapeHtmlPax(p.first_name)} ${escapeHtmlPax(p.last_name)}${p.is_self?' (vous)':''}</option>`)
+      .join('');
+    dropdownHtml = `
+      <div style="margin-bottom:12px;padding:10px 12px;background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--gold2);font-weight:600;letter-spacing:0.3px;">🗂️ Voyageur enregistré :</span>
+        <select onchange="fillPaxFromSaved(${i}, this)" style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);font-family:inherit;">
+          <option value="">— Saisir manuellement —</option>
+          ${opts}
+        </select>
+        <a href="/compte-voyageurs.html" style="font-size:11px;color:var(--text2);text-decoration:none;">+ Gérer</a>
+      </div>`;
+    // Auto-fill au render pour le voyageur 1 si self trouvé
+    if (defaultSel) {
+      setTimeout(() => {
+        const sel = document.querySelectorAll('select[onchange*="fillPaxFromSaved('+i+'"]')[0];
+        if (sel) fillPaxFromSaved(i, sel);
+      }, 100);
+    }
+  }
+  return `
+    <div class="pax-card">
+      <div class="pax-card-title">Voyageur ${i+1}${i===0?' · contact':''}</div>
+      ${dropdownHtml}
+      <div class="field-grid three">
+        <div class="field">
+          <div class="field-label req">Civ.</div>
+          <select name="title_${i}" required>
+            <option value="mr">M.</option>
+            <option value="mrs">Mme</option>
+            <option value="ms">Mlle</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label req">Prénom</div><input name="firstName_${i}" type="text" autocomplete="given-name" required></div>
+        <div class="field"><div class="field-label req">Nom</div><input name="lastName_${i}" type="text" autocomplete="family-name" required></div>
+      </div>
+      <div class="field-grid" style="margin-top:10px;">
+        <div class="field"><div class="field-label req">Date de naissance</div><input name="dob_${i}" type="date" required max="${new Date().toISOString().split('T')[0]}"></div>
+        <div class="field">
+          <div class="field-label req">Nationalité</div>
+          <select name="nationality_${i}" required>
+            <option value="FR">France</option>
+            <option value="BE">Belgique</option>
+            <option value="CH">Suisse</option>
+            <option value="MA">Maroc</option>
+            <option value="GB">Royaume-Uni</option>
+            <option value="ES">Espagne</option>
+            <option value="DE">Allemagne</option>
+            <option value="IT">Italie</option>
+            <option value="US">États-Unis</option>
+            <option value="CA">Canada</option>
+            <option value="other">Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-grid" style="margin-top:10px;">
+        <div class="field"><div class="field-label">N° de passeport (vols intl)</div><input name="passportNumber_${i}" type="text" autocomplete="off" placeholder="ex: 12AB34567"></div>
+        <div class="field"><div class="field-label">Expiration passeport</div><input name="passportExpiry_${i}" type="date" autocomplete="off" min="${new Date().toISOString().split('T')[0]}"></div>
+      </div>
+      <div class="field-hint" style="font-size:11px;color:var(--text3);margin-top:6px;">Pour les vols internationaux, certaines compagnies exigent les détails du passeport. Vous pouvez les ajouter ici ou au check-in.</div>
+    </div>`;
+}
+
+// ── Section vol par leg (Bagages + Siège + Cabine + Flex + Assurance + Transfert) ──
+function volLegSectionHTML(leg){
+  const suf = leg;
+  const titleSuf = (leg === 'inbound') ? 'retour' : 'aller';
+  // Pour l'aller : Origin → Dest ; pour le retour : Dest → Origin (vol seul, on n'a pas toujours les détails du retour Duffel, on déduit)
+  const fromCode = (leg === 'outbound') ? (DEAL.origin || '?') : (DEAL.destination || '?');
+  const toCode = (leg === 'outbound') ? (DEAL.destination || '?') : (DEAL.origin || '?');
+  const fromCity = CITIES[fromCode] || fromCode;
+  const toCity = CITIES[toCode] || toCode;
+
+  return `
+    <section class="vol-leg-section" data-leg="${leg}">
+      <div class="vol-leg-head">
+        <div class="vol-leg-icon">${leg === 'inbound' ? '🛬' : '✈️'}</div>
+        <div>
+          <div class="vol-leg-title">Vol <em>${titleSuf}</em></div>
+          <div class="vol-leg-sub">${fromCity} (${fromCode}) → ${toCity} (${toCode})</div>
+        </div>
+      </div>
+
+      <!-- ─── Badge : Services COMPAGNIE AÉRIENNE (Duffel) ─── -->
+      <div class="svc-section-header svc-airline">
+        <span class="svc-badge-dot"></span>
+        <span>Services compagnie aérienne</span>
+        <span class="svc-tag">Inclus dans le billet</span>
+      </div>
+
+      <!-- SECTION 1 : Bagages en soute -->
+      <div class="vol-leg-block" id="flight-bag-${suf}">
+        <h3>Bagages en soute</h3>
+        <div id="bag-${suf}-pax"></div>
+      </div>
+
+      <!-- SECTION 2 : Choisir votre siège -->
+      <div class="vol-leg-block" id="flight-seat-${suf}">
+        <div class="seat-section-head">
+          <div>
+            <h3 style="margin-bottom:4px;">Choisir votre siège</h3>
+            <div style="font-size:12px;color:var(--text2);">Sélectionnez un siège pour chaque voyageur. Cette étape est optionnelle.</div>
+          </div>
+          <button type="button" class="btn-ghost" onclick="skipSeatLeg('${leg}')" style="flex-shrink:0;">Passer cette étape →</button>
+        </div>
+        <div class="seat-pax-selector" id="seat-pax-selector-${suf}" style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap;"></div>
+        <div id="seat-map-container-${suf}" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;min-height:240px;">
+          <div class="empty"><b>Carte des sièges</b>Sélectionnez pour afficher la cabine.</div>
+        </div>
+        <div id="seats-summary-${suf}" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:12.5px;color:var(--text2);min-height:34px;">Aucun siège sélectionné.</div>
+      </div>
+
+      <!-- ─── Badge : Services AIRBIZNESS ─── -->
+      <div class="svc-section-header svc-airbizness">
+        <span class="svc-badge-dot"></span>
+        <span>Services AirBizness</span>
+        <span class="svc-tag">Ajoutés par AirBizness</span>
+      </div>
+
+      <!-- SECTION 3 : Assurance de ce vol -->
+      <div class="vol-leg-block" id="flight-insurance-${suf}">
+        <h3>Assurance de ce vol</h3>
+        <div class="opt-card" onclick="toggleLegOpt('flight_insurance', '${leg}')" style="padding:6px 14px;">
+          <div class="opt-main">
+            <div class="opt-title">Annulation et retard du vol ${titleSuf}</div>
+            <div class="opt-desc">Remboursement en cas d'annulation imprévue ou de retard supérieur à 4h sur ce vol.</div>
+          </div>
+          <div class="opt-price">+${OPT_PRICES.flight_insurance_per_pax} € / voyageur</div>
+          <div class="opt-toggle" id="toggle-flight_insurance_${suf}"><input type="checkbox" id="opt-flight_insurance_${suf}"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 4 : Bagage cabine premium 10kg (ce vol) -->
+      <div class="vol-leg-block" id="flight-cabin-premium-${suf}">
+        <h3>Bagage cabine premium 10kg (ce vol)</h3>
+        <div class="opt-card" onclick="toggleLegOpt('cabin_premium', '${leg}')" style="padding:6px 14px;">
+          <div class="opt-main">
+            <div class="opt-title">Bagage cabine 10kg pour le vol ${titleSuf}</div>
+            <div class="opt-desc">Au lieu du cabin only standard. Prioritaire à l'embarquement.</div>
+          </div>
+          <div class="opt-price">+${OPT_PRICES.cabin_premium_per_pax} € / voyageur</div>
+          <div class="opt-toggle" id="toggle-cabin_premium_${suf}"><input type="checkbox" id="opt-cabin_premium_${suf}"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 : Tarif flex (ce vol) -->
+      <div class="vol-leg-block" id="flight-flex-${suf}">
+        <h3>Tarif flex (modifiable ≤24h avant)</h3>
+        <div class="opt-card" onclick="toggleLegOpt('flex_ticket', '${leg}')" style="padding:6px 14px;">
+          <div class="opt-main">
+            <div class="opt-title">Modifiable ou annulable — vol ${titleSuf}</div>
+            <div class="opt-desc">Modification ou annulation sans frais jusqu'à 24h avant le départ de ce vol.</div>
+          </div>
+          <div class="opt-price">+${OPT_PRICES.flex_ticket_per_pax} € / voyageur</div>
+          <div class="opt-toggle" id="toggle-flex_ticket_${suf}"><input type="checkbox" id="opt-flex_ticket_${suf}"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 6 : Transfert aéroport (ce vol) -->
+      <div class="vol-leg-block" id="flight-transfer-${suf}">
+        <h3>${leg === 'outbound' ? 'Transfert aéroport → ville (vol aller)' : 'Transfert ville → aéroport (vol retour)'}</h3>
+        <div class="opt-radio-group" id="transfer-mode-group-${suf}" style="margin-bottom:12px;">
+          <label class="opt-radio on" data-mode="none">
+            <input type="radio" name="opt_transfer_mode_${suf}" value="none" checked onchange="setLegTransferMode('${leg}','none')">
+            <span>Aucun transfert</span>
+          </label>
+          <label class="opt-radio" data-mode="with_transfer">
+            <input type="radio" name="opt_transfer_mode_${suf}" value="with_transfer" onchange="setLegTransferMode('${leg}','with_transfer')">
+            <span>Ajouter un transfert privé</span>
+          </label>
+        </div>
+        <div id="transfer-options-wrap-${suf}" style="display:none;">
+          <div style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold2);margin-bottom:6px;">Adresse ${leg === 'outbound' ? 'de destination' : 'de prise en charge'}</div>
+          <input type="text" id="transfer-address-${suf}" placeholder="Ex : 25 rue de Rivoli, 75001 Paris"
+                 style="width:100%;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;font-family:inherit;font-size:13px;margin-bottom:10px;">
+          <div id="transfer-options-loading-${suf}" style="font-size:12px;color:var(--text3);padding:10px 0;display:none;">Recherche des options de transfert disponibles…</div>
+          <div id="transfer-options-list-${suf}" style="display:flex;flex-direction:column;gap:10px;"></div>
+          <div id="transfer-options-empty-${suf}" style="font-size:12px;color:var(--text3);padding:10px 0;display:none;">Aucune option de transfert disponible pour cet itinéraire.</div>
+        </div>
+      </div>
+    </section>`;
+}
+
+// Pascal 2026-05-31 : voyageurs enregistrés du carnet client (si user connecté).
+// Chargé async au mount, utilisé par paxCardHTML pour proposer un dropdown.
+let SAVED_PASSENGERS = [];
+async function loadSavedPassengers() {
+  if (!window.Auth || !window.Auth.isLoggedIn()) return;
+  try {
+    const r = await window.Auth.fetch('/api/user/passengers');
+    if (!r.ok) return;
+    const d = await r.json();
+    SAVED_PASSENGERS = d.passengers || [];
+  } catch (_) {}
+}
+
+// Auto-remplit les champs du voyageur i depuis un passenger enregistré
+function fillPaxFromSaved(i, sel) {
+  if (!sel) return;
+  const p = SAVED_PASSENGERS.find(x => String(x.id) === String(sel.value));
+  if (!p) return;
+  const form = document.getElementById('pax-form');
+  if (!form) return;
+  // Mappe gender → title (m→mr, f→mrs, x→ms)
+  const titleVal = p.gender === 'f' ? 'mrs' : (p.gender === 'x' ? 'ms' : 'mr');
+  const setVal = (name, val) => { const el = form.elements[name]; if (el) el.value = val || ''; };
+  setVal(`title_${i}`, titleVal);
+  setVal(`firstName_${i}`, p.first_name);
+  setVal(`lastName_${i}`, p.last_name);
+  setVal(`dob_${i}`, p.date_of_birth || '');
+}
+window.fillPaxFromSaved = fillPaxFromSaved;
+
+function renderForm(){
+  const el = document.getElementById('form-area');
+  let pax = '';
+  for(let i=0;i<ADULTS;i++) pax += paxCardHTML(i);
+
+  const legHtml = volLegSectionHTML('outbound') + (IS_ROUNDTRIP ? volLegSectionHTML('inbound') : '');
+
+  // Pascal 2026-05-31 : ordre du parcours inversé pour aligner sur sejour.html
+  // Avant : Coordonnées → Voyageurs → Options vol (forçait à donner identité avant
+  // de choisir le vol et ses options, anti-UX).
+  // Maintenant : Options vol (sièges/bagages/etc.) D'ABORD → puis Coordonnées + Voyageurs.
+  el.innerHTML = `
+    <form id="pax-form" onsubmit="onSubmit(event)">
+
+      ${legHtml}
+
+      <div class="section">
+        <div class="section-head"><div class="section-title">Coordonnées de réservation</div></div>
+        <div class="section-hint">Nous envoyons la confirmation, le billet et toute alerte vol à cet email.</div>
+        <div class="field-grid">
+          <div class="field"><div class="field-label req">Email</div><input name="email" type="email" autocomplete="email" required></div>
+          <div class="field"><div class="field-label req">Téléphone (format international)</div><input name="phone" type="tel" autocomplete="tel" required placeholder="+33 6 12 34 56 78" pattern="^[\+0-9 .()-]{7,20}$" title="Numéro avec indicatif international (+33...) ou local commençant par 0"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-title">${ADULTS>1?'Voyageurs adultes':'Voyageur'}</div></div>
+        <div class="section-hint">Saisissez les noms exactement comme sur la pièce d'identité (passeport ou CNI).</div>
+        ${pax}
+        ${(CHILDREN+INFANTS) > 0 ? `
+        <div style="margin-top:14px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:12.5px;color:var(--text2);line-height:1.6;">
+          <strong style="color:var(--gold2);">À noter</strong> · Vous avez également ${CHILDREN>0?CHILDREN+' enfant'+(CHILDREN>1?'s':''):''}${(CHILDREN>0&&INFANTS>0)?' et ':''}${INFANTS>0?INFANTS+' bébé'+(INFANTS>1?'s':''):''} à votre réservation. Les noms, dates de naissance et documents seront saisis à l'étape de paiement.
+        </div>` : ''}
+      </div>
+
+      <button class="submit-btn" type="submit">Continuer vers le paiement</button>
+    </form>
+  `;
+
+  // Rendre bagages + sièges par leg
+  renderFlightBaggageLeg('outbound');
+  initFlightSeatSection('outbound');
+  if (IS_ROUNDTRIP){
+    renderFlightBaggageLeg('inbound');
+    initFlightSeatSection('inbound');
+  }
+  syncOptUI();
+
+  // Bind transfer address inputs
+  ['outbound','inbound'].forEach(leg => {
+    const inp = document.getElementById('transfer-address-' + leg);
+    if (!inp) return;
+    let _deb = null;
+    inp.addEventListener('input', e => {
+      OPTIONS['transfer_' + leg + '_address'] = (e.target.value || '').trim();
+      clearTimeout(_deb);
+      _deb = setTimeout(() => {
+        if (OPTIONS['transfer_' + leg + '_mode'] === 'with_transfer'
+            && OPTIONS['transfer_' + leg + '_address'].length >= 5){
+          fetchLegTransferOptions(leg);
+        }
+      }, 600);
+    });
+  });
+}
+
+// ── Bagages par leg (réutilise sejour.html — renderFlightBaggageLeg) ──
+function renderFlightBaggageLeg(leg){
+  const wrap = document.getElementById(`bag-${leg}-pax`);
+  if (!wrap) return;
+  const key = (leg === 'inbound') ? 'baggage_inbound' : 'baggage_outbound';
+
+  // Pré-remplissage retour avec valeurs aller si vide
+  if (leg === 'inbound' && IS_ROUNDTRIP){
+    const empty = !OPTIONS.baggage_inbound || !OPTIONS.baggage_inbound.length
+                  || OPTIONS.baggage_inbound.every(b => !b);
+    if (empty && OPTIONS.baggage_outbound && OPTIONS.baggage_outbound.length){
+      OPTIONS.baggage_inbound = [...OPTIONS.baggage_outbound];
+    }
+  }
+  // Ensure array length
+  while (OPTIONS[key].length < ADULTS) OPTIONS[key].push(null);
+  OPTIONS[key] = OPTIONS[key].slice(0, ADULTS);
+
+  const svcs = DUFFEL_SVCS[leg];
+  const useDuffel = !!(svcs && svcs.baggage && svcs.baggage.length > 0);
+
+  if (useDuffel){
+    let html = `<div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-style:italic;">
+      Services bagages réels proposés par la compagnie pour ce vol ${leg === 'inbound' ? 'retour' : 'aller'}.
+    </div>`;
+    svcs.baggage.forEach(svc => {
+      const label = _bagWeightLabel(svc);
+      const pidsRaw = (svc.passenger_ids || []);
+      const sidsRaw = (svc.segment_ids || []);
+      const paxIdxs = pidsRaw.map(pid => {
+        const idx = (svcs.passengers || []).findIndex(p => p.id === pid);
+        return idx >= 0 ? (idx + 1) : null;
+      }).filter(x => x !== null);
+      const paxStr = paxIdxs.length ? ` V${paxIdxs.join(',V')}` : '';
+      const segStr = sidsRaw.length > 1 ? ' · multi-segments' : '';
+      const isChecked = (duffelSelectedByLeg[leg] || []).some(s => s.id === svc.id);
+      const price = Number(svc.total_amount || 0);
+      const labelFull = label + paxStr;
+      html += `
+        <div class="opt-pax-baggage-row" data-duffel-svc-id="${esc(svc.id)}">
+          <span>${esc(labelFull)}${esc(segStr)}</span>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <span style="font-family:'DM Serif Display',serif;font-size:13.5px;color:var(--gold2);">+${price.toFixed(0)} €</span>
+            <input type="checkbox" class="bag-duffel-cb"
+              data-leg="${leg}"
+              data-svc-id="${esc(svc.id)}"
+              data-svc-price="${price}"
+              data-svc-label="${esc(labelFull)}"
+              ${isChecked?'checked':''}
+              style="width:17px;height:17px;accent-color:var(--gold2);cursor:pointer;">
+          </label>
+        </div>`;
+    });
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.bag-duffel-cb').forEach(cb => {
+      cb.addEventListener('change', e => {
+        const lg = e.target.getAttribute('data-leg');
+        const sid = e.target.getAttribute('data-svc-id');
+        const price = Number(e.target.getAttribute('data-svc-price') || 0);
+        const lbl = e.target.getAttribute('data-svc-label') || 'Bagage';
+        const arr = duffelSelectedByLeg[lg] || [];
+        const idx = arr.findIndex(s => s.id === sid);
+        if (e.target.checked){
+          if (idx < 0) arr.push({id: sid, quantity: 1, _price: price, _label: lbl});
+        } else {
+          if (idx >= 0) arr.splice(idx, 1);
+        }
+        duffelSelectedByLeg[lg] = arr;
+        renderRecap();
+      });
+    });
+  } else {
+    wrap.innerHTML = Array.from({length: ADULTS}, (_, i) => `
+      <div class="opt-pax-baggage-row">
+        <span>Voyageur ${i+1}</span>
+        <select data-leg="${leg}" data-pax="${i}" onchange="setFlightBaggageFor('${leg}', ${i}, this.value)">
+          <option value="none" ${(!OPTIONS[key][i] || OPTIONS[key][i]==='none')?'selected':''}>Aucun bagage soute (0 €)</option>
+          <option value="15kg" ${OPTIONS[key][i]==='15kg'?'selected':''}>15 kg (+25 €)</option>
+          <option value="23kg" ${OPTIONS[key][i]==='23kg'?'selected':''}>23 kg (+45 €)</option>
+          <option value="30kg" ${OPTIONS[key][i]==='30kg'?'selected':''}>30 kg (+65 €)</option>
+        </select>
+      </div>
+    `).join('');
+  }
+}
+
+function setFlightBaggageFor(leg, i, val){
+  const key = (leg === 'inbound') ? 'baggage_inbound' : 'baggage_outbound';
+  OPTIONS[key][i] = (val === 'none') ? null : val;
+  renderRecap();
+}
+
+// ── Sièges par leg (réutilise sejour.html — initFlightSeatSection) ──
+function initFlightSeatSection(leg){
+  _activeSeatPaxByLeg[leg] = 0;
+  renderSeatPaxSelectorForLeg(leg);
+  loadSeatMapForLeg(leg);
+}
+
+function renderSeatPaxSelectorForLeg(leg){
+  const wrap = document.getElementById('seat-pax-selector-' + leg);
+  if (!wrap) return;
+  const active = _activeSeatPaxByLeg[leg];
+  wrap.innerHTML = Array.from({length: ADULTS}, (_, i) => {
+    const on = (i === active);
+    const assigned = (selectedSeats[leg] || {})[i];
+    return `<button type="button" class="seat-pax-btn ${on?'on':''}" data-pax="${i}" onclick="setActiveSeatPaxForLeg('${leg}', ${i})" style="padding:7px 12px;border-radius:99px;border:1px solid ${on?'var(--border2)':'var(--border)'};background:${on?'var(--gold-dim)':'transparent'};color:${on?'var(--gold2)':'var(--text2)'};font-family:inherit;font-size:12px;cursor:pointer;">Voyageur ${i+1}${assigned ? ' · ' + assigned.replace('seat_','') : ''}</button>`;
+  }).join('');
+}
+
+function setActiveSeatPaxForLeg(leg, i){
+  _activeSeatPaxByLeg[leg] = i;
+  renderSeatPaxSelectorForLeg(leg);
+  const oid = _seatOfferIdFor(leg);
+  const aircraft = _aircraftCodeFor(leg);
+  const cacheKey = oid + '|' + aircraft;
+  if (oid && _seatMapCache[cacheKey]) renderSeatMapForLeg(leg, _seatMapCache[cacheKey]);
+}
+
+function _seatOfferIdFor(leg){
+  // Vol seul : on a une seule offer pour les 2 legs (Duffel inclut les 2 slices).
+  // Le seat_map endpoint prend l'offer_id et renvoie la carte (aircraft varie selon le segment côté backend).
+  return OFFER_ID || (DEAL && DEAL.offer_id) || null;
+}
+
+function _aircraftCodeFor(leg){
+  if (!OFFER_FULL || !OFFER_FULL.slices) return '';
+  const idx = (leg === 'inbound') ? 1 : 0;
+  const slice = OFFER_FULL.slices[idx];
+  if (!slice) return '';
+  try {
+    const seg = slice.segments && slice.segments[0];
+    if (seg && seg.aircraft && seg.aircraft.iata_code) return String(seg.aircraft.iata_code).toUpperCase();
+  } catch(e){}
+  // Fallback selon compagnie
+  const al = (DEAL && DEAL.airline_code || '').toUpperCase();
+  if (al === 'AF' || al === 'KL') return '359';
+  if (al === 'IB') return '32A';
+  if (al === 'BA') return '77W';
+  if (al === 'LH') return '32N';
+  return '32A';
+}
+
+async function loadSeatMapForLeg(leg){
+  const container = document.getElementById('seat-map-container-' + leg);
+  if (!container) return;
+  const oid = _seatOfferIdFor(leg);
+  if (!oid){
+    container.innerHTML = `<div class="empty"><b>Pas de vol sélectionné</b>Carte des sièges indisponible.</div>`;
+    return;
+  }
+  const aircraft = _aircraftCodeFor(leg);
+  const cacheKey = oid + '|' + aircraft + '|' + leg;
+  if (_seatMapCache[cacheKey]){
+    renderSeatMapForLeg(leg, _seatMapCache[cacheKey]);
+    renderSeatsSummaryForLeg(leg);
+    return;
+  }
+  container.innerHTML = `<div class="loading"><div class="spinner"></div>Chargement de la carte des sièges…</div>`;
+  try {
+    const u = new URL('/api/duffel/seat_maps', location.origin);
+    u.searchParams.set('offer_id', oid);
+    if (aircraft) u.searchParams.set('aircraft_code', aircraft);
+    if (leg === 'inbound') u.searchParams.set('leg', 'inbound');
+    const r = await fetch(u.toString());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    _seatMapCache[cacheKey] = data;
+    const priceMap = {};
+    (data.cabins || []).forEach(c => (c.rows || []).forEach(row => (row.seats || []).forEach(s => {
+      if (s && s.id && (s.price || 0) > 0) priceMap[s.id] = Number(s.price);
+    })));
+    _seatPriceByLeg[leg] = priceMap;
+    window.Seats && window.Seats.setMap(leg, data);  // peuple le store carnet (labels designator)
+    renderSeatMapForLeg(leg, data);
+    renderSeatsSummaryForLeg(leg);
+  } catch(e){
+    console.warn('[seats] load fail', e);
+    container.innerHTML = `<div class="empty"><b>Impossible de charger la carte</b>Réessayez ou passez cette étape.</div>`;
+  }
+}
+
+function renderSeatMapForLeg(leg, data){
+  const container = document.getElementById('seat-map-container-' + leg);
+  if (!container) return;
+  const cabin = (data.cabins || [])[0];
+  // Fallback UX honnête (Pascal 2026-05-31) : pas d'écran vide quand la compagnie
+  // ne fournit pas de plan de cabine via Duffel. On dit la vérité au client.
+  const hasSeats = cabin && (cabin.rows || []).some(r => (r.seats || []).length > 0);
+  if (!cabin || !hasSeats){
+    const legLabel = leg === 'inbound' ? 'retour' : 'aller';
+    container.innerHTML = `
+      <div style="text-align:center;padding:32px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;">
+        <div style="font-size:36px;line-height:1;margin-bottom:14px;opacity:0.5;">💺</div>
+        <h3 style="font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:10px;color:var(--text);">Plan de cabine non disponible (vol ${legLabel})</h3>
+        <p style="color:var(--text2);font-size:13.5px;line-height:1.55;max-width:420px;margin:0 auto 16px;">
+          Cette compagnie n'autorise pas le choix de siège en avance.<br>
+          Votre place vous sera <strong style="color:var(--gold2);">attribuée gratuitement à l'enregistrement</strong>.
+        </p>
+      </div>`;
+    return;
+  }
+  const active = _activeSeatPaxByLeg[leg];
+  const assignedForLeg = selectedSeats[leg] || {};
+  const assignedIds = new Set(Object.values(assignedForLeg));
+
+  const colsStr = cabin.cols || 'ABCDEF';
+  const cols = colsStr.split('');
+  const split = cabin.split || [3, 3];
+  const aisleAfter = cabin.aisle_after || [3];
+  const aircraftCode = data.aircraft_code || cabin.aircraft_code || '—';
+  const totalCols = cols.length;
+  const totalRows = (cabin.rows || []).length;
+  let gridCols = '24px';
+  for (let i = 0; i < totalCols; i++){
+    if (aisleAfter.includes(i)) gridCols += ' 14px';
+    gridCols += ' 1fr';
+  }
+  const maxWidth = Math.min(820, 70 + totalCols * 42);
+
+  let html = `<div style="text-align:center;margin-bottom:8px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3);">
+    CABINE — Avion <strong style="color:var(--gold2);">${esc(aircraftCode)}</strong> · ${totalRows} rangées · config ${split.join('-')}<br>
+    Voyageur actif : <strong style="color:var(--gold2);">Voyageur ${active + 1}</strong>
+  </div>`;
+  html += `<div style="display:flex;flex-direction:column;gap:4px;max-width:${maxWidth}px;margin:0 auto;overflow-x:auto;">`;
+  html += `<div style="display:grid;grid-template-columns:${gridCols};gap:3px;align-items:center;justify-items:center;font-size:10px;color:var(--text3);font-weight:600;">`;
+  html += `<div></div>`;
+  cols.forEach((c, i) => {
+    if (aisleAfter.includes(i)) html += `<div></div>`;
+    html += `<div>${esc(c)}</div>`;
+  });
+  html += `</div>`;
+  (cabin.rows || []).forEach(row => {
+    html += `<div style="display:grid;grid-template-columns:${gridCols};gap:3px;align-items:center;justify-items:center;">`;
+    html += `<div style="font-size:10px;color:var(--text3);font-weight:600;">${row.row_num}</div>`;
+    (row.seats || []).forEach((s, idx) => {
+      if (aisleAfter.includes(idx)) html += `<div></div>`;
+      const isAssigned = assignedIds.has(s.id);
+      const isMine = (assignedForLeg[active] === s.id);
+      let bg, fg, cursor, title;
+      if (!s.available){
+        bg = '#3a3a3a'; fg = '#666'; cursor = 'not-allowed'; title = 'Occupé';
+      } else if (isMine){
+        bg = 'var(--gold2)'; fg = '#000'; cursor = 'pointer'; title = 'Votre siège';
+      } else if (isAssigned){
+        bg = 'var(--gold-dim)'; fg = 'var(--gold2)'; cursor = 'pointer'; title = 'Attribué à un autre voyageur';
+      } else if (s.type === 'premium'){
+        bg = 'rgba(184,150,46,0.22)'; fg = 'var(--gold2)'; cursor = 'pointer'; title = `Premium ${s.designator} (+${s.price}€)`;
+      } else if (s.type === 'exit'){
+        bg = 'rgba(125,220,148,0.18)'; fg = '#7ddc94'; cursor = 'pointer'; title = `Sortie ${s.designator} (+${s.price}€)`;
+      } else {
+        bg = 'var(--bg3)'; fg = 'var(--text2)'; cursor = 'pointer';
+        title = (s.price > 0) ? `${s.designator} (+${s.price}€)` : `${s.designator} (gratuit)`;
+      }
+      const sz = totalCols >= 9 ? 26 : 30;
+      html += `<button type="button" data-sid="${esc(s.id)}" onclick="${s.available ? `pickSeatForLeg('${leg}', '${esc(s.id)}')` : ''}" title="${esc(title)}" style="width:${sz}px;height:${sz}px;border-radius:5px;border:1px solid var(--border);background:${bg};color:${fg};font-size:9.5px;font-weight:600;cursor:${cursor};font-family:inherit;padding:0;">${s.designator.slice(-1)}</button>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  html += `<div style="display:flex;gap:14px;justify-content:center;margin-top:14px;font-size:10.5px;color:var(--text3);flex-wrap:wrap;">
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Standard (gratuit)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(184,150,46,0.22);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Premium (+25€)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:rgba(125,220,148,0.18);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Sortie (+18€)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--gold2);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Votre siège</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:#3a3a3a;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>Occupé</span>
+  </div>`;
+  container.innerHTML = html;
+}
+
+function pickSeatForLeg(leg, seatId){
+  const assignedForLeg = selectedSeats[leg] || {};
+  const active = _activeSeatPaxByLeg[leg];
+  const owner = Object.keys(assignedForLeg).find(k => assignedForLeg[k] === seatId);
+  if (owner !== undefined && parseInt(owner) !== active) return;
+  if (!selectedSeats[leg]) selectedSeats[leg] = {};
+  selectedSeats[leg][active] = seatId;
+  let next = active;
+  for (let k = 1; k <= ADULTS; k++){
+    const candidate = (active + k) % ADULTS;
+    if (!selectedSeats[leg][candidate]){ next = candidate; break; }
+  }
+  _activeSeatPaxByLeg[leg] = next;
+  renderSeatPaxSelectorForLeg(leg);
+  const oid = _seatOfferIdFor(leg);
+  const aircraft = _aircraftCodeFor(leg);
+  const cacheKey = oid + '|' + aircraft + '|' + leg;
+  if (oid && _seatMapCache[cacheKey]) renderSeatMapForLeg(leg, _seatMapCache[cacheKey]);
+  renderSeatsSummaryForLeg(leg);
+  renderRecap();
+}
+
+function renderSeatsSummaryForLeg(leg){
+  const wrap = document.getElementById('seats-summary-' + leg);
+  if (!wrap) return;
+  const sel = selectedSeats[leg] || {};
+  let total = 0;
+  const items = [];
+  for (let i = 0; i < ADULTS; i++){
+    const sid = sel[i];
+    if (sid){
+      const price = (_seatPriceByLeg[leg] || {})[sid] || 0;
+      total += Number(price) || 0;
+      items.push(`Voyageur ${i+1} : <b style="color:var(--gold2);">${sid.replace('seat_','')}</b>${price > 0 ? ' (+' + price + '€)' : ''}`);
+    } else {
+      items.push(`<span style="color:var(--text3);">Voyageur ${i+1} : non choisi</span>`);
+    }
+  }
+  wrap.innerHTML = items.join(' &nbsp;·&nbsp; ') + `<div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;"><strong>Total sièges (ce vol) :</strong> ${total > 0 ? '+' + total + ' €' : 'Gratuit'}</div>`;
+}
+
+function skipSeatLeg(leg){
+  selectedSeats[leg] = {};
+  renderSeatPaxSelectorForLeg(leg);
+  renderSeatsSummaryForLeg(leg);
+  renderRecap();
+}
+
+// ── Toggles options par leg (cabin/flex/insurance) ──
+function toggleLegOpt(key, leg){
+  if (event && event.target && event.target.tagName === 'INPUT') return;
+  const k = key + '_' + leg;
+  OPTIONS[k] = !OPTIONS[k];
+  syncOptUI();
+  renderRecap();
+}
+
+function syncOptUI(){
+  ['outbound','inbound'].forEach(leg => {
+    ['cabin_premium','flex_ticket','flight_insurance'].forEach(key => {
+      const k = key + '_' + leg;
+      const t = document.getElementById('toggle-' + k);
+      const cb = document.getElementById('opt-' + k);
+      if (t) t.classList.toggle('on', !!OPTIONS[k]);
+      if (cb) cb.checked = !!OPTIONS[k];
+    });
+    // Radios transfer
+    const grp = document.getElementById('transfer-mode-group-' + leg);
+    if (grp){
+      const mode = OPTIONS['transfer_' + leg + '_mode'] || 'none';
+      grp.querySelectorAll('.opt-radio').forEach(el => {
+        el.classList.toggle('on', el.dataset.mode === mode);
+      });
+    }
+  });
+}
+
+// ── Transfert HBX par leg ──
+function setLegTransferMode(leg, mode){
+  OPTIONS['transfer_' + leg + '_mode'] = mode;
+  if (mode === 'none'){
+    OPTIONS['transfer_' + leg + '_rate_key'] = null;
+    OPTIONS['transfer_' + leg + '_price'] = 0;
+    OPTIONS['transfer_' + leg + '_label'] = null;
+    OPTIONS['transfer_' + leg + '_meta'] = null;
+    const wrap = document.getElementById('transfer-options-wrap-' + leg);
+    const list = document.getElementById('transfer-options-list-' + leg);
+    if (wrap) wrap.style.display = 'none';
+    if (list) list.innerHTML = '';
+    syncOptUI();
+    renderRecap();
+    return;
+  }
+  // mode = 'with_transfer' → afficher l'input adresse
+  const wrap = document.getElementById('transfer-options-wrap-' + leg);
+  if (wrap) wrap.style.display = '';
+  syncOptUI();
+  if (OPTIONS['transfer_' + leg + '_address'] && OPTIONS['transfer_' + leg + '_address'].length >= 5){
+    fetchLegTransferOptions(leg);
+  }
+}
+
+async function fetchLegTransferOptions(leg){
+  const wrap = document.getElementById('transfer-options-wrap-' + leg);
+  const list = document.getElementById('transfer-options-list-' + leg);
+  const loading = document.getElementById('transfer-options-loading-' + leg);
+  const empty = document.getElementById('transfer-options-empty-' + leg);
+  if (!wrap || !list) return;
+  empty.style.display = 'none';
+
+  // Pour vol seul : on n'a pas d'hotel ATLAS code. On utilise GPS générique (le serveur tombe en mock).
+  // Outbound : from=IATA destination → to=GPS 0,0 ; Inbound : from=GPS 0,0 → to=IATA destination.
+  const destIATA = (DEAL && DEAL.destination) || Q_TO || '';
+  if (!destIATA){
+    empty.textContent = 'Destination du vol introuvable.';
+    empty.style.display = '';
+    list.innerHTML = '';
+    return;
+  }
+
+  const cacheKey = `${leg}|${destIATA}|${ADULTS}|${OPTIONS['transfer_' + leg + '_address'] || ''}`;
+  if (OPTIONS._transfer_cache[cacheKey]){
+    renderLegTransferOptions(leg, OPTIONS._transfer_cache[cacheKey]);
+    return;
+  }
+
+  loading.style.display = '';
+  list.innerHTML = '';
+  try {
+    // outbound : arrive le jour aller (departure_at + duration_minutes) — pour vol seul on prend departure_at + 14:30 fallback
+    // inbound  : départ le jour retour (DEAL.return_at) ou aller + 7j fallback
+    let dateIso;
+    if (leg === 'outbound'){
+      dateIso = (DEAL && DEAL.departure_at) ? new Date(DEAL.departure_at).toISOString().slice(0,19)
+              : (Q_DATE ? Q_DATE + 'T14:30:00' : new Date(Date.now()+30*86400000).toISOString().slice(0,16)+':00');
+    } else {
+      const baseDep = (DEAL && DEAL.departure_at) ? new Date(DEAL.departure_at) : (Q_DATE ? new Date(Q_DATE) : new Date(Date.now()+30*86400000));
+      const retIso = (DEAL && DEAL.return_at) ? DEAL.return_at : new Date(baseDep.getTime() + 7*86400000).toISOString().slice(0,19);
+      dateIso = retIso;
+    }
+    const url = new URL('/api/transfer/search', location.origin);
+    if (leg === 'outbound'){
+      url.searchParams.set('from_type', 'IATA');
+      url.searchParams.set('from_code', destIATA);
+      url.searchParams.set('to_type', 'GPS');
+      url.searchParams.set('to_code', '0,0');
+    } else {
+      url.searchParams.set('from_type', 'GPS');
+      url.searchParams.set('from_code', '0,0');
+      url.searchParams.set('to_type', 'IATA');
+      url.searchParams.set('to_code', destIATA);
+    }
+    url.searchParams.set('outbound', dateIso);
+    url.searchParams.set('adults', String(ADULTS));
+    const r = await fetch(url.toString());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    OPTIONS._transfer_cache[cacheKey] = data.options || [];
+    renderLegTransferOptions(leg, data.options || []);
+  } catch(e){
+    console.warn('[transfer ' + leg + '] search fail', e);
+    empty.textContent = 'Impossible de charger les transferts (réessayez).';
+    empty.style.display = '';
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+function renderLegTransferOptions(leg, options){
+  const list = document.getElementById('transfer-options-list-' + leg);
+  const empty = document.getElementById('transfer-options-empty-' + leg);
+  if (!list) return;
+  if (!options || !options.length){
+    list.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = options.map(o => {
+    const isSel = (OPTIONS['transfer_' + leg + '_rate_key'] === o.rate_key);
+    return `
+      <div class="opt-card transfer-card ${isSel?'on':''}" data-rk="${esc(o.rate_key)}" onclick="selectLegTransferOption('${leg}','${esc(o.rate_key)}')" style="cursor:pointer;border:1px solid ${isSel?'var(--gold2)':'rgba(255,255,255,0.08)'};border-radius:10px;padding:14px 16px;background:rgba(255,255,255,0.02);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:3px;">${esc(o.title)}</div>
+            <div style="font-size:12px;color:var(--text2);">${esc(o.vehicle)} · jusqu'à ${o.max_pax} pax</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">Opérateur : ${esc(o.operator)}${o.duration_min ? ' · '+o.duration_min+' min' : ''}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px;">Inclus : ${(o.included||[]).join(' · ')}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--gold2);">+${Number(o.price).toFixed(0)} €</div>
+            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;">${leg === 'outbound' ? 'Aéro → Ville' : 'Ville → Aéro'}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function selectLegTransferOption(leg, rateKey){
+  const destIATA = (DEAL && DEAL.destination) || Q_TO || '';
+  const cacheKey = `${leg}|${destIATA}|${ADULTS}|${OPTIONS['transfer_' + leg + '_address'] || ''}`;
+  const options = OPTIONS._transfer_cache[cacheKey] || [];
+  const opt = options.find(o => o.rate_key === rateKey);
+  if (!opt) return;
+  OPTIONS['transfer_' + leg + '_rate_key'] = opt.rate_key;
+  OPTIONS['transfer_' + leg + '_price'] = Number(opt.price || 0);
+  OPTIONS['transfer_' + leg + '_label'] = `${opt.title} · ${opt.operator}`;
+  OPTIONS['transfer_' + leg + '_meta'] = {
+    vehicle: opt.vehicle, operator: opt.operator,
+    duration_min: opt.duration_min, max_pax: opt.max_pax,
+    icon: opt.icon, is_round_trip: opt.is_round_trip,
+    from_code: opt.from_code, to_code: opt.to_code,
+    outbound: opt.outbound, inbound: opt.inbound,
+    included: opt.included || [],
+    destination_address: OPTIONS['transfer_' + leg + '_address'] || null,
+    leg: leg,
+  };
+  renderLegTransferOptions(leg, options);
+  renderRecap();
+}
+
+// ── Submit ──
+function onSubmit(e){
+  e.preventDefault();
+  const _flightTotal = (DEAL && DEAL.price || 0) * ADULTS;
+  const _optTotal = computeOptionsTotal();
+  if ((_flightTotal + _optTotal) <= 0) {
+    alert('Total indisponible. Veuillez recharger la page ou choisir une autre offre.');
+    return;
+  }
+  const fd = new FormData(e.target);
+  const passengers = [];
+  // Audit 2026-05-27 sev 3 #32 : valider passport.expires_on > date_depart
+  // (sinon airline refuse au check-in).
+  let depDateForExpiryCheck = null;
+  try {
+    const d = DEAL && (DEAL.departure_at || DEAL.departure_date);
+    if (d) depDateForExpiryCheck = new Date(d);
+  } catch(_) {}
+  for(let i=0;i<ADULTS;i++){
+    const px = (fd.get('passportExpiry_'+i)||'').trim();
+    const pn = (fd.get('passportNumber_'+i)||'').trim();
+    if (pn && px && depDateForExpiryCheck) {
+      try {
+        const exp = new Date(px);
+        if (exp < depDateForExpiryCheck) {
+          alert(`Le passeport du passager ${i+1} expire avant la date de départ. Veuillez utiliser un passeport valide.`);
+          return;
+        }
+      } catch(_) {}
+    }
+    passengers.push({
+      title: fd.get('title_'+i) || 'mr',
+      firstName: (fd.get('firstName_'+i)||'').trim(),
+      lastName: (fd.get('lastName_'+i)||'').trim(),
+      dob: fd.get('dob_'+i) || '',
+      nationality: fd.get('nationality_'+i) || 'FR',
+      passportNumber: pn,
+      passportExpiry: px,
+    });
+  }
+  const flightTotal = (DEAL.price||0) * ADULTS;
+  const optTotal = computeOptionsTotal();
+
+  // Agrégation Duffel services aller + retour (préfixe label pour distinguer)
+  const allDuffel = [
+    ...(duffelSelectedByLeg.outbound || []).map(s => ({id: s.id, quantity: s.quantity || 1, _label: 'Aller · ' + (s._label||''), _price: Number(s._price||0)})),
+    ...(duffelSelectedByLeg.inbound  || []).map(s => ({id: s.id, quantity: s.quantity || 1, _label: 'Retour · ' + (s._label||''), _price: Number(s._price||0)})),
+  ];
+
+  // Alias rétrocompat (= aller) pour les anciens calculs backend
+  const baggageOutboundCompat = OPTIONS.baggage_outbound.slice();
+
+  const payload = {
+    offer_id: OFFER_ID,
+    is_mock: !!DEAL.is_mock,
+    is_roundtrip: !!IS_ROUNDTRIP,
+    email: (fd.get('email')||'').trim(),
+    phone: (fd.get('phone')||'').trim(),
+    passengers,
+    flight_total_eur: flightTotal,
+    options_total_eur: optTotal,
+    total_eur: flightTotal + optTotal,
+    currency: DEAL.currency || 'EUR',
+    deal_snapshot: DEAL,
+    options: {
+      // ── Alias rétrocompat (= outbound) ──
+      baggage_per_passenger: baggageOutboundCompat,
+      cabin_premium: !!OPTIONS.cabin_premium_outbound,
+      flex_ticket: !!OPTIONS.flex_ticket_outbound,
+      insurance: !!OPTIONS.flight_insurance_outbound,  // alias (assurance vol aller)
+      transfer: OPTIONS.transfer_outbound_mode === 'with_transfer' ? 'oneway' : 'none',
+      transfer_rate_key: OPTIONS.transfer_outbound_rate_key || null,
+      transfer_price: Number(OPTIONS.transfer_outbound_price || 0),
+      transfer_label: OPTIONS.transfer_outbound_label || null,
+      transfer_meta: OPTIONS.transfer_outbound_meta || null,
+      transfer_address: OPTIONS.transfer_outbound_address || null,
+      // ── Par leg (nouveau, aligné sejour.html) ──
+      baggage_outbound_per_passenger: OPTIONS.baggage_outbound.slice(),
+      baggage_inbound_per_passenger: OPTIONS.baggage_inbound.slice(),
+      duffel_services: allDuffel,
+      selected_seats: selectedSeats || {outbound:{}, inbound:{}},
+      cabin_premium_outbound: !!OPTIONS.cabin_premium_outbound,
+      cabin_premium_inbound: !!OPTIONS.cabin_premium_inbound,
+      flex_ticket_outbound: !!OPTIONS.flex_ticket_outbound,
+      flex_ticket_inbound: !!OPTIONS.flex_ticket_inbound,
+      flight_insurance_outbound: !!OPTIONS.flight_insurance_outbound,
+      flight_insurance_inbound: !!OPTIONS.flight_insurance_inbound,
+      transfer_outbound: OPTIONS.transfer_outbound_mode || 'none',
+      transfer_outbound_rate_key: OPTIONS.transfer_outbound_rate_key || null,
+      transfer_outbound_price: Number(OPTIONS.transfer_outbound_price || 0),
+      transfer_outbound_label: OPTIONS.transfer_outbound_label || null,
+      transfer_outbound_meta: OPTIONS.transfer_outbound_meta || null,
+      transfer_outbound_address: OPTIONS.transfer_outbound_address || null,
+      transfer_inbound: OPTIONS.transfer_inbound_mode || 'none',
+      transfer_inbound_rate_key: OPTIONS.transfer_inbound_rate_key || null,
+      transfer_inbound_price: Number(OPTIONS.transfer_inbound_price || 0),
+      transfer_inbound_label: OPTIONS.transfer_inbound_label || null,
+      transfer_inbound_meta: OPTIONS.transfer_inbound_meta || null,
+      transfer_inbound_address: OPTIONS.transfer_inbound_address || null,
+    },
+    on_behalf_of: ON_BEHALF_OF || null,
+    guest_name: GUEST_NAME || null,
+    guest_email: GUEST_EMAIL || null,
+    guest_ref: GUEST_REF || null,
+    // Pax v2 — propagé vers checkout (UI complète DOB enfants/bébés à venir)
+    pax_v2: {
+      adults: ADULTS,
+      children: CHILDREN,
+      infants: INFANTS,
+      cabin: Q_CABIN,
+    },
+  };
+  try { sessionStorage.setItem('flight_booking_'+OFFER_ID, JSON.stringify(payload)); } catch(e){}
+  // Fix B2 Pascal 2026-05-31 : propage trip + date_ret au checkout pour récap correct
+  const _checkoutP = new URLSearchParams();
+  _checkoutP.set('offer', OFFER_ID);
+  if (IS_ROUNDTRIP) _checkoutP.set('trip', 'round_trip');
+  const _dr = params.get('date_ret'); if (_dr) _checkoutP.set('date_ret', _dr);
+  const _d  = params.get('date');     if (_d)  _checkoutP.set('date', _d);
+  location.href = '/flight-checkout.html?' + _checkoutP.toString();
+}
+
+loadOffer();
+</script>
+<script defer src="/cookies.js"></script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Paiement — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.12);
+  --red:#e87a7a;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:44px;height:32px;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;}
+.steps{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text3);}
+.step{display:flex;align-items:center;gap:6px;}
+.step.on{color:var(--gold2);}
+.step.done{color:var(--text2);}
+.step-dot{width:18px;height:18px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:grid;place-items:center;font-size:10px;font-weight:600;}
+.step.on .step-dot{background:var(--gold);color:#000;border-color:var(--gold);}
+.step.done .step-dot{background:var(--green);color:#000;border-color:var(--green);}
+.step-sep{width:18px;height:1px;background:var(--border);}
+@media(max-width:720px){.steps{display:none;}}
+
+.main{padding:32px 0 80px;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1fr 380px;gap:30px;}
+@media(max-width:980px){.wrap{grid-template-columns:1fr;padding:0 16px;}}
+
+.page-title{font-family:'DM Serif Display',serif;font-size:30px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:5px;}
+.page-title em{color:var(--gold2);font-style:italic;}
+.page-sub{color:var(--text2);font-size:13.5px;margin-bottom:24px;}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px 26px;margin-bottom:16px;}
+.section-head{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+.section-num{width:28px;height:28px;border-radius:50%;background:var(--gold-dim);color:var(--gold2);font-family:'DM Serif Display',serif;font-size:14px;display:grid;place-items:center;border:1px solid var(--border2);}
+.section-title{font-family:'DM Serif Display',serif;font-size:18px;}
+.section-hint{font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.55;}
+
+.pax-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--border);font-size:13px;}
+.pax-line:last-child{border-bottom:none;}
+.pax-line .name{color:var(--text);}
+.pax-line .meta{color:var(--text3);font-size:11.5px;font-family:'JetBrains Mono','DM Sans',monospace;}
+
+#payment-element{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:6px;min-height:120px;}
+.cgv-box{margin-top:14px;padding:13px 15px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:border-color .15s;}
+.cgv-box:hover{border-color:var(--border2);}
+.cgv-box.checked{border-color:var(--gold2);}
+.cgv-box input{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:var(--gold2);cursor:pointer;}
+.cgv-box label{font-size:12.5px;color:var(--text2);line-height:1.5;cursor:pointer;flex:1;}
+.cgv-box label a{color:var(--gold2);text-decoration:underline;}
+
+.submit-btn{width:100%;padding:17px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:0.3px;cursor:pointer;border-radius:9px;transition:background .15s;margin-top:14px;}
+.submit-btn:hover:not(:disabled){background:var(--gold2);}
+.submit-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.err-msg{color:var(--red);font-size:13px;margin-top:10px;display:none;}
+.err-msg.show{display:block;}
+
+.test-banner{background:var(--green-dim);border:1px solid rgba(74,222,128,0.3);color:var(--green);padding:11px 16px;border-radius:8px;font-size:12px;margin-bottom:16px;line-height:1.4;}
+.test-banner code{background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11.5px;}
+
+.recap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;position:sticky;top:78px;overflow:hidden;}
+.recap-head{padding:18px 22px;background:linear-gradient(180deg,var(--gold-dim) 0%,transparent 100%);border-bottom:1px solid var(--border);}
+.recap-route{display:flex;align-items:center;gap:8px;font-family:'DM Serif Display',serif;font-size:20px;}
+.recap-route .ar{color:var(--gold2);font-size:16px;}
+.recap-airline{font-size:12px;color:var(--text2);margin-top:4px;}
+.recap-body{padding:18px 22px;}
+.recap-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:8px 0;font-size:13px;color:var(--text2);}
+.recap-row strong{color:var(--text);font-weight:500;}
+.recap-row.total{border-top:1px solid var(--border);padding-top:14px;margin-top:6px;font-size:15px;}
+.recap-row.total strong{color:var(--gold2);font-family:'DM Serif Display',serif;font-size:24px;line-height:1;}
+.recap-mock{font-size:11px;color:var(--text3);padding:0 22px 14px;line-height:1.4;font-style:italic;}
+.recap-section-label{font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text3);padding:12px 0 4px;border-top:1px solid var(--border);margin-top:6px;}
+.recap-row.opt{font-size:12.5px;padding:5px 0;}
+.recap-row.opt span{color:var(--text2);}
+.recap-row.opt strong{color:var(--text);font-weight:500;}
+.recap-row.subtotal{padding-top:10px;font-size:13px;}
+
+.state{padding:60px 20px;text-align:center;color:var(--text3);}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<!-- Carnet partagé (Pascal 2026-05-31) : composant Seats (id → designator) -->
+<script src="/js/carnets.js?v=2026053113"></script>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+  <div class="steps">
+    <div class="step done"><div class="step-dot">1</div>Vol</div>
+    <div class="step-sep"></div>
+    <div class="step done"><div class="step-dot">2</div>Voyageurs</div>
+    <div class="step-sep"></div>
+    <div class="step on"><div class="step-dot">3</div>Paiement</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="wrap">
+    <div>
+      <h1 class="page-title">Finaliser le <em>paiement</em></h1>
+      <p class="page-sub">Paiement sécurisé Stripe. Aucune donnée carte n'est stockée sur nos serveurs.</p>
+      <div id="content-area">
+        <div class="state"><div class="spinner"></div>Préparation du paiement…</div>
+      </div>
+    </div>
+    <aside id="recap-area"></aside>
+  </div>
+</div>
+
+<script>
+const STRIPE_PK = 'pk_test_51Q6SzlLOMF4anoUmpKZSCcCNXkAJWoUOgwhpZ55KHwSr2GZ7zlGS0WkUYJqWtv5OZ5qXIqIfNyixOcXyxhXJfA5j00WGY0nIaH';
+const API = '/api';
+const params = new URLSearchParams(location.search);
+const OFFER_ID = params.get('offer') || '';
+
+const CITIES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',NRT:'Tokyo',HKG:'Hong Kong',BKK:'Bangkok',SYD:'Sydney',GRU:'São Paulo',DEL:'Delhi',BOM:'Mumbai',DOH:'Doha',ICN:'Séoul',CPT:'Cape Town',NBO:'Nairobi',CMN:'Casablanca',RAK:'Marrakech'};
+
+let BOOKING = null;
+let DEAL = null;
+let stripeObj = null, elements = null, paymentElement = null;
+let CLIENT_SECRET = null, AIRBIZNESS_REF = null;
+let submitting = false;
+
+function fmtPrice(p){ return new Intl.NumberFormat('fr-FR').format(Math.round(p)) + ' €'; }
+function fmtDur(m){ if(!m) return '—'; const h=Math.floor(m/60),mn=m%60; return mn?`${h}h ${mn}`:`${h}h`; }
+function fmtTime(iso){ if(!iso) return '--:--'; return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function arrTime(dep, dur){ if(!dep) return '--:--'; return new Date(new Date(dep).getTime() + (dur||0)*60000).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }
+
+function loadFromSession(){
+  if (!OFFER_ID) return false;
+  try {
+    const raw = sessionStorage.getItem('flight_booking_'+OFFER_ID);
+    if (!raw) return false;
+    BOOKING = JSON.parse(raw);
+    DEAL = BOOKING.deal_snapshot || {};
+    return true;
+  } catch(e){ return false; }
+}
+
+function renderError(msg){
+  document.getElementById('content-area').innerHTML = `
+    <div class="section"><div style="color:var(--red);font-size:14px;">${msg}</div>
+    <button class="submit-btn" onclick="location.href='/resultats.html'">Retour aux résultats</button>
+    </div>`;
+}
+
+const BAG_PRICE_CK = { '15kg': 25, '23kg': 45, '30kg': 65 };
+
+function renderRecap(){
+  const el = document.getElementById('recap-area');
+  const from = (CITIES[DEAL.origin]||DEAL.origin||'?');
+  const to = (CITIES[DEAL.destination]||DEAL.destination||'?');
+  const pax = (BOOKING.passengers||[]).length || 1;
+  const opts = BOOKING.options || {};
+  const flightTotal = (typeof BOOKING.flight_total_eur === 'number')
+    ? BOOKING.flight_total_eur
+    : (DEAL.price||0) * pax;
+  const optTotal = (typeof BOOKING.options_total_eur === 'number')
+    ? BOOKING.options_total_eur
+    : 0;
+
+  // ── Options par leg (Pascal 2026-05-26 align sejour) ──
+  // Aligné sur sejour.html : sections séparées vol aller / vol retour avec
+  // bagages + sièges + cabine + flex + assurance + transfert pour chaque leg.
+  const isRT = !!BOOKING.is_roundtrip;
+  const legs = isRT ? ['outbound', 'inbound'] : ['outbound'];
+  const legLines = { outbound: [], inbound: [] };
+
+  // Duffel services agrégés (préfixés "Aller · " ou "Retour · " côté front)
+  const dsvcs = Array.isArray(opts.duffel_services) ? opts.duffel_services : [];
+  legs.forEach(leg => {
+    const prefix = (leg === 'outbound') ? 'Aller · ' : 'Retour · ';
+    // Services Duffel pour ce leg (label commence par prefix)
+    dsvcs.forEach(s => {
+      const lbl = s._label || '';
+      if (lbl.startsWith(prefix)){
+        const price = Number(s._price || 0);
+        legLines[leg].push(`<div class="recap-row opt"><span>${lbl.replace(prefix, '')}</span><strong>${price ? fmtPrice(price) : '✓'}</strong></div>`);
+      }
+    });
+    // Fallback hardcoded bagages
+    const bagKey = (leg === 'outbound') ? 'baggage_outbound_per_passenger' : 'baggage_inbound_per_passenger';
+    const bagFallback = (leg === 'outbound') ? 'baggage_per_passenger' : null;
+    let bagArr = Array.isArray(opts[bagKey]) ? opts[bagKey] : null;
+    if (!bagArr && bagFallback && Array.isArray(opts[bagFallback])) bagArr = opts[bagFallback];
+    if (bagArr && (!dsvcs.length || !dsvcs.some(s => (s._label||'').startsWith(prefix)))){
+      bagArr.forEach((b, i) => {
+        if (BAG_PRICE_CK[b]) legLines[leg].push(`<div class="recap-row opt"><span>Bagage soute V${i+1} (${b})</span><strong>${fmtPrice(BAG_PRICE_CK[b])}</strong></div>`);
+      });
+    }
+    // Sièges
+    const seatSel = (opts.selected_seats && opts.selected_seats[leg]) || {};
+    Object.entries(seatSel).forEach(([paxIdx, sid]) => {
+      if (sid){
+        // Fix Pascal 2026-05-31 : utilise le carnet Seats pour afficher designator (ex "12A") au lieu de l'ID Duffel brut
+        const label = (window.Seats && window.Seats.getLabel(leg, sid)) || sid;
+        legLines[leg].push(`<div class="recap-row opt"><span>Siège V${parseInt(paxIdx)+1} · ${label}</span><strong>✓</strong></div>`);
+      }
+    });
+    // Cabine premium
+    if (opts['cabin_premium_' + leg] || (leg === 'outbound' && opts.cabin_premium && !isRT)){
+      legLines[leg].push(`<div class="recap-row opt"><span>Bagage cabine premium ×${pax}</span><strong>${fmtPrice(15*pax)}</strong></div>`);
+    }
+    // Flex
+    if (opts['flex_ticket_' + leg] || (leg === 'outbound' && opts.flex_ticket && !isRT)){
+      legLines[leg].push(`<div class="recap-row opt"><span>Tarif flexible ×${pax}</span><strong>${fmtPrice(49*pax)}</strong></div>`);
+    }
+    // Assurance vol par leg
+    if (opts['flight_insurance_' + leg] || (leg === 'outbound' && opts.insurance && !isRT)){
+      legLines[leg].push(`<div class="recap-row opt"><span>Assurance vol ×${pax}</span><strong>${fmtPrice(12*pax)}</strong></div>`);
+    }
+    // Transfer par leg
+    const trMode = opts['transfer_' + leg];
+    const trPrice = Number(opts['transfer_' + leg + '_price'] || 0);
+    if (trMode && trMode !== 'none' && opts['transfer_' + leg + '_rate_key'] && trPrice > 0){
+      const lbl = opts['transfer_' + leg + '_label'] || 'Transfert';
+      const dirLbl = (leg === 'outbound') ? 'Aéro → Ville' : 'Ville → Aéro';
+      legLines[leg].push(`<div class="recap-row opt"><span>Transfert ${dirLbl} · ${lbl}</span><strong>${fmtPrice(trPrice)}</strong></div>`);
+      const addr = opts['transfer_' + leg + '_address'];
+      if (addr){
+        legLines[leg].push(`<div class="recap-row opt" style="font-size:11px;opacity:0.8;"><span>↳ ${addr}</span><strong></strong></div>`);
+      }
+    } else if (leg === 'outbound' && !isRT && opts.transfer !== 'none' && opts.transfer_rate_key && opts.transfer_price > 0){
+      // Fallback alias rétrocompat
+      const subL = opts.transfer_label || 'Transfert sélectionné';
+      legLines[leg].push(`<div class="recap-row opt"><span>Transfert · ${subL}</span><strong>${fmtPrice(opts.transfer_price)}</strong></div>`);
+      if (opts.transfer_address){
+        legLines[leg].push(`<div class="recap-row opt" style="font-size:11px;opacity:0.8;"><span>↳ Vers : ${opts.transfer_address}</span><strong></strong></div>`);
+      }
+    }
+  });
+
+  let optionsBlock = '';
+  if (legLines.outbound.length || legLines.inbound.length){
+    optionsBlock = `<div class="recap-section-label">Options</div>`;
+    if (legLines.outbound.length){
+      optionsBlock += `<div style="font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold2);padding:10px 0 2px;">Vol aller</div>${legLines.outbound.join('')}`;
+    }
+    if (legLines.inbound.length){
+      optionsBlock += `<div style="font-family:'JetBrains Mono','DM Sans',monospace;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold2);padding:10px 0 2px;">Vol retour</div>${legLines.inbound.join('')}`;
+    }
+    optionsBlock += `<div class="recap-row subtotal"><span>Sous-total options</span><strong>${fmtPrice(optTotal)}</strong></div>`;
+  }
+
+  el.innerHTML = `
+    <div class="recap">
+      <div class="recap-head">
+        <div class="recap-route"><span>${from}</span><span class="ar">${isRT ? '⇄' : '→'}</span><span>${to}</span></div>
+        <div class="recap-airline">${DEAL.airline_name||''}${DEAL.airline_code?' · '+DEAL.airline_code:''}${isRT ? ' · Aller-retour' : ' · Aller simple'}</div>
+      </div>
+      <div class="recap-body">
+        <div class="recap-row"><span>Date</span><strong>${fmtDate(DEAL.departure_at)}</strong></div>
+        <div class="recap-row"><span>Horaires</span><strong>${fmtTime(DEAL.departure_at)} → ${arrTime(DEAL.departure_at, DEAL.duration_minutes)}</strong></div>
+        <div class="recap-row"><span>Durée</span><strong>${fmtDur(DEAL.duration_minutes)} · ${DEAL.stops>0?(DEAL.stops+' escale'+(DEAL.stops>1?'s':'')):'Vol direct'}</strong></div>
+        <div class="recap-row"><span>${pax} voyageur${pax>1?'s':''}</span><strong>${fmtPrice(DEAL.price||0)} × ${pax}</strong></div>
+        <div class="recap-row subtotal"><span>Sous-total vol</span><strong>${fmtPrice(flightTotal)}</strong></div>
+        ${optionsBlock}
+        <div class="recap-row total"><span>Total</span><strong>${fmtPrice(BOOKING.total_eur)}</strong></div>
+      </div>
+      ${DEAL.is_mock ? `<div class="recap-mock">Réservation de démonstration · paiement en mode test.</div>` : ''}
+    </div>
+  `;
+}
+
+function renderForm(){
+  const passengers = BOOKING.passengers || [];
+  const paxHtml = passengers.map((p,i) => `
+    <div class="pax-line">
+      <div class="name">${p.title==='mrs'?'Mme':(p.title==='ms'?'Mlle':'M.')} ${p.firstName} ${p.lastName}</div>
+      <div class="meta">${p.dob||'—'} · ${p.nationality||'—'}</div>
+    </div>`).join('');
+  const obhBanner = BOOKING.on_behalf_of ? `
+    <div class="test-banner" style="background:rgba(184,150,46,0.15);border-color:rgba(184,150,46,0.35);color:#d4ae4a;">
+      <strong>Réservation pour votre client</strong> · ${BOOKING.guest_name ? BOOKING.guest_name : '—'}${BOOKING.guest_ref ? ' · '+BOOKING.guest_ref : ''} · Vous toucherez 5% de commission à la confirmation.
+    </div>` : '';
+  document.getElementById('content-area').innerHTML = `
+    ${obhBanner}
+    <div class="test-banner">
+      <strong>Mode test Stripe.</strong> Utilisez la carte <code>4242 4242 4242 4242</code> · expiration future · CVC <code>123</code>. Aucun débit réel.
+    </div>
+    <div class="section">
+      <div class="section-head"><div class="section-num">1</div><div class="section-title">Voyageurs</div></div>
+      <div>${paxHtml}</div>
+      <div style="margin-top:14px;font-size:12.5px;color:var(--text2);">Contact : ${BOOKING.email}${BOOKING.phone?' · '+BOOKING.phone:''}</div>
+    </div>
+    <form id="pay-form" onsubmit="onPay(event)">
+      <div class="section">
+        <div class="section-head"><div class="section-num">2</div><div class="section-title">Carte bancaire</div></div>
+        <div id="payment-element"></div>
+        <div class="cgv-box" id="cgv-box">
+          <input type="checkbox" id="cgv-check">
+          <label for="cgv-check">J'accepte les <a href="/cgv.html" target="_blank">conditions générales</a> et la <a href="/confidentialite.html" target="_blank">politique de confidentialité</a> AirBizness.</label>
+        </div>
+        <div class="err-msg" id="err-msg"></div>
+        <button class="submit-btn" id="submit-btn" type="submit" disabled>Payer ${fmtPrice(BOOKING.total_eur)}</button>
+      </div>
+    </form>
+  `;
+  // CGV toggle
+  document.getElementById('cgv-check').addEventListener('change', e => {
+    document.getElementById('cgv-box').classList.toggle('checked', e.target.checked);
+    document.getElementById('submit-btn').disabled = !e.target.checked || !CLIENT_SECRET;
+  });
+}
+
+async function init(){
+  if (!loadFromSession()){
+    renderError('Session expirée. Veuillez recommencer la sélection du vol.');
+    return;
+  }
+  renderRecap();
+  renderForm();
+
+  // Crée le PaymentIntent côté serveur
+  try {
+    const opts = BOOKING.options || {};
+    const r = await fetch(API + '/flight/booking/payment-intent', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        offer_id: BOOKING.offer_id,
+        user_email: BOOKING.email,
+        passengers: BOOKING.passengers,
+        total_eur: BOOKING.total_eur,
+        currency: 'eur',
+        deal_snapshot: DEAL || {},
+        is_roundtrip: !!BOOKING.is_roundtrip,
+        // ── Alias rétrocompat (= aller) ──
+        baggage_per_passenger: Array.isArray(opts.baggage_per_passenger) ? opts.baggage_per_passenger : null,
+        // ── Bagages par leg (Pascal 2026-05-26 align sejour) ──
+        baggage_outbound_per_passenger: Array.isArray(opts.baggage_outbound_per_passenger) ? opts.baggage_outbound_per_passenger : null,
+        baggage_inbound_per_passenger: Array.isArray(opts.baggage_inbound_per_passenger) ? opts.baggage_inbound_per_passenger : null,
+        // Services Duffel réels (P1 juridique Pascal 2026-05-26)
+        duffel_services: Array.isArray(opts.duffel_services)
+          ? opts.duffel_services.map(s => ({id: s.id, quantity: s.quantity || 1}))
+          : [],
+        // Sièges par leg
+        selected_seats: opts.selected_seats || {outbound:{}, inbound:{}},
+        // ── Options legacy (alias = aller) ──
+        cabin_premium: !!opts.cabin_premium,
+        flex_ticket: !!opts.flex_ticket,
+        insurance: !!opts.insurance,
+        transfer: opts.transfer || 'none',
+        transfer_rate_key: opts.transfer_rate_key || null,
+        transfer_price: Number(opts.transfer_price || 0),
+        transfer_label: opts.transfer_label || null,
+        transfer_meta: opts.transfer_meta || null,
+        // ── Options PAR LEG (nouveau, aligné sejour.html allbyleg) ──
+        cabin_premium_outbound: !!opts.cabin_premium_outbound,
+        cabin_premium_inbound: !!opts.cabin_premium_inbound,
+        flex_ticket_outbound: !!opts.flex_ticket_outbound,
+        flex_ticket_inbound: !!opts.flex_ticket_inbound,
+        flight_insurance_outbound: !!opts.flight_insurance_outbound,
+        flight_insurance_inbound: !!opts.flight_insurance_inbound,
+        transfer_outbound: opts.transfer_outbound || 'none',
+        transfer_outbound_rate_key: opts.transfer_outbound_rate_key || null,
+        transfer_outbound_price: Number(opts.transfer_outbound_price || 0),
+        transfer_outbound_label: opts.transfer_outbound_label || null,
+        transfer_outbound_meta: opts.transfer_outbound_meta || null,
+        transfer_outbound_address: opts.transfer_outbound_address || null,
+        transfer_inbound: opts.transfer_inbound || 'none',
+        transfer_inbound_rate_key: opts.transfer_inbound_rate_key || null,
+        transfer_inbound_price: Number(opts.transfer_inbound_price || 0),
+        transfer_inbound_label: opts.transfer_inbound_label || null,
+        transfer_inbound_meta: opts.transfer_inbound_meta || null,
+        transfer_inbound_address: opts.transfer_inbound_address || null,
+        // Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+        on_behalf_of: BOOKING.on_behalf_of || null,
+        guest_name: BOOKING.guest_name || null,
+        guest_email: BOOKING.guest_email || null,
+        guest_ref: BOOKING.guest_ref || null,
+      }),
+    });
+    if (!r.ok){
+      const t = await r.text();
+      throw new Error('PI fail: '+r.status+' '+t.slice(0,200));
+    }
+    const data = await r.json();
+    CLIENT_SECRET = data.client_secret;
+    AIRBIZNESS_REF = data.airbizness_ref;
+    try { sessionStorage.setItem('flight_ref_'+OFFER_ID, AIRBIZNESS_REF); } catch(e){}
+    // Init Stripe Elements
+    stripeObj = Stripe(STRIPE_PK);
+    elements = stripeObj.elements({
+      clientSecret: CLIENT_SECRET,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#d4ae4a',
+          colorBackground: '#1e1e1e',
+          colorText: '#f0ece4',
+          colorDanger: '#e87a7a',
+          fontFamily: 'DM Sans, sans-serif',
+          borderRadius: '8px',
+        },
+      },
+    });
+    paymentElement = elements.create('payment');
+    paymentElement.mount('#payment-element');
+    // Si CGV déjà cochée par browser autofill
+    const cgv = document.getElementById('cgv-check');
+    if (cgv && cgv.checked) document.getElementById('submit-btn').disabled = false;
+  } catch(e){
+    console.error(e);
+    showErr('Impossible d\'initialiser le paiement. Réessayez dans un instant.');
+  }
+}
+
+function showErr(m){
+  const el = document.getElementById('err-msg');
+  el.textContent = m;
+  el.classList.add('show');
+}
+function clearErr(){
+  const el = document.getElementById('err-msg');
+  el.textContent = '';
+  el.classList.remove('show');
+}
+
+async function onPay(e){
+  e.preventDefault();
+  if (submitting) return;
+  if (!CLIENT_SECRET || !stripeObj || !elements){ showErr('Paiement non prêt, patientez.'); return; }
+  if (!document.getElementById('cgv-check').checked){ showErr('Veuillez accepter les CGV.'); return; }
+  submitting = true;
+  clearErr();
+  const btn = document.getElementById('submit-btn');
+  const oldText = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Paiement en cours…';
+
+  try {
+    const { error, paymentIntent } = await stripeObj.confirmPayment({
+      elements,
+      redirect: 'if_required',
+    });
+    if (error){
+      showErr(error.message || 'Le paiement a échoué.');
+      submitting = false;
+      btn.disabled = false; btn.textContent = oldText;
+      return;
+    }
+    if (!paymentIntent || paymentIntent.status !== 'succeeded'){
+      showErr('Paiement non confirmé (status='+(paymentIntent && paymentIntent.status)+').');
+      submitting = false;
+      btn.disabled = false; btn.textContent = oldText;
+      return;
+    }
+    // Confirm côté serveur (crée le PNR mock + UPDATE DB)
+    const r = await fetch(API + '/flight/booking/confirm', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        airbizness_ref: AIRBIZNESS_REF,
+        payment_intent_id: paymentIntent.id,
+      }),
+    });
+    if (!r.ok){
+      const t = await r.text();
+      throw new Error('Confirm fail: '+r.status+' '+t.slice(0,200));
+    }
+    const data = await r.json();
+    // Cleanup sessionStorage
+    try {
+      sessionStorage.removeItem('flight_booking_'+OFFER_ID);
+      sessionStorage.removeItem('flight_offer_'+OFFER_ID);
+    } catch(e){}
+    location.href = '/flight-confirmation.html?ref=' + encodeURIComponent(data.airbizness_ref);
+  } catch(e){
+    console.error(e);
+    showErr('Erreur serveur lors de la confirmation. Votre paiement a été pris en compte, contactez le support si besoin.');
+    submitting = false;
+    btn.disabled = false; btn.textContent = oldText;
+  }
+}
+
+init();
+</script>
+<script defer src="/cookies.js"></script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="0">
+<title>Fiche hôtel — AirBizness</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-hex{width:30px;height:30px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:12px;color:#000;font-weight:600;}
+.logo-text{font-size:18px;font-weight:600;}
+.back{color:var(--text2);font-size:13px;text-decoration:none;}
+
+.wrap{max-width:1200px;margin:0 auto;padding:80px 24px 60px;}
+
+.hero-gallery{position:relative;border-radius:14px;overflow:hidden;background:var(--bg2);margin-bottom:28px;}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:4px;height:420px;}
+@media(max-width:780px){.gallery-grid{grid-template-columns:1fr;grid-template-rows:280px;height:280px;}.gallery-grid>div:not(:first-child){display:none;}}
+.gallery-grid>div{background:var(--bg3);position:relative;overflow:hidden;cursor:pointer;}
+.gallery-grid>div:first-child{grid-row:1/3;}
+.gallery-grid img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.gallery-grid>div:hover img{transform:scale(1.05);}
+.gallery-more{position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.15);}
+
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:28px;flex-wrap:wrap;}
+.head-main{flex:1;min-width:280px;}
+.chain-badge{display:inline-block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);background:var(--gold-dim);padding:4px 10px;border-radius:99px;margin-bottom:10px;}
+.h-title{font-family:'DM Serif Display',serif;font-size:36px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.01em;}
+.h-stars{color:var(--gold2);font-size:16px;margin-bottom:6px;}
+.h-address{color:var(--text2);font-size:14px;}
+.h-address svg{vertical-align:-3px;margin-right:5px;}
+
+.head-cta{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;min-width:260px;}
+.cta-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.cta-price{font-family:'DM Serif Display',serif;font-size:30px;color:var(--gold2);line-height:1;}
+.cta-price-sub{font-size:12px;color:var(--text2);margin-top:6px;margin-bottom:14px;}
+.btn{display:block;width:100%;background:var(--gold);color:#000;border:none;padding:14px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;}
+.btn:hover{background:var(--gold2);}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border2);margin-top:8px;}
+
+.content{display:grid;grid-template-columns:2fr 1fr;gap:28px;margin-top:24px;}
+@media(max-width:880px){.content{grid-template-columns:1fr;}}
+
+.section{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px;}
+.section h2{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:14px;letter-spacing:-0.01em;}
+.section h2 em{font-style:italic;color:var(--gold2);}
+.section p{color:var(--text2);font-size:14px;line-height:1.7;}
+
+.facilities{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;}
+.facility{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2);}
+.facility-ic{width:28px;height:28px;border-radius:6px;background:var(--gold-dim);display:grid;place-items:center;color:var(--gold2);font-size:14px;flex-shrink:0;}
+
+.rooms{display:flex;flex-direction:column;gap:10px;}
+.room{padding:14px;background:var(--bg3);border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
+.room-name{font-size:14px;}
+.room-pax{font-size:12px;color:var(--text3);}
+
+.contact{padding:0;}
+.contact-row{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;}
+.contact-row:last-child{border-bottom:none;}
+.contact-ic{width:36px;height:36px;border-radius:8px;background:var(--gold-dim);display:grid;place-items:center;font-size:14px;color:var(--gold2);flex-shrink:0;}
+.contact-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+.contact-value{font-size:13px;color:var(--text);word-break:break-all;}
+.contact-value a{color:var(--gold2);text-decoration:none;}
+.contact-value a:hover{text-decoration:underline;}
+
+.map{height:240px;background:var(--bg3);border-radius:8px;overflow:hidden;margin-top:14px;}
+.map iframe{width:100%;height:100%;border:0;filter:invert(0.9) hue-rotate(180deg);}
+
+.meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.meta-item{padding:12px;background:var(--bg3);border-radius:8px;}
+.meta-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.meta-value{font-size:14px;color:var(--text);}
+.meta-value strong{color:var(--gold2);font-family:'DM Serif Display',serif;font-size:18px;}
+
+.poi{display:flex;flex-direction:column;gap:8px;}
+.poi-item{padding:10px 12px;background:var(--bg3);border-radius:8px;display:flex;justify-content:space-between;font-size:13px;}
+.poi-name{color:var(--text);}
+.poi-dist{color:var(--gold2);font-size:12px;}
+
+.loading{padding:80px 20px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;}
+.lightbox.show{display:flex;}
+.lightbox img{max-width:92vw;max-height:80vh;object-fit:contain;}
+.lightbox-close{position:absolute;top:24px;right:32px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;}
+.lightbox-count{margin-top:14px;color:var(--text2);font-size:13px;}
+.lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);color:#fff;border:none;font-size:24px;width:50px;height:50px;border-radius:50%;cursor:pointer;}
+.lightbox-prev{left:24px;} .lightbox-next{right:24px;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<header class="header">
+  <a href="/" class="logo">
+    <div class="logo-hex">AB</div>
+    <div class="logo-text">AirBizness</div>
+  </a>
+  <a href="/catalog.html" class="back">← Catalog</a>
+</header>
+
+<div class="wrap">
+  <div id="content"><div class="loading"><div class="spinner"></div>Chargement de la fiche…</div></div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">›</button>
+  <div class="lightbox-count" id="lightbox-count"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const code = params.get('code') || '';
+
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function stars(n){ return n ? '★'.repeat(n)+' '+n+' étoiles' : ''; }
+
+// Facility code → emoji + label (extraits HBX standards)
+const FACILITY_LABELS = {
+  10: 'Service', 30: 'Surface (m²)', 50: 'Étages', 60: 'Chambres', 70: 'Chambres totales',
+  100: 'Wifi', 110: 'Parking', 120: 'Petit-déjeuner', 130: 'Restaurant',
+  140: 'Bar', 150: 'Café', 200: 'Piscine', 220: 'Sauna', 230: 'Spa',
+  240: 'Massage', 250: 'Fitness', 260: 'Tennis', 280: 'Jardin',
+  300: 'Climatisation', 320: 'Animaux acceptés', 380: 'Plage privée',
+  420: 'Babysitting', 460: 'Ascenseur', 510: 'Accès handicapé',
+  540: 'Non-fumeurs', 580: 'TV', 590: 'Téléphone chambre', 600: 'Salle de bain privée'
+};
+
+function facilityLabel(f){
+  return FACILITY_LABELS[f.facilityCode] || `Équipement ${f.facilityCode}${f.facilityGroupCode ? '/'+f.facilityGroupCode : ''}`;
+}
+
+let allImages = [];
+let currentImg = 0;
+
+async function load(){
+  if (!code){ document.getElementById('content').innerHTML='<div class="loading">Pas de code hôtel.</div>'; return; }
+  try{
+    const r = await fetch('/api/hbx/catalog/hotel/'+code);
+    if (!r.ok) throw new Error('Non trouvé');
+    const h = await r.json();
+    render(h);
+  } catch(e){
+    document.getElementById('content').innerHTML = `<div class="loading">Erreur : ${esc(e.message)}</div>`;
+  }
+}
+
+function render(h){
+  document.title = (h.name||'Hôtel') + ' — AirBizness';
+  allImages = h.images || [];
+
+  // Galerie : 5 photos (1 grande + 4 petites)
+  const gallery = allImages.slice(0,5);
+  const galleryHTML = gallery.length ? `
+    <div class="gallery-grid">
+      ${gallery.map((img,i) => `
+        <div onclick="openLightbox(${i})">
+          <img src="${esc(img.url)}" alt="" loading="lazy">
+        </div>
+      `).join('')}
+    </div>
+    ${allImages.length > 5 ? `<div class="gallery-more" onclick="openLightbox(0)">+ ${allImages.length - 5} photos</div>` : ''}
+  ` : '<div class="gallery-grid"><div></div></div>';
+
+  const facilities = (h.facilities || []).slice(0, 18);
+  const rooms = (h.rooms || []).slice(0, 8);
+  const pois = h.interest_points || [];
+
+  const desc = h.description_fr || h.description_en || 'Description non disponible.';
+  const gmaps = h.latitude && h.longitude
+    ? `https://www.openstreetmap.org/export/embed.html?bbox=${h.longitude-0.005}%2C${h.latitude-0.003}%2C${h.longitude+0.005}%2C${h.latitude+0.003}&layer=mapnik&marker=${h.latitude}%2C${h.longitude}`
+    : null;
+
+  document.getElementById('content').innerHTML = `
+    <div class="hero-gallery">${galleryHTML}</div>
+
+    <div class="head">
+      <div class="head-main">
+        ${h.chain_code ? `<div class="chain-badge">${esc(h.chain_code)}</div>` : ''}
+        <h1 class="h-title">${esc(h.name||'Hôtel')}</h1>
+        ${h.category_stars ? `<div class="h-stars">${stars(h.category_stars)}</div>` : ''}
+        <div class="h-address">${esc(h.address||'')}${h.postal_code?', '+esc(h.postal_code):''} — ${esc(h.city||'')} (${esc(h.country_code||'')})</div>
+      </div>
+      <div class="head-cta">
+        <div class="cta-label">À partir de</div>
+        <div class="cta-price">— €</div>
+        <div class="cta-price-sub">Prix calculé au moment de la réservation</div>
+        <a class="btn" href="/hotel.html?code=${h.hotel_code}">Vérifier disponibilité</a>
+        <button class="btn btn-secondary" onclick="copyContact('${esc(h.email||'')}')">${h.email?'Copier email':"Pas d'email direct"}</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div>
+        <div class="section">
+          <h2>À <em>propos</em></h2>
+          <p>${esc(desc)}</p>
+        </div>
+
+        ${facilities.length ? `
+        <div class="section">
+          <h2>Équipements (${h.facilities.length} dont 18 affichés)</h2>
+          <div class="facilities">
+            ${facilities.map(f => `
+              <div class="facility">
+                <div class="facility-ic">●</div>
+                <div>${facilityLabel(f)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>` : ''}
+
+        ${rooms.length ? `
+        <div class="section">
+          <h2>Types de <em>chambres</em></h2>
+          <div class="rooms">
+            ${rooms.map(r => `
+              <div class="room">
+                <div>
+                  <div class="room-name">${esc(r.roomType||'Chambre')}${r.characteristicCode?` — ${esc(r.characteristicCode)}`:''}</div>
+                  <div class="room-pax">${r.minPax||1} à ${r.maxPax||1} personnes${r.maxChildren?` · max ${r.maxChildren} enfants`:''}</div>
+                </div>
+                <div style="color:var(--text3);font-size:11px;font-family:monospace;">${esc(r.roomCode||'')}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>` : ''}
+      </div>
+
+      <div>
+        <div class="section contact">
+          <div style="padding:18px;">
+            <h2 style="margin:0;">Contact</h2>
+          </div>
+          ${h.email ? `<div class="contact-row"><div class="contact-ic"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div><div><div class="contact-label">Email direct</div><div class="contact-value"><a href="mailto:${esc(h.email)}">${esc(h.email)}</a></div></div></div>` : ''}
+          ${h.phone_main ? `<div class="contact-row"><div class="contact-ic"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg></div><div><div class="contact-label">Téléphone</div><div class="contact-value"><a href="tel:${esc(h.phone_main)}">${esc(h.phone_main)}</a></div></div></div>` : ''}
+          ${h.web ? `<div class="contact-row"><div class="contact-ic"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><div class="contact-label">Site officiel</div><div class="contact-value"><a href="${esc(h.web)}" target="_blank" rel="nofollow noopener">Visiter</a></div></div></div>` : ''}
+          ${h.phone_fax ? `<div class="contact-row"><div class="contact-ic"><svg width="18" height="18" viewBox="0 0 24 24" style="stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div><div><div class="contact-label">Fax</div><div class="contact-value">${esc(h.phone_fax)}</div></div></div>` : ''}
+        </div>
+
+        ${gmaps ? `
+        <div class="section">
+          <h2>Sur la <em>carte</em></h2>
+          <div style="font-size:12px;color:var(--text3);">GPS : ${h.latitude.toFixed(6)}, ${h.longitude.toFixed(6)}</div>
+          <div class="map"><iframe src="${gmaps}" loading="lazy"></iframe></div>
+        </div>` : ''}
+
+        <div class="section">
+          <h2>Statistiques</h2>
+          <div class="meta-grid">
+            <div class="meta-item"><div class="meta-label">Photos</div><div class="meta-value"><strong>${h.images_count||0}</strong></div></div>
+            <div class="meta-item"><div class="meta-label">Équipements</div><div class="meta-value"><strong>${h.facilities_count||0}</strong></div></div>
+            <div class="meta-item"><div class="meta-label">Chambres</div><div class="meta-value"><strong>${(h.rooms||[]).length}</strong></div></div>
+            <div class="meta-item"><div class="meta-label">Code Giata</div><div class="meta-value"><strong>${esc(h.giata_code||'—')}</strong></div></div>
+          </div>
+        </div>
+
+        ${pois.length ? `
+        <div class="section">
+          <h2>À <em>proximité</em></h2>
+          <div class="poi">
+            ${pois.map(p => `<div class="poi-item"><div class="poi-name">${esc(p.poiName||p.facilityCode||'POI')}</div><div class="poi-dist">${p.distance||''}m</div></div>`).join('')}
+          </div>
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function openLightbox(idx){
+  if (!allImages.length) return;
+  currentImg = idx;
+  document.getElementById('lightbox-img').src = allImages[idx].url;
+  document.getElementById('lightbox-count').textContent = `Photo ${idx+1} / ${allImages.length}`;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
+function navLightbox(dir){
+  currentImg = (currentImg + dir + allImages.length) % allImages.length;
+  document.getElementById('lightbox-img').src = allImages[currentImg].url;
+  document.getElementById('lightbox-count').textContent = `Photo ${currentImg+1} / ${allImages.length}`;
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('show')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+function copyContact(email){
+  if (!email) return;
+  navigator.clipboard.writeText(email).then(() => alert('Email copié : '+email));
+}
+
+load();
+</script>
+<div id="ab-footer"></div>
+</body>
+</html>

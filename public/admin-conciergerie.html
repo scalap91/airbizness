@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conciergerie Live — AirBizness Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;--orange:#e0a060;--red:#e87a7a;--blue:#6f9fff;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.adm-bar{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.adm-bar h1{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-0.01em;}
+.adm-bar h1 em{font-style:italic;color:var(--gold2);}
+.adm-bar-meta{display:flex;gap:18px;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.adm-bar-meta strong{color:var(--gold2);}
+.adm-bar-meta a{color:var(--text2);text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:5px;}
+.adm-bar-meta a:hover{color:var(--gold2);border-color:var(--border2);}
+
+.wrap{max-width:1400px;margin:0 auto;padding:24px 28px;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:980px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:560px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 14px;text-align:center;}
+.stat-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--gold2);line-height:1;}
+.stat-num.crit{color:var(--red);}
+.stat-num.warn{color:var(--orange);}
+.stat-num.info{color:var(--blue);}
+.stat-num.resolved{color:var(--green);}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.13em;text-transform:uppercase;color:var(--text3);margin-top:6px;}
+
+/* Filters */
+.filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.filter-btn{padding:7px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:99px;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;letter-spacing:0.04em;}
+.filter-btn.active{background:var(--gold-dim);border-color:var(--border2);color:var(--gold2);font-weight:500;}
+.filter-btn:hover{border-color:var(--border2);}
+.filter-toggle{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:12px;color:var(--text3);cursor:pointer;}
+.filter-toggle input{accent-color:var(--gold2);cursor:pointer;}
+
+/* Alerts list */
+.alert-card{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--text3);border-radius:8px;padding:18px 20px;margin-bottom:10px;}
+.alert-card.critical{border-left-color:var(--red);}
+.alert-card.warn{border-left-color:var(--orange);}
+.alert-card.info{border-left-color:var(--blue);}
+.alert-card.resolved{opacity:0.5;}
+.alert-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.alert-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.alert-sev{padding:3px 10px;border-radius:99px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;}
+.alert-sev.critical{background:rgba(232,122,122,0.15);color:var(--red);}
+.alert-sev.warn{background:rgba(224,160,96,0.15);color:var(--orange);}
+.alert-sev.info{background:rgba(111,159,255,0.15);color:var(--blue);}
+.alert-type{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--text2);}
+.alert-ref{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold2);}
+.alert-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
+.alert-sandbox{padding:2px 7px;background:rgba(74,222,128,0.12);color:var(--green);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;}
+.alert-payload{background:var(--bg3);border-radius:6px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text2);overflow-x:auto;white-space:pre-wrap;line-height:1.5;margin-bottom:12px;max-height:160px;overflow-y:auto;}
+.alert-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.alert-btn{padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;}
+.alert-btn:hover{background:var(--gold-dim);color:var(--gold2);border-color:var(--border2);}
+.alert-btn.primary{background:var(--gold);color:#000;border-color:var(--gold);font-weight:500;}
+.alert-btn.primary:hover{background:var(--gold2);}
+.alert-resolution{margin-top:10px;padding:10px 14px;background:rgba(74,222,128,0.05);border-left:3px solid var(--green);font-size:12.5px;color:var(--text2);}
+.alert-resolution strong{color:var(--green);}
+
+.empty-state{padding:80px 24px;text-align:center;color:var(--text3);background:var(--bg2);border:1px dashed var(--border);border-radius:12px;}
+.empty-state h3{font-family:'DM Serif Display',serif;color:var(--text);font-size:18px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="adm-bar">
+  <h1>Conciergerie <em>Live</em></h1>
+  <div class="adm-bar-meta">
+    <a href="/admin-sandbox.html">← Sandbox</a>
+    <span>Auto-refresh : <strong>10s</strong></span>
+    <button class="alert-btn" onclick="loadAlerts()" style="background:var(--bg3);">↻ Refresh</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="stats-grid" id="stats">
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">Critical open</div></div>
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">Warn open</div></div>
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">Info open</div></div>
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">In progress</div></div>
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">Resolved 24h</div></div>
+    <div class="stat-card"><div class="stat-num">—</div><div class="stat-lbl">Total ouvertes</div></div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-status="open" onclick="setFilter('open')">Ouvertes</button>
+    <button class="filter-btn" data-status="in_progress" onclick="setFilter('in_progress')">En cours</button>
+    <button class="filter-btn" data-status="resolved" onclick="setFilter('resolved')">Résolues</button>
+    <button class="filter-btn" data-status="all" onclick="setFilter('all')">Toutes</button>
+    <label class="filter-toggle">
+      <input type="checkbox" id="includeSandbox" onchange="loadAlerts()">
+      Inclure sandbox
+    </label>
+  </div>
+
+  <div id="alerts-list"></div>
+
+</div>
+
+<script>
+let currentFilter = 'open';
+
+function setFilter(s){
+  currentFilter = s;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.status === s));
+  loadAlerts();
+}
+
+async function loadAlerts(){
+  const includeSb = document.getElementById('includeSandbox').checked;
+  const r = await fetch(`/api/conciergerie/alerts?status=${currentFilter}&include_sandbox=${includeSb}&limit=200`);
+  const data = await r.json();
+
+  // Stats
+  const stats = data.stats || {};
+  const sCrit = (stats.critical || {}).open || 0;
+  const sWarn = (stats.warn || {}).open || 0;
+  const sInfo = (stats.info || {}).open || 0;
+  const sInProg = Object.values(stats).reduce((a, v) => a + (v.in_progress || 0), 0);
+  const sResolved = Object.values(stats).reduce((a, v) => a + (v.resolved || 0), 0);
+  const sOpen = sCrit + sWarn + sInfo;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num crit">${sCrit}</div><div class="stat-lbl">Critical open</div></div>
+    <div class="stat-card"><div class="stat-num warn">${sWarn}</div><div class="stat-lbl">Warn open</div></div>
+    <div class="stat-card"><div class="stat-num info">${sInfo}</div><div class="stat-lbl">Info open</div></div>
+    <div class="stat-card"><div class="stat-num">${sInProg}</div><div class="stat-lbl">In progress</div></div>
+    <div class="stat-card"><div class="stat-num resolved">${sResolved}</div><div class="stat-lbl">Résolues</div></div>
+    <div class="stat-card"><div class="stat-num">${sOpen}</div><div class="stat-lbl">Total ouvertes</div></div>
+  `;
+
+  // Alerts list
+  const list = document.getElementById('alerts-list');
+  if (!data.alerts.length){
+    list.innerHTML = `<div class="empty-state"><h3>Aucune alerte ${currentFilter==='resolved'?'résolue':'ouverte'}</h3><p>Tout va bien.</p></div>`;
+    return;
+  }
+  list.innerHTML = data.alerts.map(a => {
+    const payloadStr = a.payload ? JSON.stringify(a.payload, null, 2) : '{}';
+    const dateStr = new Date(a.created_at).toLocaleString('fr-FR');
+    const isResolved = a.status === 'resolved';
+    return `
+      <div class="alert-card ${a.severity} ${isResolved?'resolved':''}">
+        <div class="alert-head">
+          <div class="alert-meta">
+            <span class="alert-sev ${a.severity}">${a.severity}</span>
+            <span class="alert-type">${esc(a.alert_type)}</span>
+            ${a.airbizness_ref ? `<span class="alert-ref">${esc(a.airbizness_ref)}</span>` : ''}
+            ${a.is_sandbox ? `<span class="alert-sandbox">SANDBOX</span>` : ''}
+          </div>
+          <span class="alert-date">${dateStr}</span>
+        </div>
+        <div class="alert-payload">${esc(payloadStr)}</div>
+        ${a.resolution_note ? `<div class="alert-resolution"><strong>Résolution :</strong> ${esc(a.resolution_note)}</div>` : ''}
+        ${!isResolved ? `
+        <div class="alert-actions">
+          ${a.status === 'open' ? `<button class="alert-btn" onclick="updateAlert(${a.id},'in_progress','')">▶ Prendre en charge</button>` : ''}
+          <button class="alert-btn primary" onclick="resolveAlert(${a.id})">✓ Marquer résolue</button>
+        </div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+async function updateAlert(id, status, note){
+  await fetch(`/api/conciergerie/alerts/${id}/update`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({status, resolution_note: note}),
+  });
+  loadAlerts();
+}
+
+async function resolveAlert(id){
+  const note = prompt('Note de résolution (optionnelle) :', '');
+  if (note === null) return;
+  await updateAlert(id, 'resolved', note);
+}
+
+function esc(s){
+  return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+loadAlerts();
+setInterval(loadAlerts, 10000); // auto-refresh 10s
+</script>
+</body>
+</html>

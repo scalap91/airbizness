@@ -2,262 +2,29 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AirBizness — Réservation confirmée !</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
-  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
-  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
-  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
-  --green:#27ae60;--green-dim:rgba(39,174,96,0.1);
-  --r:4px;
-}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;}
-.header{display:flex;align-items:center;padding:0 16px;height:56px;background:var(--bg2);border-bottom:1px solid var(--border);}
-.logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.logo-hex{width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:11px;color:#000;flex-shrink:0;}
-.logo-text{font-size:16px;font-weight:600;color:var(--text);}
-.logo-text em{color:var(--gold2);font-style:normal;}
-.success-hero{text-align:center;padding:40px 20px 32px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
-.success-icon{width:72px;height:72px;background:var(--green-dim);border:2px solid var(--green);border-radius:50%;display:grid;place-items:center;font-size:32px;margin:0 auto 20px;}
-.success-title{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:8px;}
-.success-sub{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
-.booking-ref{display:inline-flex;align-items:center;gap:10px;background:var(--gold-dim);border:1px solid var(--border2);padding:10px 20px;border-radius:var(--r);}
-.br-label{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
-.br-val{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold2);letter-spacing:2px;}
-.content{max-width:700px;margin:0 auto;padding:24px 16px 60px;}
-.billet{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
-.billet-header{background:var(--gold-dim);border-bottom:1px solid var(--border2);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
-.bh-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);}
-.bh-logo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);}
-.billet-route{padding:24px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);}
-.br-city{text-align:center;}
-.br-iata{font-family:'DM Serif Display',serif;font-size:48px;line-height:1;}
-.br-name{font-size:10px;color:var(--text3);margin-top:4px;}
-.br-time{font-size:16px;font-weight:500;color:var(--text2);margin-top:6px;}
-.br-conn{flex:1;text-align:center;}
-.br-line{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);position:relative;margin:0 10px;}
-.br-line::after{content:'✈';position:absolute;right:-10px;top:-11px;font-size:14px;color:var(--gold2);}
-.br-dur{font-size:10px;color:var(--text3);margin-top:8px;}
-.br-stop{font-size:10px;color:var(--gold2);margin-top:3px;}
-.billet-details{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.bd-item{display:flex;flex-direction:column;gap:3px;}
-.bd-label{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;}
-.bd-val{font-size:13px;font-weight:500;}
-.billet-footer{padding:14px 20px;background:var(--bg3);border-top:1px dashed var(--border);display:flex;align-items:center;justify-content:space-between;}
-.bf-pass-name{font-family:'DM Serif Display',serif;font-size:18px;}
-.bf-pass-label{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;}
-.bf-class-val{font-size:14px;font-weight:600;color:var(--gold2);}
-.bf-class-label{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
-.actions{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.btn-primary{width:100%;padding:15px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-primary:hover{background:var(--gold2);}
-.btn-secondary{width:100%;padding:13px;background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border-radius:var(--r);display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-secondary:hover{border-color:var(--border2);color:var(--text);}
-.email-notice{background:var(--green-dim);border:1px solid rgba(39,174,96,.25);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.en-icon{font-size:20px;flex-shrink:0;}
-.en-text{font-size:12px;color:var(--text2);line-height:1.6;}
-.en-text strong{color:var(--text);}
-.next-steps{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
-.ns-title{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;}
-.ns-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);}
-.ns-item:last-child{border-bottom:none;}
-.ns-num{width:24px;height:24px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--border2);color:var(--gold2);font-size:11px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px;}
-.ns-label{font-size:13px;font-weight:500;margin-bottom:3px;}
-.ns-sub{font-size:11px;color:var(--text3);line-height:1.5;}
-.back-home{text-align:center;padding:10px 0;}
-.back-home a{font-size:13px;color:var(--gold2);text-decoration:underline;cursor:pointer;}
-@media(min-width:768px){
-  .header{padding:0 32px;height:60px;}
-  .success-hero{padding:60px 32px 40px;}
-  .success-title{font-size:42px;}
-  .billet-details{grid-template-columns:repeat(4,1fr);}
-  .actions{flex-direction:row;}
-  .btn-primary,.btn-secondary{width:auto;flex:1;}
-}
-</style>
-</head>
-<body>
-
-<div class="header">
-  <a class="logo" href="/index.html">
-    <div class="logo-hex">✈</div>
-    <div class="logo-text">Air<em>Bizness</em></div>
-  </a>
-</div>
-
-<div class="success-hero">
-  <div class="success-icon">✅</div>
-  <div class="success-title">Réservation confirmée !</div>
-  <div class="success-sub">Votre billet Business Class a été émis avec succès.<br>Un email de confirmation vous a été envoyé.</div>
-  <div class="booking-ref">
-    <div>
-      <div class="br-label">N° de réservation</div>
-      <div class="br-val" id="booking-ref">AB-000000</div>
-    </div>
-  </div>
-</div>
-
-<div class="content">
-
-  <div class="email-notice">
-    <div class="en-icon">📧</div>
-    <div class="en-text">Votre billet a été envoyé à <strong id="conf-email">votre adresse email</strong>. Pensez à vérifier vos spams.</div>
-  </div>
-
-  <div class="billet">
-    <div class="billet-header">
-      <div class="bh-title">Carte d'embarquement</div>
-      <div class="bh-logo">AirBizness</div>
-    </div>
-    <div class="billet-route">
-      <div class="br-city">
-        <div class="br-iata" id="b-from">CDG</div>
-        <div class="br-name" id="b-from-name">Paris</div>
-        <div class="br-time" id="b-dep-time">--:--</div>
-      </div>
-      <div class="br-conn">
-        <div class="br-line"></div>
-        <div class="br-dur" id="b-dur">—</div>
-        <div class="br-stop" id="b-stops">Vol direct</div>
-      </div>
-      <div class="br-city">
-        <div class="br-iata" id="b-to">JFK</div>
-        <div class="br-name" id="b-to-name">New York</div>
-      </div>
-    </div>
-    <div class="billet-details">
-      <div class="bd-item"><div class="bd-label">Date</div><div class="bd-val" id="b-date">—</div></div>
-      <div class="bd-item"><div class="bd-label">Compagnie</div><div class="bd-val" id="b-airline">—</div></div>
-      <div class="bd-item"><div class="bd-label">Cabine</div><div class="bd-val" id="b-cabin">Business</div></div>
-      <div class="bd-item"><div class="bd-label">Bagages</div><div class="bd-val">2 × 23 kg</div></div>
-    </div>
-    <div class="billet-footer">
-      <div>
-        <div class="bf-pass-label">Passager</div>
-        <div class="bf-pass-name" id="b-name">—</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="bf-class-label">Classe</div>
-        <div class="bf-class-val">BUSINESS</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="actions">
-    <button class="btn-primary" onclick="downloadTicket()">📄 Télécharger le billet PDF</button>
-    <button class="btn-secondary" onclick="addToCalendar()">📅 Ajouter au calendrier</button>
-  </div>
-
-  <div class="next-steps">
-    <div class="ns-title">Prochaines étapes</div>
-    <div class="ns-item"><div class="ns-num">1</div><div><div class="ns-label">Vérifiez votre email</div><div class="ns-sub">Votre billet et documents de voyage ont été envoyés par email.</div></div></div>
-    <div class="ns-item"><div class="ns-num">2</div><div><div class="ns-label">Enregistrement en ligne</div><div class="ns-sub">Ouvre généralement 24h à 48h avant le départ sur le site de la compagnie.</div></div></div>
-    <div class="ns-item"><div class="ns-num">3</div><div><div class="ns-label">Accès au Lounge Business</div><div class="ns-sub">Présentez votre carte d'embarquement au salon Business de l'aéroport.</div></div></div>
-    <div class="ns-item"><div class="ns-num">4</div><div><div class="ns-label">Documents requis</div><div class="ns-sub">Passeport valide + carte d'embarquement (papier ou mobile).</div></div></div>
-  </div>
-
-  <div class="back-home"><a onclick="location.href='/index.html'">← Retour à l'accueil</a></div>
-
-</div>
-
+<title>Redirection — AirBizness</title>
+<meta name="robots" content="noindex">
 <script>
-const API = '/api';
-const NAMES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',SIN:'Singapour',NRT:'Tokyo',DXB:'Dubaï',HKG:'Hong Kong',BKK:'Bangkok',GRU:'São Paulo',SYD:'Sydney',DOH:'Doha',ICN:'Séoul',DEL:'Delhi',BOM:'Mumbai',CPT:'Cape Town',NBO:'Nairobi'};
-const CABINS = {full_flat_pod:'Flat Bed Pod',full_flat:'Full Flat',private_suite:'Suite Privée',recliner:'Recliner',standard:'Standard',unknown:'Business'};
-
-function fmtDur(m){const h=Math.floor(m/60),mn=m%60;return mn>0?h+'h '+mn+'min':h+'h';}
-function generateRef(){return 'AB-'+Math.random().toString(36).substr(2,6).toUpperCase();}
-
-async function load(){
-  const params = new URLSearchParams(location.search);
-  const id = params.get('id');
-  const b = JSON.parse(sessionStorage.getItem('booking') || '{}');
-
-  const ref = sessionStorage.getItem('booking_ref') || generateRef();
-  sessionStorage.setItem('booking_ref', ref);
-  document.getElementById('booking-ref').textContent = ref;
-  if(b.email) document.getElementById('conf-email').textContent = b.email;
-  if(b.prenom && b.nom) document.getElementById('b-name').textContent = b.prenom + ' ' + b.nom.toUpperCase();
-
-  try {
-    const r = await fetch(API + '/deals?limit=100');
-    const d = await r.json();
-    const deal = d.deals.find(x => x.offer_id === id) || d.deals[0];
-    if(!deal) return;
-
-    const dep = deal.departure_at ? new Date(deal.departure_at) : null;
-    const timeStr = dep ? dep.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '--:--';
-    const dateStr = dep ? dep.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '—';
-
-    document.getElementById('b-from').textContent = deal.origin;
-    document.getElementById('b-from-name').textContent = NAMES[deal.origin] || deal.origin;
-    document.getElementById('b-dep-time').textContent = timeStr;
-    document.getElementById('b-to').textContent = deal.destination;
-    document.getElementById('b-to-name').textContent = NAMES[deal.destination] || deal.destination;
-    document.getElementById('b-dur').textContent = fmtDur(deal.duration_minutes);
-    document.getElementById('b-stops').textContent = deal.stops === 0 ? 'Vol direct' : deal.stops + ' escale';
-    document.getElementById('b-date').textContent = dateStr;
-    document.getElementById('b-airline').textContent = deal.airline_name;
-    document.getElementById('b-cabin').textContent = CABINS[deal.seat_type] || 'Business';
-
-    // PERSIST BOOKING IN DB
-    if (b.email && deal.offer_id) {
-      try {
-        await fetch(API + '/bookings', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            booking_ref: ref,
-            offer_id: deal.offer_id,
-            user_email: b.email,
-            passenger_name: ((b.prenom || '') + ' ' + (b.nom || '')).trim(),
-            amount_cents: Math.round((b.finalTotal || deal.price) * 100),
-            stripe_payment_intent: params.get('pi') || ''
-          })
-        });
-        // Save email so /mes-voyages.html can fetch this user's bookings later
-        try { localStorage.setItem('ab_email', b.email); } catch(e) {}
-      } catch(e) { console.error('Booking persist error:', e); }
-    }
-
-    // ENVOI EMAIL BREVO
-    if(b.email) {
-      try {
-        await fetch(API + '/send-confirmation', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            to_email: b.email,
-            to_name: (b.prenom || '') + ' ' + (b.nom || ''),
-            booking_ref: ref,
-            origin: deal.origin,
-            destination: deal.destination,
-            airline: deal.airline_name,
-            date: dateStr,
-            price: b.finalTotal || deal.price
-          })
-        });
-      } catch(e){ console.error('Email error:', e); }
-    }
-
-  } catch(e){ console.error(e); }
-
-  sessionStorage.removeItem('booking');
-}
-
-function downloadTicket(){alert('Votre billet PDF sera disponible dans votre espace client sous 5 minutes.');}
-function addToCalendar(){alert('Fonctionnalité bientôt disponible.');}
-
-load();
+/* 2026-05-24 : page legacy. Elle fabriquait un faux PNR JS + email Brevo (risque
+   juridique). Remplacée par redirection vers /flight-confirmation.html quand un
+   ?ref= est présent, sinon retour à l'accueil. Snapshot original :
+   confirmation.html.bak-legacy-vol-20260524 */
+(function(){
+  var p = new URLSearchParams(location.search);
+  var ref = p.get('ref') || p.get('booking_ref') || '';
+  if (ref) {
+    location.replace('/flight-confirmation.html?ref=' + encodeURIComponent(ref));
+  } else {
+    location.replace('/');
+  }
+})();
 </script>
-<script defer src="/cookies.js"></script>
-
-<!-- ── Bizzi chat bubble (added 2026-05-09) ── -->
-<script src="https://bizzi.fr/bizzi-loader.js" defer></script>
-<div data-bizzi-mount="chat" data-bizzi-tenant="airbizness"></div>
+<noscript>
+  <meta http-equiv="refresh" content="0; url=/">
+</noscript>
+</head>
+<body style="background:#0f0f0f;color:#f0ece4;font-family:sans-serif;text-align:center;padding:60px 20px;">
+<h1 style="font-size:20px;font-weight:400;margin:0 0 18px;">Confirmation de réservation</h1>
+Redirection en cours…
 </body>
 </html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="description" content="Tokyo en mode Signature. Hôtels confidentiels, tables étoilées, expériences rares. Notre guide du voyageur exigeant.">
+<meta property="og:title" content="Tokyo Signature — AirBizness">
+<meta property="og:description" content="La métropole en mode business. Hôtels confidentiels, tables étoilées, expériences rares.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://airbizness.com/images/destinations/tokyo-og.jpg">
+<link rel="canonical" href="https://airbizness.com/destination/tokyo.html">
+
+<title>Tokyo Signature — Voyage business premium · AirBizness</title>
+
+<!-- JSON-LD TravelDestination + Article -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TouristDestination",
+  "name": "Tokyo",
+  "description": "Guide premium de Tokyo pour voyageurs business",
+  "url": "https://airbizness.com/destination/tokyo.html",
+  "containedInPlace": {"@type":"Country","name":"Japon"},
+  "image": "https://airbizness.com/images/destinations/tokyo-og.jpg",
+  "publisher": {"@type":"Organization","name":"AirBizness"}
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#0d0d0f; --bg-card:#18181c; --bg-elevated:#21212a;
+  --champ:#e8dcc4; --champ-dark:#b89968;
+  --cream:#f5f0e6; --ash:#88847d;
+  --indigo:#1a2540;
+  --border:rgba(255,255,255,.08);
+  --border-hi:rgba(232,220,196,.25);
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+}
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html, body { background:var(--bg); color:var(--cream); }
+body {
+  font-family: var(--font-body); font-weight:300;
+  font-size:16px; line-height:1.65;
+  min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img, video { display:block; max-width:100%; }
+a { color:inherit; text-decoration:none; }
+
+/* Header same as v2 */
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding: env(safe-area-inset-top, 12px) 20px 14px;
+  background: linear-gradient(180deg, rgba(13,13,15,.92) 0%, rgba(13,13,15,.5) 80%, transparent);
+  backdrop-filter: blur(12px);
+}
+.header-row { display:flex; align-items:center; gap:12px; max-width:1200px; margin:0 auto; }
+.logo { font-family:var(--font-display); font-weight:500; font-size:1.35rem; letter-spacing:.04em; }
+.logo .accent { color:var(--champ); }
+.header-spacer { flex:1; }
+.header-back {
+  background:transparent; border:1px solid var(--border); color:var(--cream);
+  padding:7px 14px; border-radius:100px; font-size:.78rem; cursor:pointer;
+  font-family:inherit;
+}
+
+/* ── HERO destination ─────────────────────────────── */
+.hero {
+  position:relative; height:90vh; min-height:560px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:0 20px 80px; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, #1a0f08 0%, #0d0d0f 60%, #1a1f2a 100%);
+  z-index:-1;
+}
+.hero-bg::after {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 60% 30%, rgba(184,153,104,.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 30% 80%, rgba(26,37,64,.4) 0%, transparent 60%);
+}
+.hero-bg video {
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+  opacity:0; transition:opacity 1.5s;
+}
+.hero-bg video.loaded { opacity:.4; }
+.hero-bg::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(180deg, transparent 30%, rgba(13,13,15,.6) 70%, var(--bg) 100%);
+  z-index:1;
+}
+.hero-content { position:relative; z-index:2; max-width:700px; margin:0 auto; width:100%; }
+.hero-breadcrumb {
+  font-size:.72rem; color:var(--champ); letter-spacing:.18em;
+  text-transform:uppercase; margin-bottom:18px;
+}
+.hero-breadcrumb a { color:var(--ash); }
+.hero-title {
+  font-family:var(--font-display); font-weight:300;
+  font-size: clamp(3.2rem, 14vw, 5.5rem);
+  line-height:1; letter-spacing:.02em;
+  margin-bottom:14px;
+}
+.hero-lead {
+  font-family:var(--font-display); font-style:italic; font-weight:300;
+  font-size: 1.4rem; color:var(--champ);
+  max-width:540px; line-height:1.4;
+}
+
+/* ── SECTION editoriale ─────────────────────────── */
+.section {
+  padding: 70px 20px;
+  max-width:1100px; margin:0 auto;
+}
+.section-eyebrow {
+  font-size:.7rem; color:var(--champ); letter-spacing:.18em;
+  text-transform:uppercase; font-weight:500; margin-bottom:12px;
+}
+.section-title {
+  font-family:var(--font-display); font-weight:300;
+  font-size: clamp(2rem, 6vw, 2.8rem);
+  line-height:1.1; margin-bottom:24px;
+}
+.section-title em { font-style:italic; color:var(--champ); }
+.section-lead {
+  font-size: 1.05rem; color:var(--cream);
+  max-width:680px; line-height:1.7; margin-bottom:30px;
+  font-weight:300;
+}
+.editorial-text {
+  max-width:680px; font-size:.98rem; line-height:1.85;
+  color:var(--cream); font-weight:300;
+}
+.editorial-text p { margin-bottom:18px; }
+
+/* ── HOTELS GRID ─────────────────────────────── */
+.hotels-grid {
+  display:grid; gap:18px; margin-top:24px;
+}
+@media(min-width:720px) {
+  .hotels-grid { grid-template-columns:repeat(2,1fr); gap:24px; }
+}
+.hotel-card {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.hotel-img {
+  aspect-ratio:16/10; position:relative;
+  background: linear-gradient(135deg, #1a1410 0%, #18181c 70%, #1a1f2a 100%);
+  overflow:hidden;
+}
+.hotel-img-placeholder {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:4rem; color:var(--champ);
+  opacity:.2; font-weight:300; letter-spacing:.05em;
+}
+.hotel-info { padding:22px 22px 24px; }
+.hotel-stars {
+  font-size:.72rem; color:var(--champ); letter-spacing:.2em;
+  margin-bottom:8px;
+}
+.hotel-name {
+  font-family:var(--font-display); font-weight:300;
+  font-size:1.7rem; line-height:1.1; margin-bottom:8px;
+}
+.hotel-desc {
+  font-size:.88rem; color:var(--ash);
+  line-height:1.65; margin-bottom:14px;
+}
+.hotel-meta {
+  font-size:.78rem; color:var(--champ);
+  letter-spacing:.04em; padding-top:14px;
+  border-top:1px solid var(--border);
+}
+
+/* ── TABLES / EXPERIENCES list ───────────────── */
+.list-curated {
+  list-style:none; margin-top:14px;
+}
+.list-curated li {
+  padding:18px 0;
+  border-top:1px solid var(--border);
+  display:grid; grid-template-columns:auto 1fr; gap:18px;
+  align-items:baseline;
+}
+.list-curated .num {
+  font-family:var(--font-display);
+  font-size:1.2rem; color:var(--champ);
+  font-weight:300;
+}
+.list-curated h4 {
+  font-family:var(--font-display); font-weight:300;
+  font-size:1.35rem; margin-bottom:4px;
+}
+.list-curated p {
+  font-size:.86rem; color:var(--ash); line-height:1.6;
+}
+.list-curated .tag {
+  display:inline-block; font-size:.66rem;
+  color:var(--champ); letter-spacing:.12em;
+  text-transform:uppercase; margin-top:6px;
+}
+
+/* ── CTA / Search depuis Paris ───────────────── */
+.cta-flights {
+  background: linear-gradient(180deg, #13130f 0%, #18181c 100%);
+  padding:60px 20px;
+}
+.cta-content {
+  max-width:800px; margin:0 auto;
+  text-align:center;
+}
+.cta-content h2 {
+  font-family:var(--font-display); font-weight:300;
+  font-size: clamp(2rem,6vw,2.6rem);
+  margin-bottom:16px;
+}
+.cta-content p { color:var(--ash); font-size:.95rem; margin-bottom:28px; max-width:500px; margin-left:auto; margin-right:auto; }
+.cta-btn {
+  display:inline-block;
+  padding:16px 32px;
+  background:var(--champ); color:var(--bg);
+  font-size:.85rem; letter-spacing:.12em;
+  font-weight:500; text-transform:uppercase;
+  border-radius:100px; font-family:inherit;
+}
+
+/* ── Member benefit ─────────────────────────── */
+.member-banner {
+  margin:60px 20px; max-width:1100px;
+  background: linear-gradient(135deg, #0a0a15 0%, #1a2540 100%);
+  border:1px solid rgba(232,220,196,.2);
+  border-radius:14px;
+  padding:30px 26px;
+  display:grid; gap:16px;
+}
+@media(min-width:720px){
+  .member-banner { grid-template-columns:1fr auto; align-items:center; gap:30px; margin-left:auto; margin-right:auto; padding:32px 36px; }
+}
+.member-banner h3 { font-family:var(--font-display); font-weight:300; font-size:1.5rem; margin-bottom:6px; }
+.member-banner p { color:var(--ash); font-size:.9rem; }
+.member-banner .tier-cta {
+  display:inline-block; padding:11px 22px;
+  font-size:.78rem; letter-spacing:.1em;
+  text-transform:uppercase; font-weight:500;
+  border:1px solid var(--champ); color:var(--champ);
+  border-radius:100px; white-space:nowrap;
+}
+
+/* ── Footer minimal ─────────────────────────── */
+footer {
+  padding: 50px 20px calc(80px + env(safe-area-inset-bottom));
+  background: #08080a;
+  border-top:1px solid var(--border);
+  text-align:center;
+}
+.footer-back-home {
+  font-size:.78rem; color:var(--champ);
+  letter-spacing:.08em; border-bottom:1px solid var(--champ);
+  padding-bottom:3px;
+}
+.footer-legal {
+  margin-top:24px; color:var(--ash); font-size:.74rem;
+}
+
+/* Bottom nav for mobile (same as v2) */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0; z-index:50;
+  display:flex; justify-content:space-around;
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  background: rgba(13,13,15,.94);
+  backdrop-filter: blur(20px);
+  border-top:1px solid var(--border);
+}
+@media(min-width:980px) { .bottom-nav { display:none; } }
+.nav-item {
+  flex:1; padding:6px 4px;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  color:var(--ash); font-size:.65rem; letter-spacing:.05em;
+}
+.nav-item .ico { font-size:1.15rem; }
+</style>
+</head>
+<body>
+
+<!-- ━━━ HEADER ━━━ -->
+<header class="header">
+  <div class="header-row">
+    <a href="/" class="logo">AirBizness <span class="accent">✦</span></a>
+    <div class="header-spacer"></div>
+    <a href="/" class="header-back">← Retour</a>
+  </div>
+</header>
+
+<!-- ━━━ HERO ━━━ -->
+<section class="hero">
+  <div class="hero-bg">
+    <video autoplay muted loop playsinline preload="metadata" id="heroVideo">
+      <source src="https://cdn.coverr.co/videos/coverr-tokyo-city-at-night-3826/1080p.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-content">
+    <div class="hero-breadcrumb">
+      <a href="/">AirBizness</a> · Destinations Signature
+    </div>
+    <h1 class="hero-title">Tokyo</h1>
+    <p class="hero-lead">La métropole qui ne dort jamais. Et qui mérite qu'on s'y attarde.</p>
+  </div>
+</section>
+
+<!-- ━━━ INTRO ÉDITORIALE ━━━ -->
+<section class="section">
+  <div class="section-eyebrow">Le récit</div>
+  <h2 class="section-title">Trois jours à Tokyo, <em>mode signature.</em></h2>
+  <div class="editorial-text">
+    <p>
+      Tokyo se traverse comme un livre dont chaque page est un quartier. Le voyage commence avant l'arrivée : c'est dans le silence feutré d'un vol business que se prépare l'attention nécessaire pour ressentir cette ville singulière.
+    </p>
+    <p>
+      Le premier matin, choisissez un petit-déjeuner au Park Hyatt, perché à 235 mètres. La vue sur le Fuji par temps clair vaut le décalage horaire. La journée passera, contemplative, dans les ruelles de Yanaka — l'ancien Tokyo qui résiste au futur.
+    </p>
+    <p>
+      Le soir, descendez dans Golden Gai. Six ruelles, deux cents bars de quatre places. Le maître des lieux, sans un mot, vous servira ce qu'il faut savoir goûter ce soir-là. C'est cela, voyager à Tokyo : faire confiance.
+    </p>
+  </div>
+</section>
+
+<!-- ━━━ HÔTELS SIGNATURE ━━━ -->
+<section class="section">
+  <div class="section-eyebrow">L'art de l'hôtellerie</div>
+  <h2 class="section-title">Quatre adresses <em>signatures.</em></h2>
+
+  <div class="hotels-grid">
+    <article class="hotel-card">
+      <div class="hotel-img"><div class="hotel-img-placeholder">P</div></div>
+      <div class="hotel-info">
+        <div class="hotel-stars">★ ★ ★ ★ ★</div>
+        <h3 class="hotel-name">Park Hyatt Tokyo</h3>
+        <p class="hotel-desc">L'hôtel emblématique de Shinjuku, sublimé par "Lost in Translation". Le Peak Bar reste l'un des plus beaux balcons sur la ville.</p>
+        <div class="hotel-meta">Shinjuku · 47-52e étages · Bibliothèque emblématique</div>
+      </div>
+    </article>
+
+    <article class="hotel-card">
+      <div class="hotel-img"><div class="hotel-img-placeholder">A</div></div>
+      <div class="hotel-info">
+        <div class="hotel-stars">★ ★ ★ ★ ★</div>
+        <h3 class="hotel-name">Aman Tokyo</h3>
+        <p class="hotel-desc">Le silence absolu du minimalisme japonais sur 7 étages. Onsen privé, lobby sculptural, vue sur le jardin impérial.</p>
+        <div class="hotel-meta">Otemachi · 84 chambres · Spa signature</div>
+      </div>
+    </article>
+
+    <article class="hotel-card">
+      <div class="hotel-img"><div class="hotel-img-placeholder">M</div></div>
+      <div class="hotel-info">
+        <div class="hotel-stars">★ ★ ★ ★ ★</div>
+        <h3 class="hotel-name">Mandarin Oriental</h3>
+        <p class="hotel-desc">37e étage, vue panoramique sur la baie. Le Tapas Molecular Bar (3 étoiles Michelin) reste l'expérience gastronomique la plus surprenante de la ville.</p>
+        <div class="hotel-meta">Nihonbashi · 178 chambres · 12 restaurants</div>
+      </div>
+    </article>
+
+    <article class="hotel-card">
+      <div class="hotel-img"><div class="hotel-img-placeholder">H</div></div>
+      <div class="hotel-info">
+        <div class="hotel-stars">★ ★ ★ ★ ★</div>
+        <h3 class="hotel-name">Hoshinoya Tokyo</h3>
+        <p class="hotel-desc">Ryokan urbain au cœur de la capitale. Sources thermales naturelles au dernier étage, ouvertes sur le ciel.</p>
+        <div class="hotel-meta">Otemachi · 84 chambres tatami · Onsen rooftop</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ━━━ TABLES ÉTOILÉES ━━━ -->
+<section class="section">
+  <div class="section-eyebrow">Tables d'exception</div>
+  <h2 class="section-title">Là où Tokyo <em>se mérite.</em></h2>
+
+  <ol class="list-curated">
+    <li>
+      <div class="num">01</div>
+      <div>
+        <h4>Sushi Saito</h4>
+        <p>Trois étoiles Michelin, dix sièges, réservation un an à l'avance. Considéré par beaucoup comme le plus grand maître sushi du monde.</p>
+        <span class="tag">★★★ · Roppongi</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">02</div>
+      <div>
+        <h4>L'Effervescence</h4>
+        <p>Trois étoiles. La cuisine française réinterprétée par Shinobu Namae avec une rigueur japonaise. Cadre minimaliste, vinothèque exceptionnelle.</p>
+        <span class="tag">★★★ · Nishi-Azabu</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">03</div>
+      <div>
+        <h4>Den</h4>
+        <p>Deux étoiles. Le kaiseki réinventé avec un humour rare. Le chef Zaiyu Hasegawa surprend à chaque service. Carte unique, menu unique.</p>
+        <span class="tag">★★ · Jingumae</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">04</div>
+      <div>
+        <h4>Sukiyabashi Jiro Honten</h4>
+        <p>Le restaurant rendu célèbre par le documentaire Netflix. Dix sièges au comptoir, vingt minutes de service. Une institution.</p>
+        <span class="tag">★★ · Ginza</span>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<!-- ━━━ EXPÉRIENCES EXCLUSIVES ━━━ -->
+<section class="section">
+  <div class="section-eyebrow">Expériences signatures</div>
+  <h2 class="section-title">Au-delà <em>du visible.</em></h2>
+
+  <ol class="list-curated">
+    <li>
+      <div class="num">✦</div>
+      <div>
+        <h4>Marché Toyosu, 5h du matin</h4>
+        <p>Visite privée des halles avec un mareyeur, dégustation de thon en direct du démontage. L'expérience la plus authentique du Tokyo qui travaille.</p>
+        <span class="tag">À l'aube · sur réservation</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">✦</div>
+      <div>
+        <h4>Cérémonie du thé privée</h4>
+        <p>Une heure dans une maison de thé centenaire à Yanaka, accompagnée par une maître certifiée de l'école Urasenke. Silence et précision.</p>
+        <span class="tag">2 personnes · 90 min</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">✦</div>
+      <div>
+        <h4>Onsen privatif à Hakone</h4>
+        <p>Une journée en bain thermal privé au pied du Mont Fuji. Train depuis Shinjuku, kaiseki ryokan, retour en soirée. Une parenthèse hors du temps.</p>
+        <span class="tag">Day trip · 1h45 de Tokyo</span>
+      </div>
+    </li>
+    <li>
+      <div class="num">✦</div>
+      <div>
+        <h4>Atelier sabreur Asakusa</h4>
+        <p>Trois heures avec un descendant de samouraïs dans une école traditionnelle. Initiation au katana, philosophie du bushido. Pour les voyageurs curieux.</p>
+        <span class="tag">3h · expérience rare</span>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<!-- ━━━ CTA VOLS ━━━ -->
+<section class="cta-flights">
+  <div class="cta-content">
+    <div class="section-eyebrow">Y aller</div>
+    <h2>Vols Business <em>vers Tokyo</em></h2>
+    <p>Air France · ANA · Japan Airlines. Vols directs Paris-Narita ou Haneda, 12h45.</p>
+    <a href="/resultats.html?origin=CDG&amp;destination=NRT" class="cta-btn">Voir les vols disponibles</a>
+  </div>
+</section>
+
+<!-- ━━━ MEMBER BANNER ━━━ -->
+<div class="member-banner">
+  <div>
+    <h3>Réservez en Signature</h3>
+    <p>Membres Signature : tarifs privilégiés sur l'ensemble de notre sélection Tokyo. Gratuit, sans engagement.</p>
+  </div>
+  <a href="/membre/inscription" class="tier-cta">Rejoindre le club</a>
+</div>
+
+<!-- ━━━ FOOTER ━━━ -->
+<footer>
+  <a href="/" class="footer-back-home">← Retour à AirBizness</a>
+  <div class="footer-legal">
+    © 2026 AirBizness · Destination Tokyo · Article du Journal AirBizness
+  </div>
+</footer>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <a href="/" class="nav-item"><span class="ico">✈</span><span>Voyage</span></a>
+  <a href="/#destinations" class="nav-item" style="color:var(--champ)"><span class="ico">◇</span><span>Destinations</span></a>
+  <a href="/#club" class="nav-item"><span class="ico">✦</span><span>Club</span></a>
+  <a href="/#journal" class="nav-item"><span class="ico">☷</span><span>Journal</span></a>
+  <a href="/membre" class="nav-item"><span class="ico">◯</span><span>Compte</span></a>
+</nav>
+
+<script>
+const heroVideo = document.getElementById('heroVideo');
+if (heroVideo) heroVideo.addEventListener('loadeddata', () => heroVideo.classList.add('loaded'));
+</script>
+</body>
+</html>

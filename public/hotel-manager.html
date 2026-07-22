@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Extranet hôtelier — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.55;}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 24px 80px;}
+
+.top-bar{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:18px 22px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;}
+.tb-info{display:flex;gap:14px;align-items:center;}
+.tb-img{width:54px;height:54px;border-radius:10px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
+.tb-img img{width:100%;height:100%;object-fit:cover;}
+.tb-name{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.1;}
+.tb-name em{font-style:italic;color:var(--gold2);}
+.tb-meta{font-size:12px;color:var(--text2);margin-top:3px;}
+.tb-verified{display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,0.15);color:var(--green);font-size:11px;padding:3px 9px;border-radius:99px;letter-spacing:0.3px;font-weight:600;margin-left:8px;}
+
+.tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:5px;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:9px 18px;border-radius:7px;font-size:13px;cursor:pointer;color:var(--text2);background:transparent;border:none;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
+.tab-ico{flex-shrink:0;opacity:.85;}
+.tab.on .tab-ico{opacity:1;}
+.tab:hover{color:var(--text);background:var(--bg3);}
+.tab.on{background:var(--gold);color:#000;font-weight:600;}
+
+.panel{display:none;}
+.panel.on{display:block;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px;}
+.card h2{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:14px;letter-spacing:-0.01em;}
+.card h2 em{font-style:italic;color:var(--gold2);}
+.card-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.55;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+.field input,.field textarea,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .15s;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--border2);}
+.field textarea{resize:vertical;min-height:110px;}
+.field .hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+
+.placeholder-hbx{font-size:11px;color:var(--text3);font-style:italic;margin-top:3px;}
+
+.btn{background:var(--gold);color:#000;border:none;padding:12px 22px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn:hover{background:var(--gold2);}
+.btn-ghost{background:transparent;color:var(--gold2);border:1px solid var(--border2);}
+.btn-ghost:hover{background:var(--gold-dim);}
+.actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.saved-msg{display:inline-flex;align-items:center;gap:5px;color:var(--green);font-size:13px;}
+.error-msg{color:#f88;font-size:13px;}
+
+/* Photos galerie HBX */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
+.gal-thumb{aspect-ratio:1/1;background:var(--bg3);border-radius:6px;overflow:hidden;position:relative;cursor:pointer;border:2px solid transparent;}
+.gal-thumb:hover{transform:scale(1.03);}
+.gal-thumb.main-selected{border-color:var(--gold2);}
+.gal-thumb img{width:100%;height:100%;object-fit:cover;}
+.gal-thumb-badge{position:absolute;top:5px;right:5px;background:var(--gold);color:#000;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:0.3px;}
+.gal-tab{flex-shrink:0;background:transparent;border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:99px;font-size:12px;cursor:pointer;}
+.gal-tab.on{background:var(--gold);color:#000;border-color:var(--gold);}
+.gal-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;}
+
+/* Stats card */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.stat{background:var(--bg3);padding:18px;border-radius:10px;}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+.stat-value{font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold2);line-height:1;}
+.stat-trend{font-size:11px;color:var(--text2);margin-top:6px;}
+
+.loading{padding:80px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Service grid — onglet Réserver pour mon client */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:560px){.svc-grid{grid-template-columns:1fr;}}
+.svc-btn{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 14px;color:var(--text);font-family:inherit;cursor:pointer;text-align:center;transition:all .15s;}
+.svc-btn:hover{border-color:var(--border2);background:var(--gold-dim);transform:translateY(-1px);}
+.svc-btn:active{transform:translateY(0);}
+.svc-icon{line-height:0;margin-bottom:10px;color:var(--gold2);display:inline-block;}
+.svc-label{font-family:'DM Serif Display',serif;font-size:18px;letter-spacing:-0.01em;margin-bottom:4px;}
+.svc-sub{font-size:11px;color:var(--text3);line-height:1.4;}
+
+/* Tableau résa concierge */
+.rb-table{width:100%;border-collapse:collapse;font-size:13px;}
+.rb-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:8px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+.rb-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:top;}
+.rb-table tr:last-child td{border-bottom:none;}
+.rb-table .rb-ref{font-family:monospace;font-size:11px;color:var(--text2);}
+.rb-status{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:0.3px;}
+.rb-status.ok{background:rgba(74,222,128,0.15);color:var(--green);}
+.rb-status.pending{background:rgba(212,174,74,0.15);color:var(--gold2);}
+.rb-status.failed{background:rgba(248,136,136,0.15);color:#f88;}
+.rb-empty{padding:30px;text-align:center;color:var(--text3);font-size:13px;}
+
+/* Cartes commissions */
+.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+@media(max-width:560px){.cm-grid{grid-template-columns:1fr;}}
+.cm-card{background:var(--bg3);padding:18px;border-radius:10px;}
+.cm-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+.cm-value{font-family:'DM Serif Display',serif;font-size:32px;color:var(--gold2);line-height:1;}
+.cm-sub{font-size:11px;color:var(--text2);margin-top:6px;}
+.cm-breakdown{font-size:12px;color:var(--text2);margin-top:10px;}
+.cm-breakdown .row{display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border);}
+.cm-breakdown .row:first-child{border-top:none;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<h1 style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">Extranet hôtelier AirBizness</h1>
+
+<div class="wrap" id="root">
+  <div class="loading"><div class="spinner"></div>Chargement de votre extranet…</div>
+</div>
+
+<div id="ab-footer"></div>
+
+<script>
+const token = new URLSearchParams(location.search).get('token') || '';
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+let profile = null;
+
+async function load(){
+  if (!token){
+    document.getElementById('root').innerHTML = `<div class="loading">Token requis pour accéder à l'extranet.<br><br><a href="/" style="color:var(--gold2);">Retour à l'accueil</a></div>`;
+    return;
+  }
+  try {
+    const r = await fetch('/api/hotel-manager/profile?token=' + encodeURIComponent(token));
+    if (!r.ok){
+      const d = await r.json();
+      throw new Error(d.error === 'not_claimed' ? 'Vous devez d\'abord réclamer la fiche.' : 'Token invalide');
+    }
+    profile = await r.json();
+    render();
+  } catch(e){
+    document.getElementById('root').innerHTML = `<div class="loading">${esc(e.message)}<br><br><a href="/claim.html?token=${encodeURIComponent(token)}" style="color:var(--gold2);">Aller à la réclamation</a></div>`;
+  }
+}
+
+function render(){
+  const p = profile;
+  const stars = '★'.repeat(p.category_stars||0);
+  document.getElementById('root').innerHTML = `
+    <div class="top-bar">
+      <div class="tb-info">
+        ${p.main_image_url ? `<div class="tb-img"><img src="${esc(p.main_image_url)}" alt=""></div>` : ''}
+        <div>
+          <div class="tb-name"><em>${esc(p.name)}</em>
+            ${p.is_verified ? '<span class="tb-verified">✓ VÉRIFIÉ</span>' : ''}
+          </div>
+          <div class="tb-meta">Code AirBizness ${p.hotel_code} · ${stars}${p.category_stars||''} · ${esc(p.city||'')}${p.country_code?', '+esc(p.country_code):''}</div>
+        </div>
+      </div>
+      <div>
+        <a href="/hotel-preview.html?code=${p.hotel_code}" target="_blank" class="btn btn-ghost">Voir la fiche publique →</a>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab on" data-p="general" onclick="showTab('general')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 9h2"/><path d="M13 9h2"/><path d="M9 13h2"/><path d="M13 13h2"/><path d="M9 17h2"/><path d="M13 17h2"/></svg> Informations</button>
+      <button class="tab" data-p="descriptions" onclick="showTab('descriptions')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> Descriptions</button>
+      <button class="tab" data-p="photos" onclick="showTab('photos')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg> Photos</button>
+      <button class="tab" data-p="policies" onclick="showTab('policies')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg> Politiques</button>
+      <button class="tab" data-p="contact" onclick="showTab('contact')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg> Contact</button>
+      <button class="tab" data-p="stats" onclick="showTab('stats')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg> Statistiques</button>
+      <button class="tab" data-p="reservations" onclick="showTab('reservations')"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Réserver pour mon client</button>
+      <button class="tab" data-p="transfers" onclick="showTab('transfers'); initTransfersTab()"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M5 17h14"/><path d="M7 17v-5l2-4h6l2 4v5"/><circle cx="8" cy="17" r="1.5"/><circle cx="16" cy="17" r="1.5"/></svg> Transferts</button>
+      <button class="tab" data-p="widget" onclick="showTab('widget'); initWidgetTab()"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Mon widget</button>
+    </div>
+
+    <!-- PANEL: General -->
+    <div class="panel on" id="panel-general">
+      <div class="card">
+        <h2>Informations <em>générales</em></h2>
+        <p class="card-sub">Ce qui s'affiche en haut de votre fiche publique.</p>
+        <div class="field">
+          <label>Nom commercial (affiché publiquement)</label>
+          <input type="text" id="display_name" value="${esc(p.display_name||'')}" placeholder="${esc(p.name)}">
+          <div class="hint">Vide = on utilise "${esc(p.name)}" (nom HBX par défaut).</div>
+        </div>
+        <div class="field">
+          <label>Sous-titre / accroche courte</label>
+          <input type="text" id="short_description" value="${esc(p.short_description||'')}" placeholder="Ex: Riad de charme au cœur de la médina">
+          <div class="hint">Affichée sous le nom de l'hôtel sur la fiche et dans les résultats de recherche.</div>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="saveFields(['display_name','short_description'])">Enregistrer</button>
+          <span id="msg-general"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Descriptions -->
+    <div class="panel" id="panel-descriptions">
+      <div class="card">
+        <h2>Descriptions <em>longues</em></h2>
+        <p class="card-sub">Écrivez votre propre histoire. Les voyageurs lisent ces descriptions avant de réserver — c'est votre vitrine.</p>
+        <div class="field">
+          <label>Description en français</label>
+          <textarea id="long_description_fr" placeholder="Niché au cœur de la médina, notre riad vous accueille...">${esc(p.long_description_fr||'')}</textarea>
+          <div class="hint">Visible aux voyageurs francophones. 300-1000 caractères recommandé.</div>
+        </div>
+        <div class="field">
+          <label>Description en anglais</label>
+          <textarea id="long_description_en" placeholder="Located in the heart of...">${esc(p.long_description_en||'')}</textarea>
+          ${p.description_en ? `<div class="placeholder-hbx">Texte HBX actuel : "${esc(p.description_en.slice(0,180))}…"</div>` : ''}
+        </div>
+        <div class="field">
+          <label>Description en arabe (اختياري)</label>
+          <textarea id="long_description_ar" placeholder="يقع فندقنا..." style="direction:rtl;">${esc(p.long_description_ar||'')}</textarea>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="saveFields(['long_description_fr','long_description_en','long_description_ar'])">Enregistrer</button>
+          <span id="msg-descriptions"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Photos -->
+    <div class="panel" id="panel-photos">
+      <div class="card">
+        <h2>Choisir la photo <em>mise en avant</em></h2>
+        <p class="card-sub">Cliquez sur la photo que vous voulez voir en premier sur votre fiche publique et dans les résultats de recherche.</p>
+        <div class="gal-tabs" id="gal-tabs"></div>
+        <div class="gallery" id="gal"></div>
+      </div>
+      <div class="card">
+        <h2>Vos <em>photos propriétaires</em></h2>
+        <p class="card-sub">Uploadez vos vraies photos professionnelles. Bientôt disponible (drag & drop).</p>
+        <div style="padding:30px;background:var(--bg3);border-radius:10px;border:2px dashed var(--border);text-align:center;color:var(--text3);font-size:13px;">
+          📤 Upload photos — Module en cours de déploiement.<br>
+          En attendant, envoyez vos photos à <a href="mailto:partenariats@airbizness.com" style="color:var(--gold2);">partenariats@airbizness.com</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Policies -->
+    <div class="panel" id="panel-policies">
+      <div class="card">
+        <h2>Horaires <em>check-in / check-out</em></h2>
+        <div class="field-grid">
+          <div class="field">
+            <label>Heure d'arrivée minimale</label>
+            <input type="time" id="check_in_time" value="${esc(p.check_in_time||'15:00')}">
+          </div>
+          <div class="field">
+            <label>Heure de départ maximale</label>
+            <input type="time" id="check_out_time" value="${esc(p.check_out_time||'11:00')}">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="saveFields(['check_in_time','check_out_time'])">Enregistrer</button>
+          <span id="msg-times"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Politiques <em>établissement</em></h2>
+        <div class="field">
+          <label>Politique enfants</label>
+          <textarea id="child_policy" placeholder="Ex: Enfants de moins de 6 ans gratuits dans la chambre des parents. Lits bébé sur demande.">${esc(p.child_policy||'')}</textarea>
+        </div>
+        <div class="field">
+          <label>Politique animaux</label>
+          <textarea id="pet_policy" placeholder="Ex: Animaux acceptés (< 10 kg), supplément 15€/nuit.">${esc(p.pet_policy||'')}</textarea>
+        </div>
+        <div class="field">
+          <label>Conditions d'annulation (en complément du tarif)</label>
+          <textarea id="cancellation_text" placeholder="Ex: Annulation gratuite jusqu'à 48h avant l'arrivée.">${esc(p.cancellation_text||'')}</textarea>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="saveFields(['child_policy','pet_policy','cancellation_text'])">Enregistrer</button>
+          <span id="msg-policies"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Contact -->
+    <div class="panel" id="panel-contact">
+      <div class="card">
+        <h2>Contact <em>public</em></h2>
+        <p class="card-sub">Coordonnées affichées aux voyageurs sur votre fiche. Différent du contact AirBizness/partenariat.</p>
+        <div class="field-grid">
+          <div class="field">
+            <label>Téléphone public</label>
+            <input type="tel" id="phone_public" value="${esc(p.phone_public||'')}" placeholder="${esc(p.phone_main||'')}">
+            ${p.phone_main ? `<div class="placeholder-hbx">HBX : ${esc(p.phone_main)}</div>` : ''}
+          </div>
+          <div class="field">
+            <label>Email public</label>
+            <input type="email" id="email_public" value="${esc(p.email_public||'')}" placeholder="${esc(p.hbx_email||'')}">
+            ${p.hbx_email ? `<div class="placeholder-hbx">HBX : ${esc(p.hbx_email)}</div>` : ''}
+          </div>
+        </div>
+        <div class="field">
+          <label>Site web</label>
+          <input type="url" id="website" value="${esc(p.website||'')}" placeholder="https://votre-hotel.com">
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="saveFields(['phone_public','email_public','website'])">Enregistrer</button>
+          <span id="msg-contact"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Stats -->
+    <div class="panel" id="panel-stats">
+      <div class="card">
+        <h2>Vos <em>statistiques</em></h2>
+        <p class="card-sub">Performance de votre fiche AirBizness sur les 30 derniers jours.</p>
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-label">Vues fiche</div><div class="stat-value">—</div><div class="stat-trend">Données dispo après publication</div></div>
+          <div class="stat"><div class="stat-label">Recherches matchant</div><div class="stat-value">—</div><div class="stat-trend">Quand votre destination est cherchée</div></div>
+          <div class="stat"><div class="stat-label">Réservations</div><div class="stat-value">—</div><div class="stat-trend">Bookings via AirBizness</div></div>
+          <div class="stat"><div class="stat-label">Revenus (€)</div><div class="stat-value">—</div><div class="stat-trend">Après commission</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Partenariat <em>direct</em></h2>
+        <p class="card-sub">Quand votre fiche sera vérifiée, vous pourrez activer le partenariat direct : commission inférieure aux wholesalers, paiement à 7j au lieu de 30j.</p>
+        <div style="padding:18px;background:var(--bg3);border-radius:10px;font-size:13px;color:var(--text2);">
+          <strong style="color:var(--gold2);">Partenariat direct AirBizness</strong> — commission 8-12% (vs 15-22% wholesalers).
+          Pour activer, contactez <a href="mailto:partenariats@airbizness.com" style="color:var(--gold2);">partenariats@airbizness.com</a>.
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Réservations pour mes clients -->
+    <div class="panel" id="panel-reservations">
+      <div class="card">
+        <h2>Réserver <em>pour mon client</em></h2>
+        <p class="card-sub">Votre client vous demande un vol, un transfert ou une activité ? Vous pouvez réserver pour lui depuis ici. La résa sera créée au nom de votre client, et vous toucherez une commission de 5% sur chaque réservation confirmée.</p>
+
+        <div class="field-grid">
+          <div class="field">
+            <label>Nom du client</label>
+            <input type="text" id="rb_guest_name" placeholder="Ex : M. Smith">
+          </div>
+          <div class="field">
+            <label>Email client (optionnel)</label>
+            <input type="email" id="rb_guest_email" placeholder="smith@example.com">
+          </div>
+        </div>
+        <div class="field">
+          <label>Chambre / référence interne</label>
+          <input type="text" id="rb_guest_ref" placeholder="Ex : Suite 401 · Dossier 22087">
+          <div class="hint">Pour retrouver facilement la réservation dans votre PMS.</div>
+        </div>
+
+        <div style="margin-top:6px;">
+          <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:10px;">Quel service voulez-vous réserver ?</label>
+          <div class="svc-grid">
+            <button class="svc-btn" type="button" onclick="startBookingIntent('flight')">
+              <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+              <div class="svc-label">Vol</div>
+              <div class="svc-sub">Affaires · première · économique premium</div>
+            </button>
+            <button class="svc-btn" type="button" onclick="startBookingIntent('transfer')">
+              <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M5 17h14"/><path d="M5 17a2 2 0 0 1-2-2v-3l2-6h14l2 6v3a2 2 0 0 1-2 2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 12h14"/></svg></div>
+              <div class="svc-label">Transfert</div>
+              <div class="svc-sub">Aéroport · trajet privé · van familial</div>
+            </button>
+            <button class="svc-btn" type="button" onclick="startBookingIntent('activity')">
+              <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+              <div class="svc-label">Activité</div>
+              <div class="svc-sub">Excursions · spa · expériences premium</div>
+            </button>
+          </div>
+          <div id="rb_msg" style="margin-top:14px;font-size:13px;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mes <em>réservations clients</em></h2>
+        <p class="card-sub">Les réservations que vous avez initiées pour vos clients depuis cet extranet.</p>
+        <div id="rb_bookings_area">
+          <div style="padding:30px;text-align:center;color:var(--text3);font-size:13px;">Chargement…</div>
+        </div>
+      </div>
+
+<div class="card">
+        <h2>Mes <em>commissions</em></h2>
+        <p class="card-sub">5% de commission sur chaque résa confirmée que vous initiez pour vos clients. Période : 30 derniers jours.</p>
+        <div id="rb_commissions_area">
+          <div style="padding:30px;text-align:center;color:var(--text3);font-size:13px;">Chargement…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Mon widget (vol embeddable sur le site de l'hôtelier) -->
+    <div class="panel" id="panel-widget">
+      <div class="card">
+        <h2>Votre <em>widget de réservation</em></h2>
+        <p class="card-sub">Permettez à vos visiteurs de réserver leur vol directement depuis votre site web. Vous touchez <strong style="color:var(--gold2);">8% de commission</strong> sur chaque réservation issue de votre widget. Compatible avec Wordpress, Squarespace, Wix et tout site HTML.</p>
+
+        <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);margin:18px 0 12px;">Personnalisation</h3>
+        <div class="field-grid">
+          <div class="field">
+            <label>Couleur d'accent</label>
+            <select id="w_theme" onchange="refreshWidgetPreview()">
+              <option value="gold">Or champagne</option>
+              <option value="silver">Argent</option>
+              <option value="dark">Sombre élégant</option>
+              <option value="light">Clair épuré</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Mode d'affichage</label>
+            <select id="w_mode" onchange="refreshWidgetPreview()">
+              <option value="compact">Compact (max 460px)</option>
+              <option value="full">Pleine largeur</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Aéroport de destination</label>
+            <input id="w_airport" type="text" maxlength="3" style="text-transform:uppercase;" oninput="refreshWidgetPreview()" placeholder="RAK">
+            <div class="hint">Code IATA 3 lettres (RAK Marrakech, CDG Paris, DXB Dubaï…)</div>
+          </div>
+          <div class="field">
+            <label>Texte du bouton</label>
+            <input id="w_cta" type="text" value="Rechercher des vols" oninput="refreshWidgetPreview()">
+          </div>
+        </div>
+
+        <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);margin:22px 0 12px;">Aperçu en direct</h3>
+        <div id="widget-preview-container" style="background:#fff;padding:30px 20px;border-radius:10px;border:1px solid var(--border);">
+          <div id="airbizness-flight-widget"
+               data-hotel-code=""
+               data-airport=""
+               data-theme="gold"
+               data-mode="compact"></div>
+        </div>
+
+        <h3 style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold2);margin:22px 0 12px;">Code à coller sur votre site</h3>
+        <p class="card-sub" style="margin-bottom:10px;">Copiez ce code et collez-le dans votre site, à l'endroit où vous voulez le widget. C'est tout.</p>
+        <textarea id="widget-code" readonly rows="7" style="font-family:monospace;font-size:12px;line-height:1.5;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;color:var(--text);"></textarea>
+        <div class="actions">
+          <button class="btn" onclick="copyWidgetCode()">Copier le code</button>
+          <a class="btn btn-ghost" id="widget-test-link" href="#" target="_blank" rel="noopener">Tester sur airbizness.com →</a>
+          <span id="w_copy_msg"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Vos <em>statistiques widget</em> (30 derniers jours)</h2>
+        <p class="card-sub">Chaque fois qu'un visiteur voit ou clique sur votre widget, c'est compté ici. Les commissions affichées correspondent aux réservations confirmées attribuées à votre établissement.</p>
+        <div class="stat-grid">
+          <div class="stat"><div class="stat-label">Impressions</div><div class="stat-value" id="w_stat_views">—</div><div class="stat-trend">Vues du widget</div></div>
+          <div class="stat"><div class="stat-label">Soumissions</div><div class="stat-value" id="w_stat_submits">—</div><div class="stat-trend">Recherches lancées</div></div>
+          <div class="stat"><div class="stat-label">Réservations</div><div class="stat-value" id="w_stat_bookings">—</div><div class="stat-trend">Bookings confirmés</div></div>
+          <div class="stat"><div class="stat-label">Commissions (€)</div><div class="stat-value" id="w_stat_commissions">—</div><div class="stat-trend">8% sur résa confirmées</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Transferts (provider AirBizness natif — hôtelier publie ses transferts) -->
+    <div class="panel" id="panel-transfers">
+      <div class="card">
+        <h2>Vos <em>transferts</em></h2>
+        <p class="card-sub">Publiez les transferts proposés par vos chauffeurs partenaires (navette aéroport, taxi privé, berline). AirBizness prélève <strong>15 % de marge</strong> sur chaque vente — vous touchez le prix net que vous fixez.</p>
+        <div id="transfers-list" style="margin-top:18px;">Chargement…</div>
+      </div>
+
+      <div class="card">
+        <h2>Ajouter un <em>nouveau transfert</em></h2>
+        <form id="form-transfer" onsubmit="addTransfer(event)" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <label style="grid-column:1/-1;">Libellé visible voyageur
+            <input name="label" placeholder="Ex : Navette aéroport Stansted → hôtel" required>
+          </label>
+          <label>Lieu de départ
+            <input name="from_location" placeholder="Ex : STN Aéroport London Stansted" required>
+          </label>
+          <label>Lieu d'arrivée
+            <input name="to_location" placeholder="Ex : Notre hôtel" required>
+          </label>
+          <label>Prix net (€) — ce que vous touchez
+            <input name="net_price_eur" type="number" step="0.01" min="0" placeholder="35.00" required>
+          </label>
+          <label>Type de véhicule
+            <select name="vehicle_type">
+              <option value="berline">Berline</option>
+              <option value="van">Van / Minibus</option>
+              <option value="premium">Premium / Luxe</option>
+            </select>
+          </label>
+          <label>Voyageurs max
+            <input name="max_passengers" type="number" min="1" max="20" value="4">
+          </label>
+          <label>Bagages max
+            <input name="max_luggage" type="number" min="0" max="20" value="4">
+          </label>
+          <label>Préavis (heures)
+            <input name="notice_hours" type="number" min="1" max="168" value="12">
+          </label>
+          <label style="grid-column:1/-1;">Politique d'annulation
+            <textarea name="cancellation_policy" rows="2" placeholder="Ex : Annulation gratuite jusqu'à 24h avant le transfert."></textarea>
+          </label>
+          <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;">
+            <button class="btn" type="submit">Publier ce transfert</button>
+            <span id="tr_msg" class="muted"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  renderGallery();
+  // Lazy-load des résa & commissions au premier affichage du panel
+  loadConciergeData();
+}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.p === name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === 'panel-' + name));
+}
+
+function renderGallery(){
+  const gal = profile.hbx_gallery || {};
+  const cats = [
+    {key:'rooms', label:'Chambres'},
+    {key:'general', label:"L'hôtel"},
+    {key:'restaurant', label:'Restaurant'},
+    {key:'bar', label:'Bar'},
+    {key:'outdoor', label:'Extérieur'},
+  ].filter(c => (gal[c.key]||[]).length > 0);
+  if (!cats.length) return;
+  const tabsEl = document.getElementById('gal-tabs');
+  tabsEl.innerHTML = cats.map((c, i) => `<button class="gal-tab ${i===0?'on':''}" data-cat="${c.key}" onclick="showGalCat('${c.key}')">${esc(c.label)} (${gal[c.key].length})</button>`).join('');
+  showGalCat(cats[0].key);
+}
+
+function showGalCat(cat){
+  document.querySelectorAll('.gal-tab').forEach(t => t.classList.toggle('on', t.dataset.cat === cat));
+  const urls = (profile.hbx_gallery||{})[cat] || [];
+  const main = profile.main_photo_url;
+  document.getElementById('gal').innerHTML = urls.map(url => `
+    <div class="gal-thumb ${url===main?'main-selected':''}" onclick="setMainPhoto('${esc(url)}')">
+      <img src="${esc(url)}" alt="">
+      ${url===main ? '<div class="gal-thumb-badge">✓ MISE EN AVANT</div>' : ''}
+    </div>
+  `).join('');
+}
+
+async function setMainPhoto(url){
+  await saveOne({main_photo_url: url});
+  profile.main_photo_url = url;
+  // Re-render galerie active
+  const activeCat = document.querySelector('.gal-tab.on')?.dataset.cat;
+  if (activeCat) showGalCat(activeCat);
+}
+
+async function saveFields(keys){
+  const data = {};
+  keys.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) data[k] = el.value.trim() || null;
+  });
+  await saveOne(data, keys[0]);
+}
+
+async function saveOne(data, msgKey){
+  const msgEl = document.getElementById('msg-' + (msgKey || 'general'));
+  try {
+    const r = await fetch('/api/hotel-manager/update', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({token, ...data}),
+    });
+    if (!r.ok) throw new Error('Sauvegarde échouée');
+    if (msgEl) msgEl.innerHTML = '<span class="saved-msg">✓ Enregistré</span>';
+    setTimeout(() => { if (msgEl) msgEl.innerHTML = ''; }, 3000);
+  } catch(e){
+    if (msgEl) msgEl.innerHTML = `<span class="error-msg">${esc(e.message)}</span>`;
+  }
+}
+
+// ───────────────────────────────────────────────────────────
+// Concierge — Réserver pour mon client
+// ───────────────────────────────────────────────────────────
+async function startBookingIntent(service){
+  const guest_name = (document.getElementById('rb_guest_name')?.value || '').trim();
+  const guest_email = (document.getElementById('rb_guest_email')?.value || '').trim();
+  const guest_ref = (document.getElementById('rb_guest_ref')?.value || '').trim();
+  const msg = document.getElementById('rb_msg');
+  if (!guest_name){
+    msg.innerHTML = '<span class="error-msg">Renseignez au moins le nom du client.</span>';
+    document.getElementById('rb_guest_name')?.focus();
+    return;
+  }
+  msg.innerHTML = '<span style="color:var(--text2);">Préparation de la session…</span>';
+  try {
+    const r = await fetch('/api/hotel-manager/booking-intent', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({token, service, guest_name, guest_email, guest_ref}),
+    });
+    if (!r.ok) throw new Error('Erreur ('+r.status+')');
+    const d = await r.json();
+    msg.innerHTML = '<span class="saved-msg">Redirection vers le tunnel de réservation…</span>';
+    // Petit délai pour que l'hôtelier voit le feedback
+    setTimeout(() => { location.href = d.redirect_url; }, 350);
+  } catch(e){
+    msg.innerHTML = '<span class="error-msg">'+esc(e.message)+'</span>';
+  }
+}
+
+let _conciergeLoaded = false;
+async function loadConciergeData(){
+  if (_conciergeLoaded) return;
+  _conciergeLoaded = true;
+  try {
+    const [bResp, cResp] = await Promise.all([
+      fetch('/api/hotel-manager/bookings-by-hotel?token='+encodeURIComponent(token)+'&limit=30'),
+      fetch('/api/hotel-manager/commissions?token='+encodeURIComponent(token)+'&period_days=30'),
+    ]);
+    renderBookings(bResp.ok ? await bResp.json() : {items:[]});
+    renderCommissions(cResp.ok ? await cResp.json() : null);
+  } catch(e){
+    document.getElementById('rb_bookings_area').innerHTML = '<div class="rb-empty">Erreur de chargement.</div>';
+  }
+}
+
+function renderBookings(d){
+  const area = document.getElementById('rb_bookings_area');
+  if (!d || !d.items || !d.items.length){
+    area.innerHTML = '<div class="rb-empty">Aucune réservation initiée pour vos clients pour l\'instant.<br>Utilisez les boutons ci-dessus pour démarrer.</div>';
+    return;
+  }
+  const rows = d.items.map(it => {
+    const date = it.date ? new Date(it.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) : '—';
+    const statusClass = (it.status === 'confirmed') ? 'ok'
+                        : (it.status === 'failed' || it.status === 'cancelled') ? 'failed'
+                        : 'pending';
+    const statusLabel = (it.status === 'confirmed') ? 'OK'
+                        : (it.status === 'failed') ? 'Échec'
+                        : (it.status === 'cancelled') ? 'Annulée'
+                        : (it.status === 'payment_pending') ? 'Paiement en cours'
+                        : it.status;
+    return `<tr>
+      <td>${esc(date)}</td>
+      <td>
+        <div style="font-weight:600;">${esc(it.service_label)}</div>
+        <div class="rb-ref">${esc(it.detail || '')}</div>
+      </td>
+      <td>${esc(it.guest_name || '—')}${it.guest_ref ? '<div class="rb-ref">'+esc(it.guest_ref)+'</div>' : ''}</td>
+      <td><span class="rb-status ${statusClass}">${esc(statusLabel)}</span></td>
+      <td style="text-align:right;font-weight:600;">${Math.round(it.total_eur)} €</td>
+      <td class="rb-ref">${esc(it.ref)}</td>
+    </tr>`;
+  }).join('');
+  area.innerHTML = `<div style="overflow-x:auto;">
+    <table class="rb-table">
+      <thead><tr><th>Date</th><th>Service</th><th>Client</th><th>Statut</th><th style="text-align:right;">Total</th><th>Réf.</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderCommissions(d){
+  const area = document.getElementById('rb_commissions_area');
+  if (!d){
+    area.innerHTML = '<div class="rb-empty">Erreur de chargement.</div>';
+    return;
+  }
+  const labels = {flight:'Vols', pack:'Packs vol+hôtel', hotel:'Hôtels', activity:'Activités'};
+  const rows = Object.entries(d.by_service||{}).map(([k,v]) => `
+    <div class="row">
+      <span>${esc(labels[k]||k)} (${v.count})</span>
+      <strong>${v.commission_eur.toFixed(2)} €</strong>
+    </div>
+  `).join('');
+  area.innerHTML = `
+    <div class="cm-grid">
+      <div class="cm-card">
+        <div class="cm-label">Commissions cumulées (30j)</div>
+        <div class="cm-value">${d.total_commission_eur.toFixed(2)} €</div>
+        <div class="cm-sub">${d.count_bookings} réservation${d.count_bookings>1?'s':''} confirmée${d.count_bookings>1?'s':''}</div>
+      </div>
+      <div class="cm-card">
+        <div class="cm-label">Chiffre d'affaires généré</div>
+        <div class="cm-value">${d.total_gross_eur.toFixed(0)} €</div>
+        <div class="cm-sub">Taux de commission : ${(d.commission_rate*100).toFixed(0)}%</div>
+      </div>
+    </div>
+    <div class="cm-breakdown">${rows}</div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="mailto:partenariats@airbizness.com?subject=Demande%20virement%20commissions%20-%20Hôtel%20${encodeURIComponent(profile.hotel_code||'')}" class="btn">Demander un virement</a>
+      <span style="font-size:11px;color:var(--text3);align-self:center;">Virement traité sous 7 jours ouvrés</span>
+    </div>
+  `;
+}
+
+// ───────────────────────────────────────────────────────────
+// Widget tab — preview + code snippet + stats
+// ───────────────────────────────────────────────────────────
+const CITY_TO_AIRPORT = {
+  'paris':'CDG','marrakech':'RAK','casablanca':'CMN','rabat':'RBA','agadir':'AGA',
+  'tanger':'TNG','fes':'FEZ','madrid':'MAD','barcelone':'BCN','barcelona':'BCN',
+  'londres':'LHR','london':'LHR','dubai':'DXB','dubaï':'DXB','tokyo':'NRT',
+  'new york':'JFK','rome':'FCO','lisbonne':'LIS','lisbon':'LIS','milan':'MXP',
+  'venise':'VCE','amsterdam':'AMS','berlin':'BER','zurich':'ZRH','geneve':'GVA',
+  'genève':'GVA','vienne':'VIE','prague':'PRG','athenes':'ATH','athènes':'ATH',
+  'istanbul':'IST','le caire':'CAI','cairo':'CAI','riyadh':'RUH','doha':'DOH',
+  'beyrouth':'BEY','beirut':'BEY','tel aviv':'TLV','dakar':'DSS','abidjan':'ABJ',
+  'bamako':'BKO','tunis':'TUN','alger':'ALG','algiers':'ALG'
+};
+
+let _widgetScriptLoaded = false;
+let _widgetTabInitialized = false;
+
+function _guessAirport(){
+  const city = (profile.city||'').toLowerCase().trim();
+  if (CITY_TO_AIRPORT[city]) return CITY_TO_AIRPORT[city];
+  // Fallback : pas de mapping → vide, l'hôtelier renseigne manuellement
+  return '';
+}
+
+function initWidgetTab(){
+  if (_widgetTabInitialized) { refreshWidgetPreview(); return; }
+  _widgetTabInitialized = true;
+  // Pré-remplit l'aéroport depuis la ville si possible
+  const airport = _guessAirport();
+  const airInput = document.getElementById('w_airport');
+  if (airInput && !airInput.value) airInput.value = airport;
+  // Charge le script widget si pas déjà chargé
+  if (!_widgetScriptLoaded){
+    const s = document.createElement('script');
+    s.src = '/widget/v1/airbizness.js?cb=' + Date.now();
+    s.onload = function(){ _widgetScriptLoaded = true; refreshWidgetPreview(); };
+    document.head.appendChild(s);
+  } else {
+    refreshWidgetPreview();
+  }
+  loadWidgetStats();
+}
+
+function refreshWidgetPreview(){
+  const hotelCode = String(profile.hotel_code || '');
+  const airport = (document.getElementById('w_airport')?.value || '').toUpperCase().trim();
+  const theme = document.getElementById('w_theme')?.value || 'gold';
+  const mode = document.getElementById('w_mode')?.value || 'compact';
+  const cta = document.getElementById('w_cta')?.value || 'Rechercher des vols';
+
+  const container = document.getElementById('airbizness-flight-widget');
+  if (container){
+    container.dataset.hotelCode = hotelCode;
+    container.dataset.airport = airport;
+    container.dataset.theme = theme;
+    container.dataset.mode = mode;
+    container.dataset.cta = cta;
+    container.innerHTML = '';
+    if (window.__abzWidgetRender){
+      window.__abzWidgetRender(container);
+    }
+  }
+
+  // Update code textarea
+  const snippet =
+'<' + 'script src="https://airbizness.com/widget/v1/airbizness.js"><' + '/script>\n' +
+'<div id="airbizness-flight-widget"\n' +
+'     data-hotel-code="' + hotelCode + '"\n' +
+'     data-airport="' + esc(airport) + '"\n' +
+'     data-theme="' + esc(theme) + '"\n' +
+'     data-mode="' + esc(mode) + '"\n' +
+'     data-cta="' + esc(cta) + '"></div>';
+  const ta = document.getElementById('widget-code');
+  if (ta) ta.value = snippet;
+
+  // Lien de test
+  const link = document.getElementById('widget-test-link');
+  if (link && airport){
+    const params = new URLSearchParams({
+      on_behalf_of: hotelCode,
+      destination: airport,
+      from_widget: '1',
+    });
+    link.href = '/sejour.html?' + params.toString();
+  }
+}
+
+function copyWidgetCode(){
+  const ta = document.getElementById('widget-code');
+  if (!ta) return;
+  ta.select();
+  ta.setSelectionRange(0, 99999);
+  const msg = document.getElementById('w_copy_msg');
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value);
+    } else {
+      document.execCommand('copy');
+    }
+    if (msg) msg.innerHTML = '<span class="saved-msg">✓ Code copié dans le presse-papiers</span>';
+  } catch(e){
+    if (msg) msg.innerHTML = '<span class="error-msg">Sélectionnez le texte et copiez avec Ctrl+C</span>';
+  }
+  setTimeout(() => { if (msg) msg.innerHTML = ''; }, 4000);
+}
+
+async function loadWidgetStats(){
+  try {
+    const r = await fetch('/api/widget/stats?token=' + encodeURIComponent(token));
+    if (!r.ok) return;
+    const d = await r.json();
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    setVal('w_stat_views', d.impressions || 0);
+    setVal('w_stat_submits', d.submits || 0);
+    setVal('w_stat_bookings', d.bookings_via_widget || 0);
+    setVal('w_stat_commissions', (d.commissions_pending_eur || 0).toFixed(2) + ' €');
+  } catch(e){ /* silencieux : stats best-effort */ }
+}
+
+// ── Tab Transferts (provider AirBizness natif) ────────────────────────
+function initTransfersTab(){
+  loadTransfers();
+}
+
+async function loadTransfers(){
+  const hc = profile.hotel_code;
+  const el = document.getElementById('transfers-list');
+  if (!el) return;
+  if (!hc) { el.innerHTML = '<p class="muted">Profil hôtel non chargé.</p>'; return; }
+  el.innerHTML = 'Chargement…';
+  try {
+    const r = await fetch('/api/hotel-manager/transfers/' + encodeURIComponent(hc));
+    const d = await r.json();
+    if (!d.transfers || !d.transfers.length){
+      el.innerHTML = '<p class="muted">Aucun transfert publié pour le moment. Ajoutez votre premier transfert ci-dessous.</p>';
+      return;
+    }
+    el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13.5px;">' +
+      '<thead><tr style="border-bottom:1px solid var(--border);text-align:left;color:var(--text3);font-size:11.5px;text-transform:uppercase;letter-spacing:0.08em;">' +
+        '<th style="padding:8px 4px;">Libellé</th>' +
+        '<th style="padding:8px 4px;">Trajet</th>' +
+        '<th style="padding:8px 4px;text-align:right;">Prix net</th>' +
+        '<th style="padding:8px 4px;text-align:right;">Marge 15%</th>' +
+        '<th style="padding:8px 4px;text-align:right;">Prix client</th>' +
+        '<th style="padding:8px 4px;">Véhicule</th>' +
+        '<th style="padding:8px 4px;text-align:center;">État</th>' +
+      '</tr></thead><tbody>' +
+      d.transfers.map(t => `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 4px;font-weight:500;">${esc(t.label)}</td>
+          <td style="padding:10px 4px;color:var(--text2);font-size:12.5px;">${esc(t.from_location)} → ${esc(t.to_location)}</td>
+          <td style="padding:10px 4px;text-align:right;font-variant-numeric:tabular-nums;">${(t.net_price_eur || 0).toFixed(2)} €</td>
+          <td style="padding:10px 4px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text3);">+${((t.gross_price_eur || 0) - (t.net_price_eur || 0)).toFixed(2)} €</td>
+          <td style="padding:10px 4px;text-align:right;font-weight:bold;color:var(--gold2);font-variant-numeric:tabular-nums;">${(t.gross_price_eur || 0).toFixed(2)} €</td>
+          <td style="padding:10px 4px;text-transform:capitalize;color:var(--text2);">${esc(t.vehicle_type||'-')}</td>
+          <td style="padding:10px 4px;text-align:center;">${t.active ? '<span style="color:#4ade80;">● actif</span>' : '<span style="color:var(--text3);">○ inactif</span>'}</td>
+        </tr>
+      `).join('') +
+    '</tbody></table>' +
+    `<p class="muted" style="margin-top:14px;font-size:12px;">${d.total} transfert${d.total>1?'s':''} publié${d.total>1?'s':''}. ` +
+    `Ce sont les transferts proposés aux <strong>clients publics AirBizness</strong> (qui découvrent votre hôtel sur le site). Pour réserver un chauffeur à un client déjà présent, utilisez l'onglet « Réserver pour mon client » (HBX Transfers).</p>`;
+  } catch(e){
+    el.innerHTML = '<p style="color:#c44;">Erreur chargement transferts : ' + esc(String(e)) + '</p>';
+  }
+}
+
+// (Retiré 2026-05-30) Bouton "Réserver pour client" inline.
+// Doctrine Pascal : les transferts AirBizness natifs sont UNIQUEMENT pour le
+// client public (qui découvre l'hôtel sur airbizness.com). Le concierge interne
+// (client présent à l'hôtel qui demande un taxi à la réception) passera par
+// l'onglet "Réserver pour mon client" → HBX Transfers, quand les creds seront
+// signés. AirBizness ne joue pas l'intermédiaire entre l'hôtelier et son propre
+// taxi partenaire — l'hôtelier appellera son chauffeur en direct.
+
+async function addTransfer(e){
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const msg = document.getElementById('tr_msg');
+  msg.textContent = 'Publication…';
+  msg.style.color = 'var(--text3)';
+  const body = {
+    hotel_code: parseInt(profile.hotel_code, 10),
+    label: f.get('label'),
+    from_location: f.get('from_location'),
+    to_location: f.get('to_location'),
+    net_price_eur: parseFloat(f.get('net_price_eur')),
+    vehicle_type: f.get('vehicle_type'),
+    max_passengers: parseInt(f.get('max_passengers') || '4', 10),
+    max_luggage: parseInt(f.get('max_luggage') || '2', 10),
+    notice_hours: parseInt(f.get('notice_hours') || '12', 10),
+    cancellation_policy: f.get('cancellation_policy') || null,
+    created_by: profile.contact_email || null,
+  };
+  try {
+    const r = await fetch('/api/hotel-manager/transfers', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    msg.textContent = `✓ Publié : prix client ${d.gross_price_eur} € (votre net ${d.net_price_eur} €)`;
+    msg.style.color = '#4ade80';
+    e.target.reset();
+    await loadTransfers();
+  } catch(err){
+    msg.textContent = 'Erreur : ' + err.message;
+    msg.style.color = '#c44';
+  }
+}
+
+load();
+</script>
+</body>
+</html>

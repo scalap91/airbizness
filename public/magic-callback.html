@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion en cours… — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="/js/carnets.js?v=2026053113"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f0f;color:#f0ece4;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;}
+.spinner{width:36px;height:36px;border:2px solid rgba(255,255,255,0.07);border-top-color:#d4ae4a;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 18px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.logo{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:30px;}
+.logo em{color:#d4ae4a;font-style:italic;}
+.msg{font-size:14.5px;color:#a09890;max-width:380px;margin:0 auto;line-height:1.6;}
+.err{color:#e87a7a;}
+.btn{display:inline-block;margin-top:18px;padding:11px 22px;background:#b8962e;color:#000;text-decoration:none;border-radius:8px;font-weight:600;font-size:13px;}
+</style>
+</head>
+<body>
+<div>
+  <div class="logo">Air<em>Bizness</em></div>
+  <h1 style="font-size:18px;font-weight:400;margin:14px 0 0;color:#f0ece4;text-align:center;">Connexion en cours</h1>
+  <div id="content">
+    <div class="spinner"></div>
+    <div class="msg">Connexion en cours…</div>
+  </div>
+</div>
+<script>
+(async function() {
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token');
+  const next = params.get('next') || '/compte.html';
+  const content = document.getElementById('content');
+  if (!token) {
+    content.innerHTML = '<div class="msg err">Lien invalide ou expiré.</div><a class="btn" href="/magic-link.html">Demander un nouveau lien →</a>';
+    return;
+  }
+  try {
+    const r = await fetch('/api/auth/magic-callback', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({token})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Erreur');
+    // Stocke token et user dans localStorage via le carnet Auth
+    try {
+      localStorage.setItem('ab_auth_token_v1', d.token);
+      localStorage.setItem('ab_auth_user_v1', JSON.stringify(d.user));
+      window.dispatchEvent(new CustomEvent('ab-auth-change', {detail: d.user}));
+    } catch(_){}
+    content.innerHTML = '<div class="msg">✓ Connecté. Redirection…</div>';
+    setTimeout(() => location.href = next, 600);
+  } catch (e) {
+    content.innerHTML = `<div class="msg err">${e.message}</div><a class="btn" href="/magic-link.html">Demander un nouveau lien →</a>`;
+  }
+})();
+</script>
+</body>
+</html>

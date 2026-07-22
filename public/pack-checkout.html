@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Finaliser votre séjour — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#4ade80;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.55;}
+
+.main{max-width:1100px;margin:0 auto;padding:24px 24px 60px;display:grid;grid-template-columns:1fr 380px;gap:32px;}
+@media(max-width:880px){.main{grid-template-columns:1fr;padding-bottom:160px;}}
+
+.col-left{}
+.title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:6px;letter-spacing:-0.01em;}
+.title em{font-style:italic;color:var(--gold2);}
+.sub{color:var(--text2);font-size:13px;margin-bottom:24px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.card-title-ic{width:30px;height:30px;border-radius:8px;background:var(--gold-dim);display:grid;place-items:center;color:var(--gold2);font-size:14px;}
+
+.pax-block{padding:18px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;}
+.pax-block:last-child{margin-bottom:0;}
+.pax-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.pax-head-label{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);letter-spacing:-0.01em;}
+.pax-head-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+.field{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;}
+.field-label{font-size:9.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.field input, .field select{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13.5px;}
+.field input[type=date]{color-scheme:dark;}
+.field.required-missing{border-color:rgba(220,80,80,0.4);}
+
+#payment-element{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;}
+
+.cgv-box{margin-top:18px;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:border-color .15s;}
+.cgv-box:hover{border-color:var(--border2);}
+.cgv-box.checked{border-color:var(--border2);background:linear-gradient(135deg,var(--gold-dim) 0%,var(--bg2) 80%);}
+.cgv-box input{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--gold2);cursor:pointer;}
+.cgv-box label{font-size:13px;color:var(--text2);line-height:1.5;cursor:pointer;flex:1;}
+.cgv-box label a{color:var(--gold2);}
+
+.submit-btn{width:100%;margin-top:18px;padding:16px;background:var(--gold);border:none;color:#000;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border-radius:8px;transition:opacity .15s,background .15s;}
+.submit-btn:hover:not(:disabled){background:var(--gold2);}
+.submit-btn:disabled{opacity:0.45;cursor:not-allowed;}
+
+.pay-sticky{display:none;}
+@media(max-width:880px){
+  .pay-sticky{display:block;position:fixed;left:0;right:0;bottom:60px;z-index:80;background:rgba(15,15,15,0.96);backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:12px 16px;box-shadow:0 -8px 24px rgba(0,0,0,0.4);}
+  .pay-sticky .submit-btn{margin-top:0;padding:14px;font-size:14px;}
+  .pay-sticky-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:6px;}
+  #payBtn.desktop-only{display:none;}
+}
+
+.recap-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px;position:sticky;top:78px;}
+.recap-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:14px;}
+.recap-photo{width:100%;aspect-ratio:16/9;border-radius:8px;background:var(--bg3);overflow:hidden;margin-bottom:14px;}
+.recap-photo img{width:100%;height:100%;object-fit:cover;}
+.recap-section{padding:10px 0;border-bottom:1px solid var(--border);}
+.recap-section:last-of-type{border-bottom:none;}
+.recap-section h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;}
+.recap-section .name{font-size:14px;color:var(--text);margin-bottom:3px;}
+.recap-section .meta{font-size:11px;color:var(--text2);line-height:1.5;}
+.recap-section .price{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;color:var(--text2);}
+.recap-section .price b{color:var(--text);}
+.recap-saving{padding:10px 12px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:8px;font-size:12px;color:#7dc97d;margin-top:14px;display:flex;justify-content:space-between;}
+.recap-section.options ul{list-style:none;padding:0;margin:6px 0 0;}
+.recap-section.options li{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);padding:3px 0;}
+.recap-section.options li b{color:var(--gold2);font-weight:500;}
+.recap-section.options .opt-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.recap-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;padding-top:14px;border-top:2px solid var(--border2);}
+.recap-total-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text2);}
+.recap-total-amount{font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold2);}
+
+.notice{background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:11px 16px;font-size:11px;color:var(--gold2);margin-bottom:18px;line-height:1.5;}
+.notice::before{content:'✦ ';}
+.notice.is-mock{background:rgba(220,180,80,0.06);}
+
+.loading{padding:40px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.error{background:rgba(220,80,80,0.1);border:1px solid rgba(220,80,80,0.3);color:#f88;padding:12px 16px;border-radius:8px;font-size:13px;margin-top:14px;display:none;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+<!-- Carnet partagé : Auth + voyageurs enregistrés (Pascal 2026-05-31) -->
+<script src="/js/carnets.js?v=2026053113"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<div class="main" id="root">
+  <div class="col-left">
+    <div class="loading"><div class="spinner"></div>Vérification de votre séjour…</div>
+  </div>
+</div>
+
+<div id="ab-footer"></div>
+
+<script>
+const STRIPE_PK = 'pk_test_51Q6SzlLOMF4anoUmpKZSCcCNXkAJWoUOgwhpZ55KHwSr2GZ7zlGS0WkUYJqWtv5OZ5qXIqIfNyixOcXyxhXJfA5j00WGY0nIaH';
+const stripe = Stripe(STRIPE_PK);
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+let pack = null;
+try { pack = JSON.parse(localStorage.getItem('ab_pack_pending') || 'null'); } catch(e) {}
+
+// Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+const _urlP = new URLSearchParams(location.search);
+const _obh = _urlP.get('on_behalf_of') || sessionStorage.getItem('ab_on_behalf_of') || '';
+if (_obh){
+  if (!pack) pack = {};
+  pack.on_behalf_of = _obh;
+  pack.guest_name = _urlP.get('guest_name') || sessionStorage.getItem('ab_guest_name') || null;
+  pack.guest_email = _urlP.get('guest_email') || sessionStorage.getItem('ab_guest_email') || null;
+  pack.guest_ref = _urlP.get('guest_ref') || sessionStorage.getItem('ab_guest_ref') || null;
+  try {
+    sessionStorage.setItem('ab_on_behalf_of', _obh);
+    if (pack.guest_name) sessionStorage.setItem('ab_guest_name', pack.guest_name);
+    if (pack.guest_email) sessionStorage.setItem('ab_guest_email', pack.guest_email);
+    if (pack.guest_ref) sessionStorage.setItem('ab_guest_ref', pack.guest_ref);
+  } catch(e){}
+}
+
+let verifiedQuote = null;
+let elements = null;
+let airbiznessRef = null;
+let paymentIntentId = null;
+let stripeReady = false;
+
+// Pays courants (ISO 3166-1 alpha-2) pour le selecteur nationalité
+const NATIONALITIES = [
+  ['FR','France'],['MA','Maroc'],['ES','Espagne'],['GB','Royaume-Uni'],
+  ['DE','Allemagne'],['IT','Italie'],['BE','Belgique'],['CH','Suisse'],
+  ['PT','Portugal'],['NL','Pays-Bas'],['US','États-Unis'],['CA','Canada'],
+  ['DZ','Algérie'],['TN','Tunisie'],['EG','Égypte'],['SN','Sénégal'],
+  ['CI','Côte d\'Ivoire'],['LB','Liban'],['AE','Émirats AU'],['SA','Arabie S.'],
+  ['BR','Brésil'],['MX','Mexique'],['JP','Japon'],['CN','Chine'],['IN','Inde'],
+];
+
+async function init(){
+  if (!pack || !pack.hotel_code || !pack.flight_origin){
+    $('#root').innerHTML = `<div class="col-left"><div class="loading">
+      Aucun séjour en cours de réservation.<br><br>
+      <a href="/sejour.html" style="color:var(--gold2)">← Retour à la recherche</a>
+    </div></div>`;
+    return;
+  }
+
+  // Quote — backend tolère MOCK- (rate_key null ou MOCK)
+  // On envoie aussi les options de séjour stockées dans `pack` (depuis sejour.html)
+  try {
+    const r = await fetch('/api/pack/quote', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(pack),  // contient déjà late_checkin, baggage_per_passenger, etc.
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      throw new Error(err.detail || err.error || 'Tarif indisponible');
+    }
+    verifiedQuote = await r.json();
+  } catch(e){
+    $('#root').innerHTML = `<div class="col-left"><div class="loading">
+      ${esc(e.message)}<br><br>
+      <a href="/sejour.html" style="color:var(--gold2)">← Nouvelle recherche</a>
+    </div></div>`;
+    return;
+  }
+
+  // Charge voyageurs enregistrés AVANT renderTunnel pour que paxBlockHtml propose le dropdown
+  await loadSavedPassengersPack();
+  renderTunnel();
+}
+
+function renderOptionsSidebar(q){
+  const opt = q.options || {};
+  const detail = opt.detail || {};
+  const sel = opt.selections || {};
+  const total = parseFloat(opt.total || 0);
+  if (total <= 0 && !sel.special_requests) return '';
+
+  // Pascal 2026-05-26 P1 #3 : séparer services compagnie (Duffel) vs services AirBizness.
+  // - Duffel  : bagages soute + sièges (vrais services facturés par la compagnie).
+  // - AirBizness : assurance vol/séjour, cabine premium, flex, transfert, late check-in,
+  //                special requests (vendus par AirBizness, hors billet Duffel).
+  const duffelLines = [];
+  const airbnzLines = [];
+
+  // ── DUFFEL : bagages soute ──
+  if (detail.baggage_per_passenger){
+    const all = detail.baggage_per_passenger.items || [];
+    const outItems = all.filter(it => it.leg !== 'inbound').map(it => `V${it.passenger_idx + 1} ${it.weight} (+${it.price.toFixed(0)}€)`).join(', ');
+    const inItems  = all.filter(it => it.leg === 'inbound').map(it => `V${it.passenger_idx + 1} ${it.weight} (+${it.price.toFixed(0)}€)`).join(', ');
+    duffelLines.push(`<li><span>Bagages soute</span><b>+${detail.baggage_per_passenger.price.toFixed(0)}€</b></li>`);
+    if (outItems) duffelLines.push(`<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">Aller : ${esc(outItems)}</li>`);
+    if (inItems)  duffelLines.push(`<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">Retour : ${esc(inItems)}</li>`);
+  }
+  // ── DUFFEL : sièges ──
+  if (sel.selected_seats && (Object.keys(sel.selected_seats.outbound || {}).length || Object.keys(sel.selected_seats.inbound || {}).length)){
+    const outS = Object.entries(sel.selected_seats.outbound || {}).map(([i, sid]) => `V${parseInt(i)+1} ${String(sid).replace('seat_','')}`).join(', ');
+    const inS  = Object.entries(sel.selected_seats.inbound  || {}).map(([i, sid]) => `V${parseInt(i)+1} ${String(sid).replace('seat_','')}`).join(', ');
+    duffelLines.push(`<li><span>Sièges sélectionnés</span><b></b></li>`);
+    if (outS) duffelLines.push(`<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">Aller : ${esc(outS)}</li>`);
+    if (inS)  duffelLines.push(`<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">Retour : ${esc(inS)}</li>`);
+  }
+
+  // ── AIRBIZNESS : assurance vol par leg ──
+  if (detail.flight_insurance_outbound) airbnzLines.push(`<li><span>${esc(detail.flight_insurance_outbound.label)}</span><b>+${detail.flight_insurance_outbound.price.toFixed(0)}€</b></li>`);
+  if (detail.flight_insurance_inbound)  airbnzLines.push(`<li><span>${esc(detail.flight_insurance_inbound.label)}</span><b>+${detail.flight_insurance_inbound.price.toFixed(0)}€</b></li>`);
+  // ── AIRBIZNESS : cabine premium par leg ──
+  if (detail.cabin_premium_outbound) airbnzLines.push(`<li><span>${esc(detail.cabin_premium_outbound.label)}</span><b>+${detail.cabin_premium_outbound.price.toFixed(0)}€</b></li>`);
+  if (detail.cabin_premium_inbound)  airbnzLines.push(`<li><span>${esc(detail.cabin_premium_inbound.label)}</span><b>+${detail.cabin_premium_inbound.price.toFixed(0)}€</b></li>`);
+  if (!detail.cabin_premium_outbound && !detail.cabin_premium_inbound && detail.cabin_premium){
+    airbnzLines.push(`<li><span>${esc(detail.cabin_premium.label)}</span><b>+${detail.cabin_premium.price.toFixed(0)}€</b></li>`);
+  }
+  // ── AIRBIZNESS : flex ticket par leg ──
+  if (detail.flex_ticket_outbound) airbnzLines.push(`<li><span>${esc(detail.flex_ticket_outbound.label)}</span><b>+${detail.flex_ticket_outbound.price.toFixed(0)}€</b></li>`);
+  if (detail.flex_ticket_inbound)  airbnzLines.push(`<li><span>${esc(detail.flex_ticket_inbound.label)}</span><b>+${detail.flex_ticket_inbound.price.toFixed(0)}€</b></li>`);
+  if (!detail.flex_ticket_outbound && !detail.flex_ticket_inbound && detail.flex_ticket){
+    airbnzLines.push(`<li><span>${esc(detail.flex_ticket.label)}</span><b>+${detail.flex_ticket.price.toFixed(0)}€</b></li>`);
+  }
+  // ── AIRBIZNESS : transferts par leg ──
+  if (detail.transfer_outbound){
+    airbnzLines.push(`<li><span>${esc(detail.transfer_outbound.label)}</span><b>+${detail.transfer_outbound.price.toFixed(0)}€</b></li>` +
+               (detail.transfer_outbound.snapshot ? `<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">${esc(detail.transfer_outbound.snapshot)}</li>` : ''));
+  }
+  if (detail.transfer_inbound){
+    airbnzLines.push(`<li><span>${esc(detail.transfer_inbound.label)}</span><b>+${detail.transfer_inbound.price.toFixed(0)}€</b></li>` +
+               (detail.transfer_inbound.snapshot ? `<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">${esc(detail.transfer_inbound.snapshot)}</li>` : ''));
+  }
+  if (!detail.transfer_outbound && !detail.transfer_inbound){
+    if (pack && pack.transfer_rate_key && pack.transfer_price > 0){
+      const meta = pack.transfer_meta || {};
+      const sub = [meta.vehicle, meta.operator].filter(Boolean).join(' · ');
+      airbnzLines.push(`<li><span>Transfert · ${esc(pack.transfer_label || 'Option sélectionnée')}</span><b>+${Number(pack.transfer_price).toFixed(0)}€</b></li>` +
+                 (sub ? `<li class="opt-sub" style="display:block;color:var(--text3);font-size:11px;">${esc(sub)}</li>` : ''));
+    } else if (detail.transfer) {
+      airbnzLines.push(`<li><span>${esc(detail.transfer.label)}</span><b>+${detail.transfer.price.toFixed(0)}€</b></li>`);
+    }
+  }
+  // ── AIRBIZNESS : assurance multirisque séjour + late check-in ──
+  if (detail.insurance)     airbnzLines.push(`<li><span>${esc(detail.insurance.label)}</span><b>+${detail.insurance.price.toFixed(0)}€</b></li>`);
+  if (detail.late_checkin)  airbnzLines.push(`<li><span>${esc(detail.late_checkin.label)}</span><b>+${detail.late_checkin.price.toFixed(0)}€</b></li>`);
+
+  let srBlock = '';
+  if (sel.special_requests){
+    srBlock = `<div class="opt-sub" style="margin-top:6px;color:var(--text3);font-size:11px;">Demande spéciale : « ${esc(sel.special_requests)} »</div>`;
+  }
+
+  const subHdrAirline = `<li style="display:block;list-style:none;font-size:10px;color:#7ab2e8;letter-spacing:1.2px;text-transform:uppercase;margin:6px 0 4px;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#7ab2e8;"></span>Services compagnie aérienne</li>`;
+  const subHdrAirBnz = `<li style="display:block;list-style:none;font-size:10px;color:var(--gold2);letter-spacing:1.2px;text-transform:uppercase;margin:8px 0 4px;display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold2);"></span>Services AirBizness</li>`;
+
+  const allListItems = [];
+  if (duffelLines.length){ allListItems.push(subHdrAirline); allListItems.push(...duffelLines); }
+  if (airbnzLines.length){ allListItems.push(subHdrAirBnz); allListItems.push(...airbnzLines); }
+
+  return `
+    <div class="recap-section options">
+      <h4>Options & services <span style="float:right;color:var(--gold2);font-family:'DM Serif Display',serif;font-weight:400;">+${window.fmtEur(total).replace(/\s?€$/, '')}€</span></h4>
+      <ul>${allListItems.join('')}</ul>
+      ${srBlock}
+    </div>
+  `;
+}
+
+function nationalityOptions(selected){
+  return NATIONALITIES.map(([code, name]) =>
+    `<option value="${code}" ${selected===code?'selected':''}>${name}</option>`
+  ).join('');
+}
+
+// Pascal 2026-05-31 : voyageurs enregistrés du carnet client (si user connecté)
+let SAVED_PASSENGERS_PACK = [];
+async function loadSavedPassengersPack() {
+  if (!window.Auth || !window.Auth.isLoggedIn()) return;
+  try {
+    const r = await window.Auth.fetch('/api/user/passengers');
+    if (!r.ok) return;
+    const d = await r.json();
+    SAVED_PASSENGERS_PACK = d.passengers || [];
+  } catch (_) {}
+}
+function fillPaxFromSavedPack(idx, selEl) {
+  if (!selEl) return;
+  const p = SAVED_PASSENGERS_PACK.find(x => String(x.id) === String(selEl.value));
+  if (!p) return;
+  const f = document.querySelector('.pax-first[data-i="'+idx+'"]'); if (f) f.value = p.first_name || '';
+  const l = document.querySelector('.pax-last[data-i="'+idx+'"]');  if (l) l.value = p.last_name || '';
+  const d = document.querySelector('.pax-dob[data-i="'+idx+'"]');   if (d && p.date_of_birth) d.value = p.date_of_birth;
+}
+window.fillPaxFromSavedPack = fillPaxFromSavedPack;
+function escapeHtmlPaxPack(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function paxBlockHtml(idx){
+  const isMain = idx === 0;
+  // Dropdown voyageurs enregistrés si auth + voyageurs dispos
+  let dropdownHtml = '';
+  if (window.Auth && window.Auth.isLoggedIn() && SAVED_PASSENGERS_PACK.length > 0) {
+    const selfId = (SAVED_PASSENGERS_PACK.find(p => p.is_self) || {}).id;
+    const defaultSel = (idx === 0 && selfId) ? String(selfId) : '';
+    const opts = SAVED_PASSENGERS_PACK
+      .filter(p => p.type === 'adult')
+      .map(p => `<option value="${p.id}" ${String(p.id)===defaultSel?'selected':''}>${escapeHtmlPaxPack(p.first_name)} ${escapeHtmlPaxPack(p.last_name)}${p.is_self?' (vous)':''}</option>`)
+      .join('');
+    dropdownHtml = `
+      <div style="margin-bottom:12px;padding:10px 12px;background:rgba(184,150,46,0.12);border:1px solid rgba(184,150,46,0.3);border-radius:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:#d4ae4a;font-weight:600;letter-spacing:0.3px;">🗂️ Voyageur enregistré :</span>
+        <select onchange="fillPaxFromSavedPack(${idx}, this)" style="flex:1;min-width:180px;background:#1e1e1e;border:1px solid rgba(255,255,255,0.07);border-radius:6px;padding:6px 10px;font-size:13px;color:#f0ece4;font-family:inherit;">
+          <option value="">— Saisir manuellement —</option>
+          ${opts}
+        </select>
+        <a href="/compte-voyageurs.html" style="font-size:11px;color:#a09890;text-decoration:none;">+ Gérer</a>
+      </div>`;
+    if (defaultSel) {
+      setTimeout(() => {
+        const sel = document.querySelector('select[onchange*="fillPaxFromSavedPack('+idx+'"]');
+        if (sel) fillPaxFromSavedPack(idx, sel);
+      }, 100);
+    }
+  }
+  return `
+    <div class="pax-block" data-pax-idx="${idx}">
+      <div class="pax-head">
+        <div class="pax-head-label">${isMain ? 'Voyageur principal' : 'Voyageur ' + (idx+1)}</div>
+        <div class="pax-head-sub">ADULTE</div>
+      </div>
+      ${dropdownHtml}
+      <div class="field-grid">
+        <div class="field">
+          <div class="field-label">Prénom</div>
+          <input type="text" class="pax-first" data-i="${idx}" placeholder="Jean" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Nom</div>
+          <input type="text" class="pax-last" data-i="${idx}" placeholder="Dupont" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Date de naissance</div>
+          <input type="date" class="pax-dob" data-i="${idx}" max="2010-01-01">
+        </div>
+        <div class="field">
+          <div class="field-label">Nationalité</div>
+          <select class="pax-nat" data-i="${idx}">${nationalityOptions('FR')}</select>
+        </div>
+        <div class="field" style="grid-column:1/-1;">
+          <div class="field-label">N° de passeport <span class="pax-passport-req" style="color:#f88;display:none;">(requis pour ce vol)</span></div>
+          <input type="text" class="pax-passport" data-i="${idx}" placeholder="ex. 21AB12345">
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTunnel(){
+  const q = verifiedQuote;
+  const nights = Math.max(1, Math.round(
+    (new Date(q.hotel.check_out) - new Date(q.hotel.check_in)) / 86400000
+  ));
+  const adults = parseInt(pack.adults) || 1;
+  const photo = q.hotel.main_photo || pack.hotel_main_photo;
+  const isMock = !!q.is_mock;
+  // Vol international si origin/dest sur 2 pays différents (heuristique : codes IATA hors France)
+  // Pour simplifier, on considère TOUS les vols pack comme nécessitant passeport (Pascal : business intl).
+  const passportNeeded = true;
+
+  $('#root').innerHTML = `
+    <div class="col-left">
+      <h1 class="title">Finaliser votre <em>séjour</em></h1>
+      <p class="sub">Paiement unique sécurisé · Hôtel confirmé immédiatement · Vol émis par notre partenaire</p>
+
+      <div class="notice ${isMock?'is-mock':''}">${isMock
+        ? 'Mode démonstration : confirmation immédiate sans appel partenaire réel.'
+        : 'Pack vol + hôtel · Réduction ' + q.pricing.pack_discount_pct + '% incluse · Paiement 3D Secure'}</div>
+
+      <div class="card">
+        <div class="card-title"><div class="card-title-ic">✉</div>Vos coordonnées de réservation</div>
+        <div class="field-grid">
+          <div class="field"><div class="field-label">Email</div><input type="email" id="email" placeholder="vous@email.com" required></div>
+          <div class="field"><div class="field-label">Téléphone</div><input type="tel" id="phone" placeholder="+33 6 12 34 56 78"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="card-title-ic">👤</div>${adults} voyageur${adults>1?'s':''}</div>
+        ${Array.from({length: adults}, (_, i) => paxBlockHtml(i)).join('')}
+      </div>
+
+      <div class="card">
+        <div class="card-title"><div class="card-title-ic">💳</div>Paiement sécurisé</div>
+        <div id="payment-element"><div class="loading"><div class="spinner"></div>Initialisation après saisie des voyageurs…</div></div>
+      </div>
+
+      <label class="cgv-box" id="cgvBox" for="cgvCheck">
+        <input type="checkbox" id="cgvCheck" onchange="updatePayState()">
+        <label for="cgvCheck">
+          J'accepte les <a href="/cgv.html" target="_blank">conditions générales de vente</a>,
+          la <a href="/confidentialite.html" target="_blank">politique de confidentialité</a>
+          et je confirme avoir lu les conditions d'annulation de mon séjour.
+        </label>
+      </label>
+
+      <button class="submit-btn desktop-only" id="payBtn" onclick="submitPayment()" disabled>
+        Payer ${window.fmtEur(q.pricing.total)}
+      </button>
+
+      <div id="error" class="error"></div>
+    </div>
+
+    <div class="pay-sticky">
+      <button class="submit-btn" id="payBtnMobile" onclick="submitPayment()" disabled>
+        Payer ${window.fmtEur(q.pricing.total)}
+      </button>
+      <div class="pay-sticky-hint" id="payHintMobile">Remplissez vos infos voyageurs</div>
+    </div>
+
+    <aside>
+      <div class="recap-card">
+        <div class="recap-title">Votre <em style="color:var(--gold2);font-style:italic;">séjour</em></div>
+        ${photo ? `<div class="recap-photo"><img src="${esc(photo)}" alt=""></div>` : ''}
+
+        <div class="recap-section">
+          <h4>${q.flight_return ? 'Vol aller' : 'Vol'} ${esc(q.flight.cabin || 'Business')}</h4>
+          <div class="name">${esc(q.flight.origin)} → ${esc(q.flight.destination)}</div>
+          <div class="meta">${esc(q.flight.airline || 'Multi-compagnies')} · ${esc(q.flight.departure_date)}</div>
+          <div class="price"><span>Prix vol aller (${adults} pax)</span><b>${window.fmtEur(q.flight.price * adults)}</b></div>
+        </div>
+
+        ${q.flight_return ? `
+        <div class="recap-section">
+          <h4>Vol retour ${esc(q.flight_return.cabin || 'Business')}</h4>
+          <div class="name">${esc(q.flight_return.origin)} → ${esc(q.flight_return.destination)}</div>
+          <div class="meta">${esc(q.flight_return.airline || 'Multi-compagnies')} · ${esc(q.flight_return.departure_date || '')}</div>
+          <div class="price"><span>Prix vol retour (${adults} pax)</span><b>${window.fmtEur((q.flight_return.price||0) * adults)}</b></div>
+        </div>
+        ` : ''}
+
+        <div class="recap-section">
+          <h4>Hôtel · Chambre</h4>
+          <div class="name">${esc(q.hotel.name)}</div>
+          ${(q.hotel.stars || pack.hotel_stars) ? `<div class="meta" style="color:var(--gold2);font-size:12px;letter-spacing:1px;">${'★'.repeat(parseInt(q.hotel.stars || pack.hotel_stars || 0))}${(q.hotel.city || pack.hotel_city) ? ` · ${esc(q.hotel.city || pack.hotel_city)}` : ''}</div>` : ((q.hotel.city || pack.hotel_city) ? `<div class="meta">${esc(q.hotel.city || pack.hotel_city)}</div>` : '')}
+          <div class="meta" style="margin-top:6px;">${esc(q.hotel.room_name || 'Chambre standard')}<br>${esc(q.hotel.board_name || 'Chambre seule')} · ${q.hotel.is_refundable ? 'Annulable' : 'Non remboursable'}</div>
+          <div class="meta" style="margin-top:4px;">${esc(q.hotel.check_in)} → ${esc(q.hotel.check_out)} · ${nights} nuit${nights>1?'s':''}</div>
+          <div class="price"><span>Prix hôtel</span><b>${window.fmtEur(q.hotel.gross_price)}</b></div>
+        </div>
+
+        ${renderOptionsSidebar(q)}
+
+        <div class="recap-saving">
+          <span>Économie pack ${q.pricing.pack_discount_pct}%</span>
+          <b>−${window.fmtEur(q.pricing.saved)}</b>
+        </div>
+
+        <div class="recap-total">
+          <span class="recap-total-label">Total</span>
+          <span class="recap-total-amount">${window.fmtEur(q.pricing.total)}</span>
+        </div>
+      </div>
+    </aside>
+  `;
+
+  // Préfill last-known
+  ['email','phone'].forEach(k => {
+    const v = localStorage.getItem('ab_' + k);
+    if (v) $('#' + k).value = v;
+  });
+  const v0First = localStorage.getItem('ab_firstName'); if (v0First) {
+    const el = document.querySelector('.pax-first[data-i="0"]'); if (el) el.value = v0First;
+  }
+  const v0Last = localStorage.getItem('ab_lastName'); if (v0Last) {
+    const el = document.querySelector('.pax-last[data-i="0"]'); if (el) el.value = v0Last;
+  }
+
+  // Marquer les passport requis
+  if (passportNeeded){
+    document.querySelectorAll('.pax-passport-req').forEach(el => el.style.display = 'inline');
+  }
+
+  // Listeners pour déclencher initStripe quand pax principal + email OK
+  ['email','phone'].forEach(k => $('#' + k).addEventListener('input', checkFormReady));
+  document.querySelectorAll('.pax-first,.pax-last,.pax-dob,.pax-nat,.pax-passport').forEach(el => {
+    el.addEventListener('input', checkFormReady);
+    el.addEventListener('change', checkFormReady);
+  });
+}
+
+function collectPassengers(){
+  const adults = parseInt(pack.adults) || 1;
+  const out = [];
+  for (let i = 0; i < adults; i++){
+    out.push({
+      first_name: (document.querySelector(`.pax-first[data-i="${i}"]`)?.value || '').trim(),
+      last_name:  (document.querySelector(`.pax-last[data-i="${i}"]`)?.value || '').trim(),
+      date_of_birth: (document.querySelector(`.pax-dob[data-i="${i}"]`)?.value || '').trim() || null,
+      nationality: (document.querySelector(`.pax-nat[data-i="${i}"]`)?.value || '').trim() || null,
+      passport_number: (document.querySelector(`.pax-passport[data-i="${i}"]`)?.value || '').trim() || null,
+    });
+  }
+  return out;
+}
+
+function isFormComplete(passportRequired = true){
+  const em = ($('#email')?.value || '').trim();
+  if (!em || !em.includes('@')) return false;
+  const pax = collectPassengers();
+  for (const p of pax){
+    if (!p.first_name || !p.last_name) return false;
+    if (passportRequired && !p.passport_number) return false;
+  }
+  return true;
+}
+
+let stripeInitialized = false;
+async function initStripe(){
+  if (stripeInitialized) return;
+  if (!isFormComplete(false)) return;  // on autorise init dès qu'on a noms + email (sans passeport)
+  stripeInitialized = true;
+
+  try {
+    const pax = collectPassengers();
+    const optSel = (verifiedQuote.options && verifiedQuote.options.selections) || {};
+    const r = await fetch('/api/pack/payment-intent', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        ...pack,
+        hotel_price: verifiedQuote.hotel.gross_price,
+        hotel_room_name: verifiedQuote.hotel.room_name,
+        hotel_board_name: verifiedQuote.hotel.board_name,
+        hotel_main_photo: verifiedQuote.hotel.main_photo || pack.hotel_main_photo,
+        hotel_is_refundable: verifiedQuote.hotel.is_refundable,
+        flight_departure_at: verifiedQuote.flight.departure_at,
+        flight_duration_minutes: verifiedQuote.flight.duration_minutes,
+        flight_stops: verifiedQuote.flight.stops,
+        // ── Vol RETOUR (Pascal 2026-05-24) ──
+        trip_type: verifiedQuote.trip_type || pack.trip_type || 'one_way',
+        flight_return_offer_token: pack.flight_return_offer_token || null,
+        flight_return_price: pack.flight_return_price || null,
+        flight_return_departure_at: pack.flight_return_departure_at || (verifiedQuote.flight_return && verifiedQuote.flight_return.departure_at) || null,
+        flight_return_duration_minutes: pack.flight_return_duration_minutes || (verifiedQuote.flight_return && verifiedQuote.flight_return.duration_minutes) || null,
+        flight_return_stops: pack.flight_return_stops != null ? pack.flight_return_stops : (verifiedQuote.flight_return && verifiedQuote.flight_return.stops),
+        flight_return_airline: pack.flight_return_airline || (verifiedQuote.flight_return && verifiedQuote.flight_return.airline) || null,
+        flight_return_date: pack.flight_return_date || null,
+        // Pascal 2026-05-25 (allbyleg) : transfer_*_price désormais inclus dans verifiedQuote.pricing.total
+        // Ancien addendum pack.transfer_price gardé en fallback si verifiedQuote ne contient pas encore le détail par leg.
+        total_amount: verifiedQuote.pricing.total + ((verifiedQuote.options && (verifiedQuote.options.detail || {}).transfer_outbound) || (verifiedQuote.options && (verifiedQuote.options.detail || {}).transfer_inbound) ? 0 : Number(pack.transfer_price || 0)),
+        pack_discount_pct: verifiedQuote.pricing.pack_discount_pct,
+        currency: verifiedQuote.pricing.currency,
+        user_email: $('#email').value.trim(),
+        holder_name: pax[0].first_name,
+        holder_surname: pax[0].last_name,
+        user_phone: $('#phone').value.trim(),
+        passengers: pax,
+        is_mock: !!verifiedQuote.is_mock,
+        // ── Options de séjour (depuis le quote validé serveur) ──
+        late_checkin: !!optSel.late_checkin,
+        special_requests: optSel.special_requests || null,
+        baggage_per_passenger: optSel.baggage_per_passenger || [],
+        baggage_outbound_per_passenger: optSel.baggage_outbound_per_passenger || optSel.baggage_per_passenger || [],
+        baggage_inbound_per_passenger: optSel.baggage_inbound_per_passenger || [],
+        // Services Duffel réels (P1 juridique Pascal 2026-05-26)
+        // On strip _label/_price (info UI seulement) — backend ne valide que id+quantity.
+        // Source : pack.duffel_services (depuis sejour.html), pas optSel (le quote ne le restitue pas encore).
+        duffel_services: Array.isArray(pack.duffel_services)
+          ? pack.duffel_services.map(s => ({id: s.id, quantity: s.quantity || 1}))
+          : [],
+        selected_seats: optSel.selected_seats || pack.selected_seats || {},
+        cabin_premium: !!optSel.cabin_premium,
+        flex_ticket: !!optSel.flex_ticket,
+        transfer: optSel.transfer || 'none',
+        insurance: !!optSel.insurance,
+        // ── Pascal 2026-05-25 (allbyleg) : PAR LEG ──
+        cabin_premium_outbound: !!(optSel.cabin_premium_outbound || pack.cabin_premium_outbound),
+        cabin_premium_inbound:  !!(optSel.cabin_premium_inbound  || pack.cabin_premium_inbound),
+        flex_ticket_outbound: !!(optSel.flex_ticket_outbound || pack.flex_ticket_outbound),
+        flex_ticket_inbound:  !!(optSel.flex_ticket_inbound  || pack.flex_ticket_inbound),
+        transfer_outbound: optSel.transfer_outbound || pack.transfer_outbound || 'none',
+        transfer_outbound_rate_key: optSel.transfer_outbound_rate_key || pack.transfer_outbound_rate_key || null,
+        transfer_outbound_price: Number(optSel.transfer_outbound_price || pack.transfer_outbound_price || 0),
+        transfer_outbound_label: optSel.transfer_outbound_label || pack.transfer_outbound_label || null,
+        transfer_outbound_meta: pack.transfer_outbound_meta || null,
+        transfer_inbound: optSel.transfer_inbound || pack.transfer_inbound || 'none',
+        transfer_inbound_rate_key: optSel.transfer_inbound_rate_key || pack.transfer_inbound_rate_key || null,
+        transfer_inbound_price: Number(optSel.transfer_inbound_price || pack.transfer_inbound_price || 0),
+        transfer_inbound_label: optSel.transfer_inbound_label || pack.transfer_inbound_label || null,
+        transfer_inbound_meta: pack.transfer_inbound_meta || null,
+        // Pascal 2026-05-25 : assurance par vol (par leg)
+        flight_insurance_outbound: !!(optSel.flight_insurance_outbound || pack.flight_insurance_outbound),
+        flight_insurance_inbound:  !!(optSel.flight_insurance_inbound  || pack.flight_insurance_inbound),
+        options_total: (verifiedQuote.options && verifiedQuote.options.total) || 0,
+        // ── Transfer legacy (rétrocompat — somme outbound+inbound exposée en `transfer_price`) ──
+        transfer_rate_key: pack.transfer_rate_key || pack.transfer_outbound_rate_key || null,
+        transfer_price: Number(pack.transfer_outbound_price || 0) + Number(pack.transfer_inbound_price || 0) || Number(pack.transfer_price || 0),
+        transfer_label: pack.transfer_label || pack.transfer_outbound_label || null,
+        transfer_meta: pack.transfer_meta || pack.transfer_outbound_meta || null,
+        // Concierge hôtelier — résa pour client (Pascal 2026-05-24)
+        on_behalf_of: pack.on_behalf_of || null,
+        guest_name: pack.guest_name || null,
+        guest_email: pack.guest_email || null,
+        guest_ref: pack.guest_ref || null,
+      }),
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      throw new Error(err.detail || 'Erreur initialisation paiement');
+    }
+    const data = await r.json();
+    airbiznessRef = data.airbizness_ref;
+    paymentIntentId = data.payment_intent_id;
+
+    elements = stripe.elements({clientSecret: data.client_secret, appearance:{theme:'night',variables:{colorPrimary:'#b8962e',colorBackground:'#1e1e1e',colorText:'#f0ece4',fontFamily:'DM Sans, sans-serif',borderRadius:'8px'}}});
+    const pe = elements.create('payment');
+    pe.mount('#payment-element');
+    pe.on('ready', () => { stripeReady = true; updatePayState(); });
+  } catch(e){
+    stripeInitialized = false;
+    showError(e.message);
+  }
+}
+
+function checkFormReady(){
+  if (!stripeInitialized && isFormComplete(false)) initStripe();
+  updatePayState();
+}
+
+function updatePayState(){
+  const em = ($('#email')?.value || '').trim();
+  const formOk = isFormComplete(true);
+  const cgv = $('#cgvCheck')?.checked || false;
+  const ready = formOk && stripeReady && cgv;
+  ['payBtn','payBtnMobile'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = !ready;
+  });
+  const box = $('#cgvBox');
+  if (box) box.classList.toggle('checked', cgv);
+  const hint = $('#payHintMobile');
+  if (hint){
+    if (!formOk) hint.textContent = 'Remplissez tous les voyageurs (passeport inclus)';
+    else if (!stripeReady) hint.textContent = 'Initialisation du paiement…';
+    else if (!cgv) hint.textContent = 'Cochez les CGV pour continuer';
+    else hint.textContent = 'Paiement 3D Secure · Pack atomique';
+  }
+}
+
+function setBtns({disabled, label}){
+  ['payBtn','payBtnMobile'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (typeof disabled === 'boolean') el.disabled = disabled;
+    if (label) el.textContent = label;
+  });
+}
+
+async function submitPayment(){
+  if (!isFormComplete(true)){ showError('Complétez tous les voyageurs (passeport requis).'); return; }
+  if (!elements){ showError('Paiement non initialisé.'); return; }
+
+  // Persist
+  const pax = collectPassengers();
+  localStorage.setItem('ab_email', $('#email').value.trim());
+  localStorage.setItem('ab_phone', $('#phone').value.trim());
+  localStorage.setItem('ab_firstName', pax[0].first_name);
+  localStorage.setItem('ab_lastName',  pax[0].last_name);
+
+  setBtns({disabled:true, label:'Paiement en cours…'});
+  hideError();
+
+  const { error, paymentIntent } = await stripe.confirmPayment({
+    elements,
+    redirect:'if_required',
+  });
+
+  if (error){
+    showError(error.message || 'Erreur paiement');
+    setBtns({disabled:false, label:`Payer ${window.fmtEur(verifiedQuote.pricing.total)}`});
+    return;
+  }
+
+  if (paymentIntent && paymentIntent.status === 'succeeded'){
+    try {
+      const r = await fetch('/api/pack/confirm', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({airbizness_ref: airbiznessRef, payment_intent_id: paymentIntentId}),
+      });
+      const data = await r.json();
+      if (!r.ok || data.status === 'failed'){
+        showError(data.reason || 'Réservation hôtel échouée. Votre paiement a été remboursé (réf : ' + (data.refund_id || 'en cours') + ').');
+        setBtns({disabled:true, label:'Échec — Remboursement effectué'});
+        return;
+      }
+      try { localStorage.removeItem('ab_pack_pending'); } catch(e){}
+      location.href = `/pack-confirmation.html?ref=${airbiznessRef}`;
+    } catch(e){
+      showError('Paiement reçu mais erreur finalisation. Notre équipe va vous contacter. Réf : ' + airbiznessRef);
+      setBtns({disabled:false, label:`Payer ${window.fmtEur(verifiedQuote.pricing.total)}`});
+    }
+  }
+}
+
+function showError(m){ $('#error').style.display='block'; $('#error').textContent=m; }
+function hideError(){ $('#error').style.display='none'; }
+
+init();
+</script>
+</body>
+</html>

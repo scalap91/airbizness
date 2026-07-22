@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À propos — AirBizness</title>
+<meta name="robots" content="index,follow">
+<meta name="description" content="AirBizness — la plateforme française dédiée au voyage Business Class pour les dirigeants et cadres exigeants. Mission, valeurs, équipe.">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --r:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100vh;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-hex{width:30px;height:30px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:12px;color:#000;}
+.logo-text{font-size:18px;font-weight:600;color:var(--text);}
+.logo-text em{color:var(--gold2);font-style:normal;}
+.hbtn{padding:8px 16px;border:1px solid var(--border2);background:transparent;color:var(--gold2);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border-radius:var(--r);}
+.content{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+h1{font-family:'DM Serif Display',serif;font-size:40px;margin-bottom:8px;}
+.lede{color:var(--text2);font-size:14px;margin-bottom:32px;}
+.notice{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:20px 24px;margin-bottom:32px;}
+.notice strong{color:var(--gold2);}
+h2{font-family:'DM Serif Display',serif;font-size:22px;margin:32px 0 12px;color:var(--text);}
+p{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:14px;}
+ul{margin-left:20px;margin-bottom:14px;}
+li{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:6px;}
+a{color:var(--gold2);}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:20px 0;}
+.pillar{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.pillar strong{display:block;color:var(--gold2);font-size:13px;margin-bottom:6px;font-family:'DM Serif Display',serif;}
+.pillar span{color:var(--text2);font-size:13px;line-height:1.6;}
+.footer{padding:30px 24px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;text-align:center;}
+.footer a{margin:0 12px;text-decoration:none;color:var(--text2);}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<div class="header">
+  <a class="logo" href="/">
+    <div class="logo-hex">✈</div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+  <button class="hbtn" onclick="location.href='/'">Retour à l'accueil</button>
+</div>
+
+<div class="content">
+  <h1>À propos d'AirBizness</h1>
+  <div class="lede">Dernière mise à jour : 3 juin 2026</div>
+
+  <div class="notice">
+    <strong>Notre mission.</strong>
+    <p style="margin-top:10px;margin-bottom:0;">Offrir aux dirigeants, entrepreneurs et cadres exigeants un accès simple, transparent et négocié au meilleur du voyage premium — Business Class, hôtels haut de gamme, conciergerie — sans les frictions des outils corporate ni l'opacité des grandes plateformes.</p>
+  </div>
+
+  <h2>Le voyage premium, comme il devrait être</h2>
+  <p>AirBizness s'adresse à ceux pour qui le voyage est un outil de travail autant qu'une exigence personnelle : entrepreneurs, dirigeants, professionnels en déplacement régulier. Notre promesse est simple : la cabine Business au juste prix, l'hôtel dont la qualité réelle correspond au tarif demandé, et un interlocuteur clair quand l'imprévu survient.</p>
+  <p>Nous ne sommes pas une OTA généraliste de plus. Nous orchestrons en temps réel les meilleures sources du marché — partenaires aériens et hôteliers premium — pour livrer un résultat lisible, sans rang payé, sans surcoût caché.</p>
+
+  <h2>Nos valeurs</h2>
+  <div class="pillars">
+    <div class="pillar"><strong>Transparence</strong><span>Prix TTC, conditions tarifaires lisibles, annulation visible avant l'achat. Pas de dark pattern.</span></div>
+    <div class="pillar"><strong>Qualité avant quantité</strong><span>Un résultat pertinent plutôt que cinquante options bruyantes. Notre moteur trie pour vous.</span></div>
+    <div class="pillar"><strong>Sérieux opérationnel</strong><span>Une réservation, c'est une promesse. On préfère ne pas vendre qu'attribuer un siège qui n'existe pas.</span></div>
+    <div class="pillar"><strong>Conformité native</strong><span>RGPD, droits du consommateur, fiscalité européenne — par construction, pas en réaction.</span></div>
+  </div>
+
+  <h2>L'équipe</h2>
+  <p>AirBizness est un service édité par <strong>GeniusWeb</strong>, fondée par <strong>Pascal REPIR</strong>. Les coordonnées légales complètes figurent dans nos <a href="/mentions-legales">mentions légales</a>.</p>
+
+  <h2>Nous contacter</h2>
+  <p>Pour toute question — voyageur, partenaire, presse — écrivez à <a href="mailto:contact@airbizness.com">contact@airbizness.com</a>. Nous répondons sous 24 heures ouvrées. Plus de détails sur notre page <a href="/contact">contact</a>.</p>
+</div>
+
+<div class="footer">
+  <div style="margin-bottom:8px;">
+    <a href="/">Accueil</a>
+    <a href="/cgv">CGV</a>
+    <a href="/privacy">Confidentialité</a>
+    <a href="/mentions-legales">Mentions légales</a>
+    <a href="/cookies">Cookies</a>
+    <a href="/terms">CGU</a>
+    <a href="mailto:contact@airbizness.com">Contact</a>
+  </div>
+  © AirBizness · Business Class deals
+</div>
+
+<script defer src="/cookies.js"></script>
+<div id="ab-footer"></div>
+</body>
+</html>

@@ -2,16 +2,52 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<!-- Opt-out GA pour Pascal & équipe interne (Pascal 2026-05-31) :
+     1) Visiter https://airbizness.com/?notrack=1 → désactive GA pour ce navigateur (persistant)
+     2) Visiter ?track=1 → réactive
+     Vérifier dans la console : `localStorage.getItem('ab_no_track')` (= '1' si désactivé) -->
+<script>
+(function(){
+  try {
+    var u = new URL(location.href);
+    if (u.searchParams.get('notrack') === '1') {
+      localStorage.setItem('ab_no_track', '1');
+      console.log('[AirBizness] Tracking désactivé sur ce navigateur.');
+    } else if (u.searchParams.get('track') === '1') {
+      localStorage.removeItem('ab_no_track');
+      console.log('[AirBizness] Tracking réactivé.');
+    }
+    if (localStorage.getItem('ab_no_track') === '1') {
+      window['ga-disable-G-J6GDD5N054'] = true;
+    }
+  } catch(_) {}
+})();
+</script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-J6GDD5N054"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-J6GDD5N054');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AirBizness — Business Class au prix d'un Economy</title>
-<meta name="description" content="Trouvez les meilleurs vols Business Class. Volez en classe affaires au prix d'un vol économique.">
+<title>AirBizness — Voyage premium, sans intermédiaire</title>
+<meta name="description" content="Vols, hôtels, activités, transferts — réservez directement sur AirBizness. Tarifs négociés, paiement sécurisé, confirmation immédiate à votre nom.">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="google-site-verification" content="mPjKOFEzqb0WNWWJc_h1pQaBW-_Vid87r5fE_EWoGBg" />
+<link rel="canonical" href="https://airbizness.com/">
+<meta property="og:url" content="https://airbizness.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AirBizness — Voyage premium, sans intermédiaire">
+<meta property="og:description" content="Vols, hôtels, activités, transferts — réservez directement sur AirBizness. Tarifs négociés, paiement sécurisé.">
+<meta property="og:locale" content="fr_FR">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
   --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
   --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
-  --orange:#f59e0b;--orange-h:#ea8c00;
   --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
   --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
   --r:6px;
@@ -23,11 +59,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
 
 /* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(15,15,15,0.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
-.logo-hex{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:13px;color:#000;flex-shrink:0;}
-.logo-text{font-size:19px;font-weight:600;letter-spacing:0.3px;color:var(--text);}
-.logo-text em{color:var(--gold2);font-style:normal;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(15,15,15,0.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);position:fixed;top:30px;left:0;right:0;z-index:100;}
+/* Bandeau défilant (ticker) façon Onyx — chiffres LIVE depuis /api/home-stats */
+.abx-ticker{position:fixed;top:0;left:0;right:0;z-index:101;background:var(--gold,#b8962e);padding:6px 0;overflow:hidden;height:30px;}
+.abx-ticker-inner{display:flex;white-space:nowrap;animation:abxTicker 40s linear infinite;will-change:transform;}
+.abx-ticker-item{font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#1a1407;padding:0 24px;display:inline-flex;align-items:center;gap:9px;flex-shrink:0;}
+.abx-ticker-sep{opacity:.55;font-size:9px;}
+@keyframes abxTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.logo-mark{width:48px;height:34px;display:grid;place-items:center;flex-shrink:0;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;overflow:visible;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:21px;font-weight:400;letter-spacing:-0.005em;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;font-weight:400;}
 .nav{display:flex;gap:32px;}
 .nav a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s;cursor:pointer;font-weight:500;}
 .nav a:hover,.nav a.on{color:var(--text);}
@@ -37,17 +80,33 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hbtn.fill{background:var(--gold);border-color:var(--gold);color:#000;font-weight:600;}
 .hbtn.fill:hover{background:var(--gold2);}
 
-/* HERO */
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 80px;overflow:hidden;}
-.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 1.6s ease;will-change:opacity;}
+/* HERO — refonte dramatique 2026-05-23 */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:104px 24px 50px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity 1.8s ease;will-change:opacity;}
 .hero-bg.b{opacity:0;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.35) 40%,rgba(15,15,15,0.85) 100%);}
-.hero-content{position:relative;z-index:2;width:100%;max-width:980px;text-align:center;}
-.hero-tagline{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.12);border-radius:99px;color:#fff;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
-.hero-tagline .dot{width:6px;height:6px;background:var(--gold2);border-radius:50%;}
-.hero-title{font-family:'DM Serif Display',serif;font-size:56px;line-height:1.05;color:#fff;margin-bottom:18px;text-shadow:0 4px 24px rgba(0,0,0,0.4);}
-.hero-title em{color:var(--gold2);font-style:normal;}
-.hero-sub{font-size:17px;color:rgba(255,255,255,0.85);margin-bottom:48px;font-weight:400;text-shadow:0 2px 12px rgba(0,0,0,0.3);}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.4) 0%,rgba(15,15,15,0.65) 50%,rgba(15,15,15,0.95) 100%);}
+.hero-content{position:relative;z-index:2;width:100%;max-width:1080px;text-align:center;display:flex;flex-direction:column;}
+/* Pascal 2026-05-31 : recherche en HAUT, texte hero en BAS */
+.hero-content .vsw,
+.hero-content .search-card{order:1;}
+.hero-content .hero-tagline,
+.hero-content .hero-title,
+.hero-content .hero-sub,
+.hero-content .hero-signals{order:2;}
+.hero-content .hero-tagline{margin-top:32px;}
+.hero-tagline{display:inline-flex;align-items:center;gap:9px;padding:7px 18px;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.14);border-radius:99px;color:#fff;font-size:11px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:18px;}
+.hero-tagline .dot{width:7px;height:7px;background:var(--gold2);border-radius:50%;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(34px,5vw,60px);line-height:1.05;color:#fff;margin-bottom:14px;letter-spacing:-0.01em;text-shadow:0 4px 28px rgba(0,0,0,0.5);}
+.hero-title em{color:var(--gold2);font-style:italic;}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:rgba(255,255,255,0.88);margin-bottom:24px;font-weight:300;text-shadow:0 2px 14px rgba(0,0,0,0.35);max-width:680px;margin-left:auto;margin-right:auto;line-height:1.6;}
+
+/* KPI signals dans le hero */
+.hero-signals{display:none;}
+@media(max-width:680px){.hero-signals{grid-template-columns:repeat(2,1fr);gap:8px;max-width:420px;}}
+.hero-signal{background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:16px 12px;text-align:center;}
+.hero-signal-v{font-family:'DM Serif Display',serif;font-size:clamp(22px,3vw,32px);color:var(--gold2);line-height:1;margin-bottom:5px;}
+.hero-signal-l{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:500;}
 
 /* SEARCH FORM */
 .search-card{background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,0.45),0 8px 24px rgba(0,0,0,0.25);padding:24px;text-align:left;}
@@ -65,9 +124,59 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><path fill='%23888' d='M7 10l5 5 5-5z'/></svg>");background-repeat:no-repeat;background-position:right center;padding-right:14px;}
 .field input[type=date]{font-family:'DM Sans',sans-serif;color:#1a1a1a;}
 .field input::placeholder{color:#aaa;}
-.btn-search{margin-top:14px;width:100%;padding:18px;background:var(--orange);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;border-radius:10px;letter-spacing:0.3px;transition:background .15s,transform .1s;box-shadow:0 4px 12px rgba(245,158,11,0.35);}
-.btn-search:hover{background:var(--orange-h);}
+.btn-search{margin-top:14px;width:100%;padding:18px;background:var(--gold);border:none;color:#000;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;border-radius:10px;letter-spacing:0.3px;transition:background .15s,transform .1s;box-shadow:0 4px 14px rgba(184,150,46,0.35);}
+.btn-search:hover{background:var(--gold2);}
 .btn-search:active{transform:translateY(1px);}
+
+/* Vertical switcher in hero */
+.vsw{display:inline-flex;gap:4px;background:rgba(255,255,255,0.92);padding:5px;border-radius:99px;margin-bottom:18px;backdrop-filter:blur(12px);box-shadow:0 4px 14px rgba(0,0,0,0.25);}
+.vsw a{padding:9px 18px;border-radius:99px;font-size:13px;font-weight:500;color:#666;cursor:pointer;text-decoration:none;transition:all .15s;display:inline-flex;align-items:center;gap:8px;}
+.vsw a svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+.vsw a:hover{background:#f0eee5;color:#1a1a1a;}
+.vsw a.on{background:#1a1a1a;color:#fff;}
+.vsw a.on:hover{background:#2a2a2a;}
+@media(max-width:520px){.vsw{flex-wrap:wrap;justify-content:center;padding:6px;gap:4px;}.vsw a{padding:8px 14px;font-size:12px;}}
+
+/* Form variants */
+.form-grid.v-hotels{grid-template-columns:1.3fr 1fr 1fr 0.8fr;}
+.form-grid.v-act{grid-template-columns:1.3fr 1fr 1fr 0.8fr;}
+.form-grid.v-tx{grid-template-columns:1fr 1fr 1fr 0.8fr;}
+
+/* Trust strip */
+.trust{padding:36px 24px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.trust-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
+@media(max-width:780px){.trust-grid{grid-template-columns:repeat(2,1fr);gap:18px;}}
+.tr-ic{display:inline-flex;width:44px;height:44px;border-radius:50%;background:var(--gold-dim);align-items:center;justify-content:center;margin-bottom:14px;color:var(--gold2);}
+.tr-ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+.tr-label{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px;}
+.tr-desc{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* Why section */
+.why{padding:80px 32px;max-width:1100px;margin:0 auto;}
+.why-head{text-align:center;margin-bottom:48px;}
+.why-head h2{font-family:'DM Serif Display',serif;font-size:36px;margin-bottom:10px;}
+.why-head h2 em{font-style:italic;color:var(--gold2);}
+.why-head p{color:var(--text2);font-size:15px;max-width:580px;margin:0 auto;}
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:900px;margin:0 auto;}
+@media(max-width:780px){.why-grid{grid-template-columns:1fr;}.why{padding:60px 16px;}.why-head h2{font-size:28px;}}
+.why-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:26px;}
+.why-card-ic{width:52px;height:52px;border-radius:50%;background:var(--gold-dim);display:grid;place-items:center;color:var(--gold2);margin-bottom:22px;}
+.why-card-ic svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+.why-card h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:10px;line-height:1.2;}
+.why-card p{color:var(--text2);font-size:13px;line-height:1.65;}
+
+/* Footer enrichi */
+.footer{padding:50px 32px 40px;border-top:1px solid var(--border);color:var(--text3);font-size:12px;background:var(--bg);}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-cols{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px;}
+@media(max-width:780px){.footer-cols{grid-template-columns:1fr 1fr;gap:24px;}}
+.footer-col h4{font-family:'DM Serif Display',serif;color:var(--text);font-size:14px;margin-bottom:14px;font-weight:400;}
+.footer-col a{display:block;color:var(--text2);text-decoration:none;font-size:12px;margin:0;padding:5px 0;transition:color .15s;}
+.footer-col a:hover{color:var(--gold2);}
+.footer-brand{color:var(--text2);font-size:12px;line-height:1.7;}
+.footer-brand .logo-mini{display:inline-flex;align-items:center;gap:8px;color:var(--text);font-size:14px;font-weight:500;margin-bottom:8px;}
+.footer-brand .logo-mini-hex{width:20px;height:20px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.footer-bot{padding-top:24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text3);}
 
 /* INSPIRE */
 .inspire{padding:80px 32px;max-width:1200px;margin:0 auto;}
@@ -115,19 +224,165 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   .bottom-nav{display:flex;}
   .footer{padding:30px 16px 90px;}
 }
+/* ── Autocomplete aéroports (2026-05-26) ── */
+.ac-wrap{position:relative;width:100%;}
+.ac-wrap input{
+  width:100%;border:none;background:transparent;
+  font-family:inherit;font-size:15px;color:#1a1a2e;
+  padding:0;outline:none;
+}
+.ac-wrap input::placeholder{color:#999;font-style:italic;}
+.ac-dropdown{
+  position:absolute;top:calc(100% + 8px);left:-12px;right:-12px;
+  background:#fff;border:1px solid #e5d8a3;border-radius:10px;
+  max-height:320px;overflow-y:auto;z-index:200;
+  box-shadow:0 12px 32px rgba(26,26,46,0.18);
+  font-family:'Inter',sans-serif;
+}
+.ac-item{
+  padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid #f4efde;transition:background .12s;
+}
+.ac-item:last-child{border-bottom:none;}
+.ac-item:hover,.ac-item.ac-active{background:#fcf6e3;}
+.ac-code{
+  background:#1a1a2e;color:#c9a961;font-weight:700;letter-spacing:.5px;
+  padding:5px 9px;border-radius:5px;font-size:12px;
+  min-width:44px;text-align:center;font-family:'Inter',sans-serif;
+}
+.ac-name{flex:1;min-width:0;}
+.ac-name strong{display:block;font-size:14px;color:#1a1a2e;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ac-airport{color:#777;font-size:12px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}
+.ac-country{color:#999;font-size:11px;margin-top:1px;}
+.ac-empty{padding:14px;color:#999;text-align:center;font-size:13px;}
+.ac-dropdown{max-height:420px;}
+/* ── Sections / headers ── */
+.ac-section + .ac-section{border-top:1px solid #f0e9c8;}
+.ac-section-head{
+  padding:9px 14px 6px;font-size:10.5px;font-weight:700;letter-spacing:0.5px;
+  color:#7a6a2e;text-transform:uppercase;background:#fdfaf0;
+  border-bottom:1px solid #f4efde;display:flex;align-items:center;
+  justify-content:space-between;
+}
+.ac-section-head .ac-region-tag{
+  font-weight:600;color:#a99a4a;font-size:9.5px;letter-spacing:.4px;
+  text-transform:none;
+}
+.ac-clear-recent{
+  background:transparent;border:none;color:#b0a26a;font-size:10px;cursor:pointer;
+  padding:0;letter-spacing:.3px;text-transform:none;font-family:'Inter',sans-serif;
+}
+.ac-clear-recent:hover{color:#7a6a2e;text-decoration:underline;}
+/* ── Groupe aéroports (ville parent + sous-aéroports) ── */
+.ac-group-head{
+  padding:11px 14px 8px;cursor:pointer;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid #f4efde;transition:background .12s;
+  background:linear-gradient(to right, #fffdf5, #fff);
+}
+.ac-group-head:hover,.ac-group-head.ac-active{background:#fcf6e3;}
+.ac-item.ac-sub{padding-left:42px;background:#fbfaf3;}
+.ac-item.ac-sub .ac-code{font-size:10.5px;min-width:38px;padding:3px 7px;}
+.ac-item.ac-sub .ac-name strong{font-size:13px;color:#444;font-weight:500;}
+/* ── Pictogramme recent ── */
+.ac-recent-ic{
+  display:inline-block;width:18px;height:18px;flex-shrink:0;
+  color:#c9a961;
+}
+.ac-recent-ic svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;}
+@media(max-width:880px){
+  .ac-dropdown{left:-10px;right:-10px;max-height:340px;}
+  .ac-item{padding:9px 12px;gap:10px;}
+  .ac-code{font-size:11px;padding:4px 7px;min-width:40px;}
+  .ac-name strong{font-size:13px;}
+  .ac-airport{font-size:11px;}
+  .ac-section-head{padding:8px 12px 5px;font-size:10px;}
+  .ac-item.ac-sub{padding-left:34px;}
+}
+
+/* ── Recherche hôtel par nom (2026-05-29) — barre sous la search-card ── */
+.hotel-name-search{margin-top:14px;background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,0.28);padding:14px 18px;text-align:left;}
+.hotel-name-search-label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.4px;color:#7a6a2e;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.hotel-name-search-label svg{width:15px;height:15px;stroke:#c9a961;fill:none;stroke-width:1.7;}
+.hns-input{width:100%;border:1px solid #e5d8a3;background:#fff;border-radius:9px;font-family:inherit;font-size:15px;color:#1a1a2e;padding:11px 14px;outline:none;}
+.hns-input::placeholder{color:#999;font-style:italic;}
+.hns-input:focus{border-color:#c9a961;}
+.ac-name .ac-city{color:#888;font-size:12px;display:block;margin-top:1px;}
+@media(max-width:880px){.hotel-name-search{padding:12px 14px;}}
+
+/* ── Pax widget custom (2026-05-26) ── */
+.pax-trigger{
+  background:transparent;border:none;cursor:pointer;display:flex;
+  justify-content:space-between;align-items:center;font-size:15px;
+  font-weight:500;color:#1a1a1a;padding:0;font-family:'DM Sans',sans-serif;
+  width:100%;
+}
+.pax-chevron{color:#888;font-size:11px;margin-left:6px;}
+.pax-dropdown{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:white;border-radius:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.18);
+  padding:18px;z-index:60;
+  border:1px solid #eee;
+  min-width:280px;
+}
+.pax-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid #f0f0f0;
+}
+.pax-row:last-of-type{border-bottom:none;}
+.pax-label strong{display:block;color:#1a1a1a;font-size:14px;font-weight:600;}
+.pax-sub{color:#999;font-size:11px;}
+.pax-stepper{display:flex;align-items:center;gap:12px;}
+.pax-btn{
+  width:30px;height:30px;border-radius:50%;border:1.5px solid #ddd;
+  background:white;cursor:pointer;font-size:15px;color:#1a1a1a;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+  padding:0;font-family:'DM Sans',sans-serif;
+  transition:border-color .15s,color .15s;
+}
+.pax-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
+.pax-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.pax-count{min-width:22px;text-align:center;font-weight:700;font-size:15px;color:#1a1a1a;}
+.pax-sep{border-top:1px solid #eee;margin:14px 0 12px;}
+.pax-cabin-label{font-size:13px;color:#1a1a1a;margin-bottom:10px;font-weight:600;}
+.pax-cabin-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.cabin-opt{
+  padding:10px 8px;border:1.5px solid #ddd;border-radius:8px;background:white;
+  cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;color:#1a1a1a;
+  font-weight:500;transition:all .15s;
+}
+.cabin-opt:hover{border-color:var(--gold);}
+.cabin-opt.active{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700;}
+.pax-actions{margin-top:14px;text-align:right;}
+.pax-confirm{
+  background:var(--gold);color:#000;border:none;padding:8px 20px;
+  border-radius:6px;cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;
+  font-size:13px;
+}
+.pax-confirm:hover{background:var(--gold2);}
+@media (max-width:560px){
+  .pax-cabin-grid{grid-template-columns:1fr 1fr;}
+  .pax-dropdown{padding:14px;}
+}
 </style>
+<!-- Carnet partagé : module recherche autocomplete (Pascal 2026-05-31) -->
+<script src="/js/carnets.js?v=2026053113"></script>
 </head>
 <body>
+<div class="abx-ticker"><div class="abx-ticker-inner" id="abxTicker"></div></div>
 
 <!-- HEADER -->
 <div class="header">
   <a class="logo" href="/">
-    <div class="logo-hex">✈</div>
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg" aria-label="AirBizness"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
     <div class="logo-text">Air<em>Bizness</em></div>
   </a>
   <div class="nav">
-    <a class="on">Rechercher</a>
-    <a href="/mes-alertes.html">Mes alertes</a>
+    <a class="on" data-vnav="flights">Vols</a>
+    <a href="/hotels.html" data-vnav="hotels">Hôtels</a>
+    <a href="/activites.html" data-vnav="flights">Activités</a>
     <a href="/mes-voyages.html">Mes voyages</a>
   </div>
   <div class="header-right">
@@ -142,11 +397,40 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
   <div class="hero-bg b" id="hero-b"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-tagline"><span class="dot"></span>Business Class · Sélection quotidienne</div>
-    <h1 class="hero-title">Volez en <em>Business Class</em><br>au prix d'un Economy</h1>
-    <p class="hero-sub">Les meilleurs deals classe affaires, négociés et vérifiés chaque jour.</p>
+    <div class="hero-tagline"><span class="dot"></span>Voyage premium · sans intermédiaire</div>
+    <h1 class="hero-title" id="hero-title">Le voyage <em>premium</em><br>à portée de clic.</h1>
+    <p class="hero-sub" id="hero-sub">Hôtels curated à Paris, Madrid et Londres. Vols Business négociés. Tarifs directs, confirmation immédiate à votre nom.</p>
 
-    <form class="search-card" onsubmit="doSearch(event)">
+    <!-- KPI signals — chiffres RÉELS actuels -->
+    <div class="hero-signals">
+      <div class="hero-signal">
+        <div class="hero-signal-v" id="kpi-hotels">—</div>
+        <div class="hero-signal-l">Hôtels en catalog</div>
+      </div>
+      <div class="hero-signal">
+        <div class="hero-signal-v" id="kpi-destinations">—</div>
+        <div class="hero-signal-l">Destinations ouvertes</div>
+      </div>
+      <div class="hero-signal">
+        <div class="hero-signal-v" id="kpi-verticales">4</div>
+        <div class="hero-signal-l">Verticales voyage</div>
+      </div>
+      <div class="hero-signal">
+        <div class="hero-signal-v">24/7</div>
+        <div class="hero-signal-l">Service client</div>
+      </div>
+    </div>
+
+    <!-- Vertical switcher : icônes SVG line-art monochrome -->
+    <div class="vsw" role="tablist">
+      <a class="on" data-v="vols"><svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>Vols</a>
+      <a data-v="hotels"><svg viewBox="0 0 24 24"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/><path d="M3 21h18"/></svg>Hôtels</a>
+      <a data-v="sejour" style="position:relative;"><svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>+<svg viewBox="0 0 24 24" style="margin-left:1px"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>Vol + Hôtel<span style="position:absolute;top:-6px;right:-4px;background:#22c55e;color:#0a1a0a;font-size:9px;font-weight:700;padding:2px 5px;border-radius:99px;letter-spacing:0.3px;">−5%</span></a>
+      <a data-v="activites"><svg viewBox="0 0 24 24"><path d="M12 2 14.5 9 22 9.5 16 14 18 21 12 17 6 21 8 14 2 9.5 9.5 9z"/></svg>Activités</a>
+    </div>
+
+    <!-- Form Vols (initial visible) -->
+    <form class="search-card" id="form-vols" onsubmit="doSearchVols(event)">
       <div class="trip-toggle">
         <label class="trip-opt on" id="opt-one">
           <input type="radio" name="trip" value="one_way" checked>
@@ -161,44 +445,23 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
       <div class="form-grid no-ret" id="form-grid">
         <div class="field">
           <div class="field-label">Au départ de</div>
-          <select id="f-from" required>
-            <option value="CDG">Paris (CDG)</option>
-            <option value="ORY">Paris (ORY)</option>
-            <option value="LYS">Lyon (LYS)</option>
-            <option value="NCE">Nice (NCE)</option>
-            <option value="LHR">Londres (LHR)</option>
-            <option value="AMS">Amsterdam (AMS)</option>
-            <option value="FRA">Francfort (FRA)</option>
-            <option value="MAD">Madrid (MAD)</option>
-            <option value="DXB">Dubai (DXB)</option>
-            <option value="SIN">Singapour (SIN)</option>
-            <option value="JFK">New York (JFK)</option>
-            <option value="LAX">Los Angeles (LAX)</option>
-          </select>
+          <div class="ac-wrap">
+            <input type="text" id="f-from" required
+                   placeholder="Ville, aéroport ou code IATA"
+                   autocomplete="off" spellcheck="false"
+                   data-code="" />
+            <div class="ac-dropdown" id="f-from-dropdown" style="display:none;"></div>
+          </div>
         </div>
         <div class="field">
           <div class="field-label">À destination de</div>
-          <select id="f-to">
-            <option value="">Toutes destinations</option>
-            <option value="JFK">New York (JFK)</option>
-            <option value="LAX">Los Angeles (LAX)</option>
-            <option value="MIA">Miami (MIA)</option>
-            <option value="SFO">San Francisco (SFO)</option>
-            <option value="ORD">Chicago (ORD)</option>
-            <option value="DXB">Dubai (DXB)</option>
-            <option value="SIN">Singapour (SIN)</option>
-            <option value="NRT">Tokyo (NRT)</option>
-            <option value="HKG">Hong Kong (HKG)</option>
-            <option value="BKK">Bangkok (BKK)</option>
-            <option value="SYD">Sydney (SYD)</option>
-            <option value="GRU">São Paulo (GRU)</option>
-            <option value="DEL">Delhi (DEL)</option>
-            <option value="BOM">Mumbai (BOM)</option>
-            <option value="DOH">Doha (DOH)</option>
-            <option value="ICN">Séoul (ICN)</option>
-            <option value="CPT">Cape Town (CPT)</option>
-            <option value="NBO">Nairobi (NBO)</option>
-          </select>
+          <div class="ac-wrap">
+            <input type="text" id="f-to" required
+                   placeholder="Ville, aéroport ou code IATA"
+                   autocomplete="off" spellcheck="false"
+                   data-code="" />
+            <div class="ac-dropdown" id="f-to-dropdown" style="display:none;"></div>
+          </div>
         </div>
         <div class="field">
           <div class="field-label">Date départ</div>
@@ -208,105 +471,436 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
           <div class="field-label">Date retour</div>
           <input type="date" id="f-date-ret">
         </div>
-        <div class="field">
+        <div class="field" id="f-pax-wrap">
           <div class="field-label">Voyageurs · Cabine</div>
-          <select id="f-pax">
-            <option value="1">1 adulte · Business</option>
-            <option value="2">2 adultes · Business</option>
-            <option value="3">3 adultes · Business</option>
-            <option value="4">4 adultes · Business</option>
-          </select>
+          <div class="pax-trigger" onclick="togglePaxDropdown('vols')" id="pax-display-vols">
+            <span id="pax-summary-vols">1 adulte · Affaires</span>
+            <span class="pax-chevron">▾</span>
+          </div>
+          <div class="pax-dropdown" id="pax-dropdown-vols" style="display:none;">
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Adultes</strong>
+                <span class="pax-sub">12 ans et +</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','adults',-1)">−</button>
+                <span class="pax-count" id="pax-adults-vols">1</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','adults',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Enfants</strong>
+                <span class="pax-sub">2 – 11 ans</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','children',-1)">−</button>
+                <span class="pax-count" id="pax-children-vols">0</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','children',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Bébés</strong>
+                <span class="pax-sub">– de 2 ans, sur les genoux</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','infants',-1)">−</button>
+                <span class="pax-count" id="pax-infants-vols">0</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('vols','infants',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-sep"></div>
+            <div class="pax-cabin-label">Classe</div>
+            <div class="pax-cabin-grid">
+              <button type="button" class="cabin-opt" data-scope="vols" data-cabin="economy" onclick="setCabin('vols','economy')">Économique</button>
+              <button type="button" class="cabin-opt" data-scope="vols" data-cabin="premium_economy" onclick="setCabin('vols','premium_economy')">Premium</button>
+              <button type="button" class="cabin-opt active" data-scope="vols" data-cabin="business" onclick="setCabin('vols','business')">Affaires</button>
+              <button type="button" class="cabin-opt" data-scope="vols" data-cabin="first" onclick="setCabin('vols','first')">Première</button>
+            </div>
+            <div class="pax-actions">
+              <button type="button" class="pax-confirm" onclick="confirmPax('vols')">Confirmer</button>
+            </div>
+          </div>
         </div>
       </div>
 
       <button type="submit" class="btn-search">Rechercher des vols</button>
     </form>
+
+    <!-- Form Hôtels -->
+    <form class="search-card" id="form-hotels" style="display:none;" onsubmit="doSearchHotels(event)">
+      <div class="form-grid v-hotels">
+        <div class="field">
+          <div class="field-label">Destination</div>
+          <div class="ac-wrap">
+            <input type="text" id="h-dest" required
+                   placeholder="Ville de destination"
+                   autocomplete="off" spellcheck="false"
+                   data-code="" />
+            <div class="ac-dropdown" id="h-dest-dropdown" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Arrivée</div>
+          <input type="date" id="h-checkin" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Départ</div>
+          <input type="date" id="h-checkout" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Voyageurs</div>
+          <select id="h-guests">
+            <option value="1">1 adulte</option>
+            <option value="2" selected>2 adultes</option>
+            <option value="3">3 adultes</option>
+            <option value="4">4 adultes</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-search">Rechercher des hôtels</button>
+    </form>
+
+    <!-- Form Séjour (Vol + Hôtel combiné) -->
+    <form class="search-card" id="form-sejour" style="display:none;" onsubmit="doSearchSejour(event)">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr 1fr 0.9fr;">
+        <div class="field">
+          <div class="field-label">Départ de</div>
+          <div class="ac-wrap">
+            <input type="text" id="s-origin" required
+                   placeholder="Ville, aéroport ou IATA"
+                   autocomplete="off" spellcheck="false"
+                   data-code="" />
+            <div class="ac-dropdown" id="s-origin-dropdown" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Destination</div>
+          <div class="ac-wrap">
+            <input type="text" id="s-dest" required
+                   placeholder="Ville, aéroport ou IATA"
+                   autocomplete="off" spellcheck="false"
+                   data-code="" />
+            <div class="ac-dropdown" id="s-dest-dropdown" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Arrivée</div>
+          <input type="date" id="s-checkin" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Départ</div>
+          <input type="date" id="s-checkout" required>
+        </div>
+        <div class="field" id="s-pax-wrap">
+          <div class="field-label">Voyageurs · Cabine</div>
+          <div class="pax-trigger" onclick="togglePaxDropdown('sejour')" id="pax-display-sejour">
+            <span id="pax-summary-sejour">2 adultes · Affaires</span>
+            <span class="pax-chevron">▾</span>
+          </div>
+          <div class="pax-dropdown" id="pax-dropdown-sejour" style="display:none;">
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Adultes</strong>
+                <span class="pax-sub">12 ans et +</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','adults',-1)">−</button>
+                <span class="pax-count" id="pax-adults-sejour">2</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','adults',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Enfants</strong>
+                <span class="pax-sub">2 – 11 ans</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','children',-1)">−</button>
+                <span class="pax-count" id="pax-children-sejour">0</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','children',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-row">
+              <div class="pax-label">
+                <strong>Bébés</strong>
+                <span class="pax-sub">– de 2 ans, sur les genoux</span>
+              </div>
+              <div class="pax-stepper">
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','infants',-1)">−</button>
+                <span class="pax-count" id="pax-infants-sejour">0</span>
+                <button type="button" class="pax-btn" onclick="paxAdjust('sejour','infants',1)">+</button>
+              </div>
+            </div>
+            <div class="pax-sep"></div>
+            <div class="pax-cabin-label">Classe</div>
+            <div class="pax-cabin-grid">
+              <button type="button" class="cabin-opt" data-scope="sejour" data-cabin="economy" onclick="setCabin('sejour','economy')">Économique</button>
+              <button type="button" class="cabin-opt" data-scope="sejour" data-cabin="premium_economy" onclick="setCabin('sejour','premium_economy')">Premium</button>
+              <button type="button" class="cabin-opt active" data-scope="sejour" data-cabin="business" onclick="setCabin('sejour','business')">Affaires</button>
+              <button type="button" class="cabin-opt" data-scope="sejour" data-cabin="first" onclick="setCabin('sejour','first')">Première</button>
+            </div>
+            <div class="pax-actions">
+              <button type="button" class="pax-confirm" onclick="confirmPax('sejour')">Confirmer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn-search">Rechercher mon séjour vol + hôtel</button>
+    </form>
+
+    <!-- Form Activités -->
+    <form class="search-card" id="form-activites" style="display:none;" onsubmit="doSearchActivites(event)">
+      <div class="form-grid v-act">
+        <div class="field">
+          <div class="field-label">Destination</div>
+          <select id="a-dest" required>
+            <option value="PAR">Paris</option>
+            <option value="MAD">Madrid</option>
+            <option value="LON">Londres</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Date début</div>
+          <input type="date" id="a-from" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Date fin</div>
+          <input type="date" id="a-to" required>
+        </div>
+        <div class="field">
+          <div class="field-label">Adultes</div>
+          <select id="a-adults">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-search">Trouver des activités</button>
+    </form>
+
+    <!-- Form Transferts RETIRÉ 2026-05-30 (Pascal) : un transfert standalone n'a pas
+    de sens. Le transfert vit comme add-on dans le tunnel résa hôtel (fiche hôtel)
+    et plus tard dans le tunnel pack vol+hôtel. -->
+
+    <!-- "Trouver un hôtel par son nom" RETIRÉ DE LA HOME 2026-05-31 (Pascal) :
+    sans contexte de ville, "Sofitel" renvoie 50 résultats absurdes. Cette
+    recherche par nom est DÉPLACÉE dans les pages parcours (destinations/{ville})
+    où la ville est déjà connue → filtre pertinent. CSS conservé pour réutilisation
+    dans les pages parcours. -->
   </div>
 </section>
 
-<!-- INSPIRE -->
+<!-- Bannière "Reprendre votre voyage" (Pascal 2026-05-31) : cart recovery N1.
+     Rendue par TunnelState.renderResumeBanner() depuis le carnet si un state
+     récent (<24h) est en localStorage. Sinon le div reste vide (display:none). -->
+<div id="resume-banner-container" style="display:none;"></div>
+<script>
+  (function tryResumeBanner(){
+    if (window.TunnelState && window.TunnelState.hasRecent && window.TunnelState.hasRecent()) {
+      window.TunnelState.renderResumeBanner(document.getElementById('resume-banner-container'));
+    } else if (!window.TunnelState) {
+      // Carnet pas encore chargé (async) — retry une fois
+      setTimeout(tryResumeBanner, 200);
+    }
+  })();
+</script>
+
+<!-- TRUST STRIP — icônes SVG line-art premium -->
+<section class="trust">
+  <div class="trust-grid">
+    <div>
+      <div class="tr-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div class="tr-label">Paiement sécurisé</div>
+      <div class="tr-desc">Tunnel chiffré 3DS.<br>Carte stockée nulle part.</div>
+    </div>
+    <div>
+      <div class="tr-ic"><svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></div>
+      <div class="tr-label">Tarifs négociés</div>
+      <div class="tr-desc">Prix direct AirBizness.<br>Sans surcoût intermédiaire.</div>
+    </div>
+    <div>
+      <div class="tr-ic"><svg viewBox="0 0 24 24"><path d="M9 11l-4 4a7 7 0 0 0 7 7l4-4"/><path d="M15 13l4-4a7 7 0 0 0-7-7l-4 4"/><path d="M3 21l3-3"/><path d="M18 6l3-3"/></svg></div>
+      <div class="tr-label">Annulation gratuite</div>
+      <div class="tr-desc">Sur la majorité des tarifs.<br>Politique affichée avant paiement.</div>
+    </div>
+    <div>
+      <div class="tr-ic"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div>
+      <div class="tr-label">Confirmation immédiate</div>
+      <div class="tr-desc">Voucher AirBizness à votre nom.<br>Reçu sous 30 secondes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSPIRE — destinations DISPONIBLES dans notre catalog -->
 <section class="inspire">
   <div class="inspire-head">
-    <h2>Inspirez-moi</h2>
-    <p>Nos destinations Business Class les plus prisées</p>
+    <h2>Nos <em style="color:var(--gold2);font-style:italic;">destinations</em> disponibles</h2>
+    <p id="inspire-count">Adresses choisies, prix négociés. Nouvelles destinations ouvertes chaque semaine.</p>
   </div>
   <div class="inspire-grid" id="inspire-grid">
-    <a class="ic" data-iata="DXB" data-city="Dubai">
-      <div class="ic-img" style="background-image:url('/images/destinations/dxb.jpg')"></div>
+    <a class="ic" data-dest="PAR" data-vert="hotels" href="/hotels/fr/paris/">
+      <div class="ic-img" style="background-image:url('/images/destinations/par.jpg'),linear-gradient(135deg,#3a3a5a 0%,#1a1a2a 100%);"></div>
       <div class="ic-grad"></div>
       <div class="ic-info">
-        <div class="ic-iata">DXB</div>
-        <div class="ic-city">Dubai</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
+        <div class="ic-iata">FRANCE · PAR</div>
+        <div class="ic-city">Paris</div>
+        <div class="ic-price">Adresses curated · <span class="v" data-count>—</span></div>
       </div>
     </a>
-    <a class="ic" data-iata="NRT" data-city="Tokyo">
-      <div class="ic-img" style="background-image:url('/images/destinations/nrt.jpg')"></div>
+    <a class="ic" data-dest="MAD" data-vert="hotels" href="/hotels/es/madrid/">
+      <div class="ic-img" style="background-image:url('/images/destinations/mad.jpg'),linear-gradient(135deg,#c87533 0%,#7a3f1a 100%);"></div>
       <div class="ic-grad"></div>
       <div class="ic-info">
-        <div class="ic-iata">NRT</div>
-        <div class="ic-city">Tokyo</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
+        <div class="ic-iata">ESPAGNE · MAD</div>
+        <div class="ic-city">Madrid</div>
+        <div class="ic-price">Hôtels premium · <span class="v" data-count>—</span></div>
       </div>
     </a>
-    <a class="ic" data-iata="JFK" data-city="New York">
-      <div class="ic-img" style="background-image:url('/images/destinations/jfk.jpg')"></div>
+    <a class="ic" data-dest="LON" data-vert="hotels" href="/hotels/gb/londres/">
+      <div class="ic-img" style="background-image:url('/images/destinations/lon.jpg'),linear-gradient(135deg,#3a5a8a 0%,#1a2a4a 100%);"></div>
       <div class="ic-grad"></div>
       <div class="ic-info">
-        <div class="ic-iata">JFK</div>
-        <div class="ic-city">New York</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
-      </div>
-    </a>
-    <a class="ic" data-iata="SIN" data-city="Singapour">
-      <div class="ic-img" style="background-image:url('/images/destinations/sin.jpg')"></div>
-      <div class="ic-grad"></div>
-      <div class="ic-info">
-        <div class="ic-iata">SIN</div>
-        <div class="ic-city">Singapour</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
-      </div>
-    </a>
-    <a class="ic" data-iata="HKG" data-city="Hong Kong">
-      <div class="ic-img" style="background-image:url('/images/destinations/hkg.jpg')"></div>
-      <div class="ic-grad"></div>
-      <div class="ic-info">
-        <div class="ic-iata">HKG</div>
-        <div class="ic-city">Hong Kong</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
-      </div>
-    </a>
-    <a class="ic" data-iata="SYD" data-city="Sydney">
-      <div class="ic-img" style="background-image:url('/images/destinations/syd.jpg')"></div>
-      <div class="ic-grad"></div>
-      <div class="ic-info">
-        <div class="ic-iata">SYD</div>
-        <div class="ic-city">Sydney</div>
-        <div class="ic-price">à partir de <span class="v" data-price>—</span></div>
+        <div class="ic-iata">UK · LON</div>
+        <div class="ic-city">Londres</div>
+        <div class="ic-price">Hôtels élégants · <span class="v" data-count>—</span></div>
       </div>
     </a>
   </div>
 </section>
 
-<!-- FOOTER -->
-<div class="footer">
-  <div style="margin-bottom:8px;">
-    <a href="/mentions-legales.html">Mentions légales</a>
-    <a href="/mes-alertes.html">Mes alertes</a>
-    <a href="/compte.html">Mon compte</a>
+<!-- WHY AIRBIZNESS -->
+<section class="why">
+  <div class="why-head">
+    <h2>L'expérience <em>AirBizness</em></h2>
+    <p id="copy-why">Vols, hôtels, activités, transferts. Tout réservé chez nous, sans intermédiaire, avec une confirmation immédiate à votre nom.</p>
   </div>
-  © AirBizness · Business Class deals
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-card-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <h3>Tout sur AirBizness</h3>
+      <p>De la recherche à la confirmation, vous restez chez nous. Aucune redirection. Le voucher de réservation porte notre nom — et c'est nous qui sommes là si vous avez besoin.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-ic"><svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></div>
+      <h3>Prix négociés en direct</h3>
+      <p>Nous accédons aux tarifs professionnels du voyage et vous en faisons profiter directement. Sans surcouche affiliée, sans intermédiaire qui prend sa marge.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TOP DESTINATIONS SSR (internal linking pour Google) -->
+<section class="top-destinations-ssr" style="padding:50px 24px;background:var(--bg2);border-top:1px solid var(--border);">
+  <div style="max-width:1080px;margin:0 auto;">
+    <h3 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px;letter-spacing:-0.01em;">Top destinations <em style="color:var(--gold2);font-style:italic;">business</em></h3>
+    <p id="copy-villes" style="font-size:13px;color:var(--text3);margin-bottom:20px;">Nos villes signature pour le voyage premium d'affaires — hôtels 5★ et vols Business Class.</p>
+    <style>.top-destinations-ssr .td-link{padding:9px 18px;background:var(--bg);border:1px solid var(--border);border-radius:99px;color:var(--text2);text-decoration:none;font-size:13px;transition:all .15s;display:inline-block;}.top-destinations-ssr .td-link:hover{border-color:var(--gold2);color:var(--gold2);}</style>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <a href="/destinations/paris" class="td-link">Paris</a>
+      <a href="/destinations/londres" class="td-link">Londres</a>
+      <a href="/destinations/madrid" class="td-link">Madrid</a>
+      <a href="/destinations/dubai" class="td-link">Dubai</a>
+      <a href="/destinations/singapore" class="td-link">Singapour</a>
+      <a href="/destinations/tokyo" class="td-link">Tokyo</a>
+      <a href="/destinations/zurich" class="td-link">Zurich</a>
+      <a href="/destinations/hong-kong" class="td-link">Hong Kong</a>
+      <a href="/destinations/shanghai" class="td-link">Shanghai</a>
+      <a href="/destinations/sao-paulo" class="td-link">São Paulo</a>
+      <a href="/destinations/mumbai" class="td-link">Mumbai</a>
+      <a href="/destinations/bangkok" class="td-link">Bangkok</a>
+      <a href="/destinations/seoul" class="td-link">Séoul</a>
+      <a href="/destinations/berlin" class="td-link">Berlin</a>
+      <a href="/destinations/lisbon" class="td-link">Lisbonne</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER enrichi -->
+<div class="footer">
+  <div class="footer-inner">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-brand">
+          <div class="logo-mini">
+            <div class="logo-mini-hex"></div>
+            <span>AirBizness</span>
+          </div>
+          Marketplace de voyage premium.<br>
+          <span id="copy-footer-brand">Vols, hôtels, activités, transferts — réservés en direct sur AirBizness.</span><br><br>
+          <span style="color:var(--text3);font-size:11px;">Société européenne · Opérations MENA et Asie du Sud-Est.</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Explorer</h4>
+        <a href="/hotels.html">Hôtels</a>
+        <a href="/activites.html" data-vreq="flights">Activités</a>
+        <a href="/" data-vreq="flights">Vols Business</a>
+        <a href="/catalog.html">Catalog hôtels</a>
+      </div>
+      <div class="footer-col">
+        <h4>Mon compte</h4>
+        <a href="/mes-voyages.html">Mes voyages</a>
+        <a href="/mes-alertes.html">Mes alertes</a>
+        <a href="/compte.html">Connexion</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="/contact">Nous contacter</a>
+        <a href="/about">À propos</a>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <a href="/cgv">CGV</a>
+        <a href="/terms">CGU</a>
+        <a href="/privacy">Confidentialité</a>
+        <a href="/cookies">Cookies</a>
+        <a href="/mentions-legales">Mentions légales</a>
+      </div>
+    </div>
+    <div class="footer-bot">
+      © AirBizness 2026 · Marketplace de réservation voyage · Tous droits réservés
+    </div>
+  </div>
 </div>
 
-<!-- BOTTOM NAV mobile -->
+<!-- BOTTOM NAV mobile : SVG line-art monochrome (cohérent shared-chrome) -->
 <div class="bottom-nav">
-  <a class="bn-item on"><div class="bn-icon">🔍</div>Rechercher</a>
-  <a class="bn-item" href="/mes-alertes.html"><div class="bn-icon">🔔</div>Alertes</a>
-  <a class="bn-item" href="/mes-voyages.html"><div class="bn-icon">✈</div>Voyages</a>
-  <a class="bn-item" href="/compte.html"><div class="bn-icon">👤</div>Compte</a>
+  <a class="bn-item on"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>Vols</a>
+  <a class="bn-item" href="/hotels.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/><path d="M3 21h18"/></svg></div>Hôtels</a>
+  <a class="bn-item" href="/activites.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><path d="M12 2 14.5 9 22 9.5 16 14 18 21 12 17 6 21 8 14 2 9.5 9.5 9z"/></svg></div>Activités</a>
+  <a class="bn-item" href="/mes-voyages.html"><div class="bn-icon"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>Voyages</a>
 </div>
 
 <script>
+// ----- Chiffres LIVE depuis la DB (/api/home-stats) : ticker + KPI hero + inspire -----
+(function(){
+  fetch('/api/home-stats').then(r=>r.json()).then(s=>{
+    var nf=function(n){return Number(n).toLocaleString('fr-FR');};
+    // 1) KPI hero — reliés à la DB (plus de hardcode)
+    var kh=document.getElementById('kpi-hotels'); if(kh) kh.textContent=nf(s.hotels);
+    var kd=document.getElementById('kpi-destinations'); if(kd) kd.textContent=nf(s.cities);
+    // 2) Texte "Nos destinations disponibles" — relié à la DB
+    var ia=document.getElementById('inspire-count');
+    if(ia) ia.textContent=nf(s.hotels)+' adresses dans '+nf(s.cities)+' villes, prix négociés. Nouvelles destinations ouvertes chaque semaine.';
+    // 3) Ticker défilant — noms de villes top dynamiques depuis la DB si dispo
+    var villes=(s.top_cities && s.top_cities.length)? s.top_cities.join(' · ') : (nf(s.cities)+' villes couvertes');
+    var items=[
+      nf(s.hotels)+' hôtels premium',
+      nf(s.cities)+' villes',
+      villes,
+      'Tarifs Business négociés',
+      'Confirmation immédiate · sans intermédiaire'
+    ];
+    var html=items.map(function(t){return '<span class="abx-ticker-item"><span class="abx-ticker-sep">✦</span> '+t+' </span>';}).join('');
+    var el=document.getElementById('abxTicker');
+    if(el) el.innerHTML=html+html; // dupliqué → boucle fluide (translateX -50%)
+  }).catch(function(){});
+})();
+
 // ----- Hero rotation -----
 const HERO_IMAGES = [
   '/images/destinations/dxb.jpg',
@@ -354,59 +948,602 @@ document.getElementById('f-date').value = iso(inAWeek);
 document.getElementById('f-date-ret').min = iso(today);
 document.getElementById('f-date-ret').value = iso(in2Weeks);
 
-// ----- Search submit -----
-function doSearch(e) {
+// ----- Vertical switcher (Vols / Hôtels / Séjour / Activités) -----
+// Transferts retirés 2026-05-30 : add-on dans tunnel résa hôtel, pas standalone.
+const FORMS = {
+  vols: document.getElementById('form-vols'),
+  hotels: document.getElementById('form-hotels'),
+  sejour: document.getElementById('form-sejour'),
+  activites: document.getElementById('form-activites'),
+};
+const HEROS = {
+  vols: {title:'Voyagez sans <em>filtre</em><br>directement chez nous', sub:'Vols, hôtels, activités. Confirmation immédiate à votre nom.'},
+  hotels: {title:'L’hôtel <em>parfait</em><br>au tarif le plus juste', sub:'Catalog premium en Asie, MENA et Maghreb. Confirmation immédiate.'},
+  sejour: {title:'Votre <em>séjour complet</em><br>en un tunnel', sub:'Vol + hôtel réservés ensemble. Économie pack 5%. Paiement unique sécurisé.'},
+  activites: {title:'Vivez la <em>destination</em>,<br>pas le décor', sub:'Visites, expériences, billets. Réservation directe, sans détour.'},
+};
+// ─── Sync cross-onglets (Pascal 2026-05-31) ───
+// La sélection (origine, destination, dates) persiste quand on switch d'onglet.
+// Le store est dans le carnet (window.SharedSearch) → cross-pages aussi via sessionStorage.
+// Mapping :
+//   - origin aéroport : f-from ↔ s-origin (même IATA)
+//   - dest aéroport   : f-to ↔ s-dest (même IATA)
+//   - dest ville HBX  : h-dest (séparé, code différent type PAR vs CDG/ORY)
+//   - dates           : f-date/f-date-ret ↔ h-checkin/h-checkout ↔ s-checkin/s-checkout
+const SHARED_SEARCH = window.SharedSearch; // alias vers le store du carnet
+let CURRENT_TAB = 'vols';
+function _captureFromTab(tab) {
+  const G = id => document.getElementById(id);
+  if (tab === 'vols') {
+    if (G('f-from').dataset.code)  { SHARED_SEARCH.origin_code = G('f-from').dataset.code; SHARED_SEARCH.origin_label = G('f-from').value; }
+    if (G('f-to').dataset.code)    { SHARED_SEARCH.dest_airport_code = G('f-to').dataset.code; SHARED_SEARCH.dest_airport_label = G('f-to').value; }
+    if (G('f-date').value)          SHARED_SEARCH.check_in = G('f-date').value;
+    if (G('f-date-ret').value)      SHARED_SEARCH.check_out = G('f-date-ret').value;
+  } else if (tab === 'hotels') {
+    if (G('h-dest').dataset.code)  { SHARED_SEARCH.dest_city_code = G('h-dest').dataset.code; SHARED_SEARCH.dest_city_label = G('h-dest').value; }
+    if (G('h-checkin').value)       SHARED_SEARCH.check_in = G('h-checkin').value;
+    if (G('h-checkout').value)      SHARED_SEARCH.check_out = G('h-checkout').value;
+  } else if (tab === 'sejour') {
+    if (G('s-origin').dataset.code) { SHARED_SEARCH.origin_code = G('s-origin').dataset.code; SHARED_SEARCH.origin_label = G('s-origin').value; }
+    if (G('s-dest').dataset.code)   { SHARED_SEARCH.dest_airport_code = G('s-dest').dataset.code; SHARED_SEARCH.dest_airport_label = G('s-dest').value; }
+    if (G('s-checkin').value)       SHARED_SEARCH.check_in = G('s-checkin').value;
+    if (G('s-checkout').value)      SHARED_SEARCH.check_out = G('s-checkout').value;
+  }
+  // Persiste en sessionStorage pour cross-pages
+  SHARED_SEARCH.save && SHARED_SEARCH.save();
+}
+function _applyToTab(tab) {
+  const G = id => document.getElementById(id);
+  if (tab === 'vols') {
+    if (SHARED_SEARCH.origin_code)        { G('f-from').value = SHARED_SEARCH.origin_label; G('f-from').dataset.code = SHARED_SEARCH.origin_code; }
+    if (SHARED_SEARCH.dest_airport_code)  { G('f-to').value   = SHARED_SEARCH.dest_airport_label; G('f-to').dataset.code = SHARED_SEARCH.dest_airport_code; }
+    if (SHARED_SEARCH.check_in)            G('f-date').value     = SHARED_SEARCH.check_in;
+    if (SHARED_SEARCH.check_out)           G('f-date-ret').value = SHARED_SEARCH.check_out;
+  } else if (tab === 'hotels') {
+    if (SHARED_SEARCH.dest_city_code) {
+      G('h-dest').value = SHARED_SEARCH.dest_city_label;
+      G('h-dest').dataset.code = SHARED_SEARCH.dest_city_code;
+    } else if (SHARED_SEARCH.dest_airport_label) {
+      // Fallback : on a un aéroport (CDG) mais pas de ville HBX (PAR) — on pré-remplit le label
+      // L'utilisateur n'a qu'à valider la suggestion dans la dropdown (re-sélection forcée).
+      const cityName = SHARED_SEARCH.dest_airport_label.replace(/\s*\([A-Z0-9]+\)\s*$/, '');
+      G('h-dest').value = cityName;
+      G('h-dest').dataset.code = '';
+    }
+    if (SHARED_SEARCH.check_in)  G('h-checkin').value  = SHARED_SEARCH.check_in;
+    if (SHARED_SEARCH.check_out) G('h-checkout').value = SHARED_SEARCH.check_out;
+  } else if (tab === 'sejour') {
+    if (SHARED_SEARCH.origin_code)        { G('s-origin').value = SHARED_SEARCH.origin_label; G('s-origin').dataset.code = SHARED_SEARCH.origin_code; }
+    if (SHARED_SEARCH.dest_airport_code)  { G('s-dest').value   = SHARED_SEARCH.dest_airport_label; G('s-dest').dataset.code = SHARED_SEARCH.dest_airport_code; }
+    if (SHARED_SEARCH.check_in)            G('s-checkin').value  = SHARED_SEARCH.check_in;
+    if (SHARED_SEARCH.check_out)           G('s-checkout').value = SHARED_SEARCH.check_out;
+  }
+}
+
+document.querySelectorAll('.vsw a').forEach(a => {
+  a.addEventListener('click', () => {
+    _captureFromTab(CURRENT_TAB);
+    const v = a.dataset.v;
+    document.querySelectorAll('.vsw a').forEach(x => x.classList.toggle('on', x===a));
+    Object.entries(FORMS).forEach(([k,form]) => form.style.display = k===v ? '' : 'none');
+    const t = document.getElementById('hero-title');
+    const s = document.getElementById('hero-sub');
+    t.innerHTML = HEROS[v].title;
+    s.textContent = HEROS[v].sub;
+    _applyToTab(v);
+    CURRENT_TAB = v;
+  });
+});
+
+// ─── Commutateur de verticales (etude_switch_verticales.md, étape 1) ───
+// Lit GET /config/verticals (source = AIRBIZNESS_VERTICALS dans .env) et masque
+// les onglets + liens nav dont la verticale n'est pas active. Onglet par défaut
+// = la verticale "default". Tab → verticales requises :
+//   vols=flights · hotels=hotels · sejour=hotels+flights · activites=flights (provisoire).
+(function applyVerticals(){
+  const TAB_REQ = { vols:['flights'], hotels:['hotels'], sejour:['hotels','flights'], activites:['flights'] };
+  const DEFAULT_TAB = { hotels:'hotels', flights:'vols' };
+  fetch('/api/config/verticals').then(r=>r.json()).then(cfg=>{
+    const enabled = (cfg && Array.isArray(cfg.enabled) && cfg.enabled.length) ? cfg.enabled : ['hotels'];
+    const allow = req => req.every(v => enabled.includes(v));
+    // Onglets du switcher
+    document.querySelectorAll('.vsw a[data-v]').forEach(a => {
+      if (!allow(TAB_REQ[a.dataset.v] || [])) a.style.display = 'none';
+    });
+    // Liens de nav
+    document.querySelectorAll('.nav a[data-vnav]').forEach(a => {
+      if (!enabled.includes(a.dataset.vnav)) a.style.display = 'none';
+    });
+    // KPI "Verticales voyage" = nombre d'onglets visibles
+    const kv = document.getElementById('kpi-verticales');
+    if (kv) kv.textContent = Object.keys(TAB_REQ).filter(t => allow(TAB_REQ[t])).length;
+    // Onglet par défaut : la verticale "default", sinon le 1er onglet visible
+    let target = document.querySelector('.vsw a[data-v="' + (DEFAULT_TAB[cfg.default] || 'hotels') + '"]');
+    if (!target || target.style.display === 'none') {
+      target = [...document.querySelectorAll('.vsw a[data-v]')].find(a => a.style.display !== 'none');
+    }
+    if (target) target.click();
+
+    // ── Texte adapté aux 3 positions (vol seul / hôtel seul / les deux) ──
+    // Pas d'allusion croisée : pas de "vol" en mode hôtels, pas de "hôtel" en mode vols.
+    const mode = (enabled.includes('hotels') && enabled.includes('flights')) ? 'both'
+               : (enabled.includes('flights') ? 'flights' : 'hotels');
+    const COPY = {
+      meta: {
+        hotels:  'Hôtels premium en Asie, MENA et Maghreb — réservez en direct sur AirBizness. Tarifs négociés, paiement sécurisé, confirmation immédiate à votre nom.',
+        flights: 'Vols Business négociés — réservez en direct sur AirBizness. Paiement sécurisé, confirmation immédiate à votre nom.',
+        both:    'Vols, hôtels, activités, transferts — réservez directement sur AirBizness. Tarifs négociés, paiement sécurisé, confirmation immédiate à votre nom.'
+      },
+      why: {
+        hotels:  'Des hôtels premium réservés en direct, sans intermédiaire, avec une confirmation immédiate à votre nom.',
+        flights: 'Des vols Business réservés en direct, sans intermédiaire, avec une confirmation immédiate à votre nom.',
+        both:    'Vols, hôtels, activités, transferts. Tout réservé chez nous, sans intermédiaire, avec une confirmation immédiate à votre nom.'
+      },
+      villes: {
+        hotels:  "Nos villes signature pour le voyage premium d'affaires — hôtels 5★.",
+        flights: "Nos villes signature pour le voyage premium d'affaires — vols Business Class.",
+        both:    "Nos villes signature pour le voyage premium d'affaires — hôtels 5★ et vols Business Class."
+      },
+      brand: {
+        hotels:  'Hôtels premium réservés en direct sur AirBizness.',
+        flights: 'Vols Business réservés en direct sur AirBizness.',
+        both:    'Vols, hôtels, activités, transferts — réservés en direct sur AirBizness.'
+      }
+    };
+    const setTxt = (id, v) => { const e = document.getElementById(id); if (e && v) e.textContent = v; };
+    setTxt('copy-why', COPY.why[mode]);
+    setTxt('copy-villes', COPY.villes[mode]);
+    setTxt('copy-footer-brand', COPY.brand[mode]);
+    const setMeta = (sel, v) => { const m = document.querySelector(sel); if (m && v) m.setAttribute('content', v); };
+    setMeta('meta[name="description"]', COPY.meta[mode]);
+    setMeta('meta[property="og:description"]', COPY.meta[mode]);
+    // Liens footer propres à une verticale (ex. "Vols Business") masqués si off
+    document.querySelectorAll('.footer [data-vreq]').forEach(a => {
+      if (!allow(a.dataset.vreq.split(','))) a.style.display = 'none';
+    });
+  }).catch(()=>{ /* défaut : on laisse l'accueil tel quel (Vols) */ });
+})();
+
+// ─────────────────────────────────────────────────────────
+// Module recherche : code dans /js/search-autocomplete.js (carnet partagé)
+// Pascal 2026-05-31 — fix une fois, propagé sur toutes pages incluant le carnet
+// ─────────────────────────────────────────────────────────
+setupAirportAutocomplete('f-from');
+setupAirportAutocomplete('f-to');
+setupAirportAutocomplete('s-origin');
+setupAirportAutocomplete('s-dest');
+
+setupCityAutocomplete('h-dest');
+// setupHotelNameAutocomplete supprimé (fix #4 Phase 1) : l'input #hotel-name-q
+// avait été retiré de la home le 2026-05-31, le setup était devenu code mort.
+
+// ----- Pax widget state (vols + sejour) -----
+// Cabin par défaut = 'business' : positionnement statement premium (Pascal 2026-05-31).
+// Le HTML marque déjà le bouton "Affaires" .active + le summary affiche "Affaires".
+// L'utilisateur qui veut Eco downgrade explicitement.
+const PAX_STATE = {
+  vols: { adults: 1, children: 0, infants: 0, cabin: 'business' },
+  sejour: { adults: 2, children: 0, infants: 0, cabin: 'business' }
+};
+const CABIN_LABELS = {
+  economy: 'Économique',
+  premium_economy: 'Premium',
+  business: 'Affaires',
+  first: 'Première'
+};
+const PAX_LIMITS = {
+  adults: { min: 1, max: 9 },
+  children: { min: 0, max: 8 },
+  infants: { min: 0, max: 4 }
+};
+
+function paxAdjust(scope, type, delta) {
+  const P = PAX_STATE[scope];
+  let v = P[type] + delta;
+  const lim = PAX_LIMITS[type];
+  v = Math.max(lim.min, Math.min(lim.max, v));
+  if (type === 'infants') v = Math.min(v, P.adults);
+  const others = ['adults','children','infants']
+    .filter(k => k !== type)
+    .reduce((s,k) => s + P[k], 0);
+  if (v + others > 9) v = 9 - others;
+  if (v < lim.min) v = lim.min;
+  P[type] = v;
+  if (P.infants > P.adults) P.infants = P.adults;
+  refreshPaxUI(scope);
+}
+
+function setCabin(scope, c) {
+  PAX_STATE[scope].cabin = c;
+  document.querySelectorAll('.cabin-opt[data-scope="' + scope + '"]').forEach(b => {
+    b.classList.toggle('active', b.dataset.cabin === c);
+  });
+  updatePaxSummary(scope);
+}
+
+function refreshPaxUI(scope) {
+  const P = PAX_STATE[scope];
+  const a = document.getElementById('pax-adults-' + scope);
+  const c = document.getElementById('pax-children-' + scope);
+  const i = document.getElementById('pax-infants-' + scope);
+  if (a) a.textContent = P.adults;
+  if (c) c.textContent = P.children;
+  if (i) i.textContent = P.infants;
+  // Disable +/- buttons aux limites
+  const wrap = document.getElementById('pax-dropdown-' + scope);
+  if (wrap) {
+    const total = P.adults + P.children + P.infants;
+    const buttons = wrap.querySelectorAll('.pax-btn');
+    // 6 buttons : adults-, adults+, children-, children+, infants-, infants+
+    if (buttons.length === 6) {
+      buttons[0].disabled = P.adults <= PAX_LIMITS.adults.min;
+      buttons[1].disabled = P.adults >= PAX_LIMITS.adults.max || total >= 9;
+      buttons[2].disabled = P.children <= PAX_LIMITS.children.min;
+      buttons[3].disabled = P.children >= PAX_LIMITS.children.max || total >= 9;
+      buttons[4].disabled = P.infants <= PAX_LIMITS.infants.min;
+      buttons[5].disabled = P.infants >= PAX_LIMITS.infants.max
+                          || P.infants >= P.adults
+                          || total >= 9;
+    }
+  }
+  updatePaxSummary(scope);
+}
+
+function updatePaxSummary(scope) {
+  const P = PAX_STATE[scope];
+  const parts = [];
+  if (P.adults) parts.push(P.adults + ' adulte' + (P.adults>1?'s':''));
+  if (P.children) parts.push(P.children + ' enfant' + (P.children>1?'s':''));
+  if (P.infants) parts.push(P.infants + ' bébé' + (P.infants>1?'s':''));
+  const txt = parts.join(' · ') + ' · ' + CABIN_LABELS[P.cabin];
+  const el = document.getElementById('pax-summary-' + scope);
+  if (el) el.textContent = txt;
+}
+
+function togglePaxDropdown(scope) {
+  // Ferme tous les autres dropdowns
+  document.querySelectorAll('.pax-dropdown').forEach(d => {
+    if (d.id !== 'pax-dropdown-' + scope) d.style.display = 'none';
+  });
+  const d = document.getElementById('pax-dropdown-' + scope);
+  if (!d) return;
+  d.style.display = d.style.display === 'none' ? 'block' : 'none';
+}
+
+function confirmPax(scope) {
+  const d = document.getElementById('pax-dropdown-' + scope);
+  if (d) d.style.display = 'none';
+}
+
+// Fermer au click extérieur
+document.addEventListener('click', e => {
+  document.querySelectorAll('.pax-dropdown').forEach(d => {
+    if (d.style.display !== 'none') {
+      const wrap = d.parentElement;
+      if (wrap && !wrap.contains(e.target)) {
+        d.style.display = 'none';
+      }
+    }
+  });
+});
+
+refreshPaxUI('vols');
+refreshPaxUI('sejour');
+
+// ----- Search submit (par vertical) -----
+// Extrait "Paris" de "Paris (CDG)" pour stocker dans RecentSearches
+function _cityFromInput(val) {
+  const m = String(val||'').match(/^(.+?)\s+\([A-Z0-9]+\)\s*$/);
+  return m ? m[1].trim() : String(val||'').trim();
+}
+
+function doSearchVols(e) {
   e.preventDefault();
-  const from = document.getElementById('f-from').value;
-  const to = document.getElementById('f-to').value;
+  const fInput = document.getElementById('f-from');
+  const tInput = document.getElementById('f-to');
+  const from = fInput.dataset.code || '';
+  const to = tInput.dataset.code || '';
+  if (!from) {
+    alert('Sélectionne un aéroport de départ dans la liste.');
+    fInput.focus();
+    return;
+  }
+  if (!to) {
+    alert('Sélectionne une destination dans la liste.');
+    tInput.focus();
+    return;
+  }
+  // Mémorise les 2 aéroports pour la prochaine visite
+  RecentSearches.save({type:'airport', code:from, city:_cityFromInput(fInput.value)});
+  RecentSearches.save({type:'airport', code:to,   city:_cityFromInput(tInput.value)});
   const date = document.getElementById('f-date').value;
   const trip = document.querySelector('input[name="trip"]:checked').value;
   const dateRet = document.getElementById('f-date-ret').value;
-  const pax = document.getElementById('f-pax').value || '1';
+  const P = PAX_STATE.vols;
+  const total = P.adults + P.children + P.infants;
   const params = new URLSearchParams();
   params.set('from', from);
   if (to) params.set('to', to);
   if (date) params.set('date', date);
   if (trip === 'round_trip' && dateRet) params.set('date_ret', dateRet);
   params.set('trip', trip);
-  params.set('pax', pax);
-  params.set('cabin', 'business');
+  // Détaillés (nouveau format)
+  params.set('adults', P.adults);
+  params.set('children', P.children);
+  params.set('infants', P.infants);
+  params.set('cabin', P.cabin);
+  // Rétro-compat : conserve 'pax' = nombre total pour pages anciennes
+  params.set('pax', total);
   location.href = '/resultats.html?' + params.toString();
 }
+function doSearchHotels(e) {
+  e.preventDefault();
+  const hInput = document.getElementById('h-dest');
+  const dest = hInput.dataset.code || '';
+  if (!dest) {
+    alert('Choisis une ville de destination dans la liste.');
+    hInput.focus();
+    return;
+  }
+  RecentSearches.save({type:'city', code:dest, city:_cityFromInput(hInput.value)});
+  const p = new URLSearchParams({
+    destination: dest,
+    check_in: document.getElementById('h-checkin').value,
+    check_out: document.getElementById('h-checkout').value,
+    adults: document.getElementById('h-guests').value,
+  });
+  location.href = '/hotels.html?' + p.toString();
+}
+function doSearchSejour(e) {
+  e.preventDefault();
+  const oInput = document.getElementById('s-origin');
+  const dInput = document.getElementById('s-dest');
+  const origin = oInput.dataset.code || '';
+  const dest = dInput.dataset.code || '';
+  if (!origin) {
+    alert('Sélectionne une origine dans la liste.');
+    oInput.focus();
+    return;
+  }
+  if (!dest) {
+    alert('Sélectionne une destination dans la liste.');
+    dInput.focus();
+    return;
+  }
+  RecentSearches.save({type:'airport', code:origin, city:_cityFromInput(oInput.value)});
+  RecentSearches.save({type:'airport', code:dest,   city:_cityFromInput(dInput.value)});
+  const P = PAX_STATE.sejour;
+  const total = P.adults + P.children + P.infants;
+  // Params en snake_case (aligné sur /hotels.html et standard du marché).
+  // sejour.html accepte aussi camelCase pour rétro-compat (urlGet multi-alias).
+  const p = new URLSearchParams({
+    origin: origin,
+    destination: dest,
+    check_in: document.getElementById('s-checkin').value,
+    check_out: document.getElementById('s-checkout').value,
+    pax: total,
+    adults: P.adults,
+    children: P.children,
+    infants: P.infants,
+    cabin: P.cabin,
+  });
+  location.href = '/sejour.html?' + p.toString();
+}
+function doSearchActivites(e) {
+  e.preventDefault();
+  const p = new URLSearchParams({
+    destination: document.getElementById('a-dest').value,
+    date_from: document.getElementById('a-from').value,
+    date_to: document.getElementById('a-to').value,
+    adults: document.getElementById('a-adults').value,
+  });
+  location.href = '/activites.html?' + p.toString();
+}
+// doSearchTransferts retirée 2026-05-30 : transfert standalone n'a pas de sens,
+// il vit comme add-on dans le tunnel résa hôtel (fiche hôtel) et le pack vol+hôtel.
 
-// ----- Inspire prices -----
-fetch('/api/deals/diverse?origin=CDG&limit=30')
+// Defaults dates pour hôtels & activités
+const dInAWeek = iso(new Date(today.getTime()+7*86400000));
+const dPlus3 = iso(new Date(today.getTime()+10*86400000));
+document.getElementById('h-checkin').value = dInAWeek;
+document.getElementById('h-checkout').value = dPlus3;
+document.getElementById('h-checkin').min = iso(today);
+document.getElementById('h-checkout').min = iso(today);
+document.getElementById('a-from').value = dInAWeek;
+document.getElementById('a-to').value = dPlus3;
+document.getElementById('a-from').min = iso(today);
+document.getElementById('a-to').min = iso(today);
+// Séjour dates
+document.getElementById('s-checkin').value = dInAWeek;
+document.getElementById('s-checkout').value = dPlus3;
+document.getElementById('s-checkin').min = iso(today);
+document.getElementById('s-checkout').min = iso(today);
+const tDefault = new Date(today.getTime()+7*86400000);
+tDefault.setHours(14,0,0,0);
+// Transferts retirés 2026-05-30 : le champ t-when n'existe plus → garde null.
+const _tWhen = document.getElementById('t-when');
+if (_tWhen) _tWhen.value = tDefault.toISOString().slice(0,16);
+
+// ----- Inspire — compteurs hôtels par destination depuis NOTRE catalog -----
+fetch('/api/hbx/catalog/stats')
   .then(r => r.json())
   .then(data => {
-    const minByDest = {};
-    (data.deals || []).forEach(d => {
-      if (!minByDest[d.destination] || d.price < minByDest[d.destination]) {
-        minByDest[d.destination] = d.price;
-      }
-    });
+    const byDest = {};
+    (data.by_destination || []).forEach(d => { byDest[d.destination_code] = d.hotels; });
     document.querySelectorAll('.ic').forEach(card => {
-      const iata = card.getAttribute('data-iata');
-      const min = minByDest[iata];
-      if (min) {
-        card.querySelector('[data-price]').textContent = Math.round(min).toLocaleString('fr-FR') + ' €';
-      }
-      card.addEventListener('click', () => {
-        const params = new URLSearchParams();
-        params.set('from', document.getElementById('f-from').value || 'CDG');
-        params.set('to', iata);
-        params.set('trip', 'one_way');
-        params.set('pax', '1');
-        params.set('cabin', 'business');
-        location.href = '/resultats.html?' + params.toString();
-      });
+      const dest = card.getAttribute('data-dest');
+      const n = byDest[dest];
+      const el = card.querySelector('[data-count]');
+      if (el) el.textContent = n ? n.toLocaleString('fr-FR') + ' adresses' : 'Bientôt';
     });
   })
   .catch(() => {});
 </script>
 <script defer src="/cookies.js"></script>
 
-<!-- ── Bizzi chat bubble (added 2026-05-09) ── -->
-<script src="https://bizzi.fr/bizzi-loader.js" defer></script>
-<div data-bizzi-mount="chat" data-bizzi-tenant="airbizness"></div>
+<!-- ── AirBizness concierge widget (2026-05-27) — Agent 1 db_grounded direct ── -->
+<style>
+#abx-fab{position:fixed;bottom:22px;right:22px;width:60px;height:60px;border-radius:50%;background:var(--gold,#b8962e);color:#000;border:none;cursor:pointer;font-size:28px;box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:9998;display:flex;align-items:center;justify-content:center;}
+#abx-fab:hover{background:var(--gold2,#d4ae4a);transform:scale(1.05);}
+#abx-fab.hidden{display:none;}
+#abx-panel{position:fixed;bottom:22px;right:22px;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 100px);background:#0f0f0f;border:1px solid rgba(184,150,46,.3);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:9999;display:none;flex-direction:column;font-family:'DM Sans',sans-serif;overflow:hidden;}
+#abx-panel.open{display:flex;}
+.abx-header{padding:14px 16px;background:linear-gradient(135deg,#161616,#0f0f0f);border-bottom:1px solid rgba(184,150,46,.2);display:flex;align-items:center;justify-content:space-between;}
+.abx-title{color:#d4ae4a;font-family:'DM Serif Display',serif;font-size:17px;}
+.abx-sub{color:#a09890;font-size:11px;letter-spacing:.5px;margin-top:2px;}
+.abx-close{background:none;border:none;color:#a09890;cursor:pointer;font-size:22px;line-height:1;}
+.abx-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;margin-left:8px;}
+.abx-badge.a1{background:rgba(46,160,67,.18);color:#3fb950;}
+.abx-badge.auth{background:rgba(248,81,73,.18);color:#f85149;animation:abxpulse 1.4s infinite;}
+.abx-badge.a2{background:rgba(184,150,46,.22);color:#d4ae4a;}
+@keyframes abxpulse{0%,100%{opacity:1}50%{opacity:.45}}
+.abx-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.abx-msg{max-width:85%;padding:10px 13px;border-radius:12px;font-size:14px;line-height:1.5;}
+.abx-msg.user{align-self:flex-end;background:#b8962e;color:#000;border-bottom-right-radius:3px;}
+.abx-msg.bot{align-self:flex-start;background:#1e1e1e;color:#f0ece4;border:1px solid rgba(255,255,255,.05);border-bottom-left-radius:3px;}
+.abx-msg.system{align-self:center;font-size:11px;color:#6a6058;font-style:italic;}
+.abx-meta{font-size:10px;color:#6a6058;margin-top:4px;letter-spacing:.3px;}
+.abx-form{padding:12px;border-top:1px solid rgba(184,150,46,.2);background:#0f0f0f;}
+.abx-row{display:flex;gap:8px;}
+.abx-input{flex:1;background:#1e1e1e;border:1px solid rgba(255,255,255,.08);color:#f0ece4;padding:10px 12px;border-radius:8px;font-size:14px;font-family:inherit;}
+.abx-input:focus{outline:none;border-color:rgba(184,150,46,.4);}
+.abx-send{background:#b8962e;color:#000;border:none;padding:10px 16px;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;}
+.abx-send:disabled{opacity:.4;cursor:not-allowed;}
+.abx-auth{display:none;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px;background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.25);border-radius:8px;}
+.abx-auth.open{display:flex;}
+.abx-auth label{font-size:11px;color:#a09890;}
+</style>
+
+<button id="abx-fab" aria-label="Ouvrir l'assistant AirBizness" onclick="abxOpen()">💬</button>
+
+<div id="abx-panel" role="dialog" aria-label="Assistant AirBizness">
+  <div class="abx-header">
+    <div>
+      <div class="abx-title">Assistant AirBizness <span class="abx-badge a1" id="abx-badge">Accueil</span></div>
+      <div class="abx-sub">Voyage premium · disponible 24/7</div>
+    </div>
+    <button class="abx-close" onclick="abxClose()" aria-label="Fermer">×</button>
+  </div>
+  <div class="abx-msgs" id="abx-msgs"></div>
+  <div class="abx-form">
+    <div class="abx-auth" id="abx-auth">
+      <label>Référence de réservation</label>
+      <input type="text" class="abx-input" id="abx-bref" placeholder="AB-FL-…">
+      <label>Email associé</label>
+      <input type="email" class="abx-input" id="abx-email" placeholder="vous@email.com">
+      <button class="abx-send" onclick="abxSendAuth()" style="margin-top:4px;">Vérifier</button>
+    </div>
+    <div class="abx-row">
+      <input class="abx-input" id="abx-text" placeholder="Posez votre question voyage…" onkeydown="if(event.key==='Enter')abxSend()">
+      <button class="abx-send" id="abx-btn" onclick="abxSend()">→</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const API="/api/concierge/ask";
+  let sid=localStorage.getItem("airbizness_chatbot_session_id")||"";
+  let hist=[];
+  let busy=false;
+  function $(id){return document.getElementById(id);}
+  function setBadge(state){
+    const b=$("abx-badge");b.className="abx-badge "+state;
+    b.textContent=({a1:"Accueil",auth:"Auth en cours…",a2:"Réservations 🔒"})[state]||"Accueil";
+    $("abx-auth").classList.toggle("open",state==="auth");
+    $("abx-text").placeholder=state==="auth"?"Communiquez votre référence + email →":"Posez votre question voyage…";
+  }
+  function addMsg(role,text,meta){
+    const div=document.createElement("div");div.className="abx-msg "+role;
+    // Escape HTML d'abord (anti-XSS), puis transforme URLs en liens cliquables
+    const escaped=(text||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const linked=escaped.replace(/(https?:\/\/[^\s<>"]+[^\s<>".,;:!?)])/g,
+      '<a href="$1" target="_blank" rel="noopener" style="color:var(--gold2,#d4ae4a);text-decoration:underline;">$1</a>');
+    div.innerHTML=linked;
+    if(meta){const m=document.createElement("div");m.className="abx-meta";m.textContent=meta;div.appendChild(m);}
+    $("abx-msgs").appendChild(div);$("abx-msgs").scrollTop=$("abx-msgs").scrollHeight;
+  }
+  async function call(payload){
+    if(busy)return;busy=true;$("abx-btn").disabled=true;
+    try{
+      const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      const d=await r.json();
+      if(d.session_id){sid=d.session_id;localStorage.setItem("airbizness_chatbot_session_id",sid);}
+      const ag=d.agent||(d.mode==="agent_2_account"?"2":"1");
+      if(d.state==="WAITING_AUTH"||d.mode==="handover_request")setBadge("auth");
+      else if(ag==="2"||d.state==="AUTHENTICATED")setBadge("a2");
+      else setBadge("a1");
+      addMsg("bot",d.response||"(pas de réponse)",ag==="2"?"Agent 2 · Réservations":"Agent 1 · Accueil");
+      if(d.response)hist.push({role:"assistant",content:d.response});
+      if(d.mode==="seat_map"&&d.seat_map&&d.seat_map.offer_id)renderSeatMap(d.seat_map);
+    }catch(e){addMsg("bot","Erreur réseau, réessayez dans un instant.","");}
+    finally{busy=false;$("abx-btn").disabled=false;}
+  }
+  function buildSeatGrid(cabin){
+    const cols=(cabin.cols||"ABCDEF").split("");
+    const aisle=cabin.aisle_after||[];
+    let h='<div style="font-size:11px;color:#aaa;margin-bottom:6px;">Plan de cabine — touchez un siège libre</div>';
+    h+='<div style="max-height:260px;overflow:auto;border:1px solid #333;border-radius:8px;padding:8px;background:#161616;">';
+    (cabin.rows||[]).forEach(function(row){
+      h+='<div style="display:flex;gap:3px;align-items:center;margin-bottom:3px;">';
+      h+='<span style="width:18px;font-size:9px;color:#888;text-align:right;">'+row.row_num+'</span>';
+      (row.seats||[]).forEach(function(s,idx){
+        if(aisle.indexOf(idx)>=0)h+='<span style="width:8px;display:inline-block;"></span>';
+        var bg,fg,dis="",oc="";
+        if(!s.available){bg="#3a3a3a";fg="#666";dis="disabled";}
+        else if(s.type==="premium"){bg="rgba(184,150,46,0.22)";fg="#d4ae4a";}
+        else if(s.type==="exit"){bg="rgba(125,220,148,0.18)";fg="#7ddc94";}
+        else{bg="#2a2a2a";fg="#ccc";}
+        var t=s.available?(s.price>0?s.designator+" (+"+s.price+"€)":s.designator+" (gratuit)"):"Occupé";
+        if(s.available)oc='onclick="abxPickSeat(\''+s.designator+'\')"';
+        h+='<button type="button" '+dis+' '+oc+' title="'+t+'" style="width:26px;height:26px;border-radius:5px;border:1px solid #444;background:'+bg+';color:'+fg+';font-size:9px;font-weight:600;cursor:'+(s.available?"pointer":"not-allowed")+';padding:0;font-family:inherit;">'+s.designator.slice(-1)+'</button>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:9px;color:#999;">'
+      +'<span><span style="display:inline-block;width:9px;height:9px;background:#2a2a2a;border:1px solid #444;border-radius:2px;"></span> Standard</span>'
+      +'<span><span style="display:inline-block;width:9px;height:9px;background:rgba(184,150,46,0.22);border-radius:2px;"></span> Premium</span>'
+      +'<span><span style="display:inline-block;width:9px;height:9px;background:rgba(125,220,148,0.18);border-radius:2px;"></span> Sortie</span>'
+      +'<span><span style="display:inline-block;width:9px;height:9px;background:#3a3a3a;border-radius:2px;"></span> Occupé</span>'
+      +'</div>';
+    return h;
+  }
+  async function renderSeatMap(sm){
+    try{
+      const r=await fetch("/api/duffel/seat_maps?offer_id="+encodeURIComponent(sm.offer_id));
+      const data=await r.json();
+      const cabin=(data.cabins||[])[0];
+      if(!cabin){addMsg("system","Plan de cabine indisponible. Indiquez le siège souhaité (ex : 12A).");return;}
+      const div=document.createElement("div");div.className="abx-msg bot abx-seatmap";
+      div.innerHTML=buildSeatGrid(cabin);
+      $("abx-msgs").appendChild(div);$("abx-msgs").scrollTop=$("abx-msgs").scrollHeight;
+    }catch(e){addMsg("system","Impossible de charger le plan de cabine. Indiquez le siège souhaité (ex : 12A).");}
+  }
+  window.abxPickSeat=function(des){
+    if(busy)return;
+    document.querySelectorAll(".abx-seatmap button").forEach(function(b){b.disabled=true;b.style.opacity="0.5";});
+    addMsg("user","Siège "+des);
+    call({message:des,session_id:sid,user_id:localStorage.getItem("airbizness_user_id")||"anon",history:hist.slice(-8)});
+    hist.push({role:"user",content:"Siège "+des});
+  };
+  window.abxOpen=function(){$("abx-panel").classList.add("open");$("abx-fab").classList.add("hidden");
+    if(!$("abx-msgs").children.length){addMsg("bot","Bonjour, je suis l'assistant AirBizness. Posez-moi vos questions sur les voyages, vols, hôtels de notre catalog.","Agent 1 · Accueil");}
+    setTimeout(()=>$("abx-text").focus(),100);};
+  window.abxClose=function(){$("abx-panel").classList.remove("open");$("abx-fab").classList.remove("hidden");};
+  window.abxSend=function(){
+    const t=$("abx-text").value.trim();if(!t)return;
+    addMsg("user",t);$("abx-text").value="";
+    call({message:t,session_id:sid,user_id:localStorage.getItem("airbizness_user_id")||"anon",history:hist.slice(-8)});
+    hist.push({role:"user",content:t});
+  };
+  window.abxSendAuth=function(){
+    const b=$("abx-bref").value.trim(),e=$("abx-email").value.trim();
+    if(!b||!e){addMsg("system","Référence + email tous les deux requis.");return;}
+    addMsg("user","[Auth] Réf: "+b+" / "+e);$("abx-bref").value="";$("abx-email").value="";
+    call({message:b+" "+e,session_id:sid,user_id:localStorage.getItem("airbizness_user_id")||"anon",history:hist.slice(-8)});
+  };
+})();
+</script>
 </body>
 </html>

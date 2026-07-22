@@ -467,7 +467,7 @@ Accès : https://airbizness.com/api/schema-technique  (proxy nginx /api/ -> :800
      main.py : 5325 → 4772 lignes (-553 net : 7 plages disjointes supprimées
      en ordre décroissant + 3 ajoutées en fin pour include_router).
      Tests live : POST /concierge/ask body vide → 400 invalid_json, body valide
-     → 200 mode db_grounded (cerveau Bizzi répond), GET /concierge/validate-action
+     → 200 mode db_grounded (cerveau concierge répond), GET /concierge/validate-action
      sans token → 400 HTML (helper _credchain_validated_html OK), token=BOGUS
      → 404 HTML (find_state_by_validation_token retourne None), GET /conciergerie/alerts
      → 200 (1 alerte open en DB), POST update id=999999 → 200 no-op, status=WRONG
@@ -777,9 +777,9 @@ Claude orchestrateur → DeepSeek génère chaque patch → Claude applique fid�
 
   Répartition par catégorie :
     - client    : 10 pages (compte, login, signup, magic-link, mes-voyages, mes-alertes, etc.)
-    - autre     :  9 pages (404, bizzi-chat, claim, contact, poc, schema-technique, etc.)
+    - autre     :  9 pages (404, concierge-chat, claim, contact, poc, schema-technique, etc.)
     - hotel     :  6 pages (hotels.html, hotel.html, hotel-preview, hotel-manager, quote, hotel-confirmation)
-    - admin     :  6 pages (admin-bizzi-explorer, admin-catalog, admin-conciergerie, admin-home, admin-sandbox, admin-bizzi-facts)
+    - admin     :  6 pages (admin-concierge-explorer, admin-catalog, admin-conciergerie, admin-home, admin-sandbox, admin-concierge-facts)
     - vol       :  4 pages (resultats.html, flight-checkout, flight-confirmation, flight-passengers)
     - sejour    :  3 pages (sejour.html, pack-checkout, pack-confirmation)
     - paiement  :  3 pages (checkout.html, cgv.html, assurance.html)
@@ -795,7 +795,7 @@ Claude orchestrateur → DeepSeek génère chaque patch → Claude applique fid�
 
   Pages SANS h1 visible (à vérifier) :
     - public/assurance.html
-    - public/bizzi-chat.html
+    - public/concierge-chat.html
     - public/compte.html
     - public/confirmation.html
     - public/hotel-manager.html
@@ -1399,7 +1399,7 @@ def schema_technique(request: Request):
         "<tr><th style='text-align:left; padding:6px 8px; border-bottom:1px solid #444; color:#00d4aa'>Module</th><th style='text-align:left; padding:6px 8px; border-bottom:1px solid #444; color:#00d4aa'>Fichiers clés</th><th style='text-align:left; padding:6px 8px; border-bottom:1px solid #444; color:#00d4aa'>Routes HTTP</th><th style='text-align:left; padding:6px 8px; border-bottom:1px solid #444; color:#00d4aa'>Tables DB</th></tr>"
         "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>pages</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>public/*.html</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>/destinations /vols/ /hotels/ /home-stats /og-image /share</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>hotels_canonical, city_seo_content, hotel_seo_content</td></tr>"
         "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>carnet</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>public/js/carnets.js</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>/js/carnets.js</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>aucune (JS pur)</td></tr>"
-        "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>chat</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>public/bizzi-chat.html</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>/concierge</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>aucune</td></tr>"
+        "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>chat</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>public/concierge-chat.html</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>/concierge</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>aucune</td></tr>"
         "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>recherche</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>routers/recherche.py</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>/airports /cities</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>route_stats</td></tr>"
         "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>catalogue</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>scripts/hbx_full_sync.py + seo_auto_generator.py + backfill_canonical_from_catalog.py + watchdog_pipeline.py + update_route_stats.py + fetcher.py</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>(daemons)</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>hbx_hotels_catalog, hotels_canonical, hotel_seo_content, city_seo_content, route_stats, deals, hbx_catalog_sync_state/_log</td></tr>"
         "<tr><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>cache</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>services/api_cache.py</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>décorateur @cached</td><td style='padding:6px 8px; border-bottom:1px solid #2a2a3e'>(in-memory)</td></tr>"
@@ -1569,7 +1569,7 @@ _MODULES = [
          {"name": "TunnelState.clear() après paiement réussi", "state": "todo", "desc": "éviter bannière 'reprendre' après une résa terminée"},
          {"name": "Promouvoir vers N2 (state en DB lié au user_id)", "state": "todo", "desc": "dépend du module client (auth)"},
      ]},
-    {"key": "chat", "label": "Chat (concierge)", "paths": ["/concierge"], "files": ["public/bizzi-chat.html"],
+    {"key": "chat", "label": "Chat (concierge)", "paths": ["/concierge"], "files": ["public/concierge-chat.html"],
      "recoit": "un message en langage naturel", "comportement": "comprend l'intention et ORIENTE vers le bon module — il n'exécute pas, ne décide pas", "declenche": "redirige le client vers le bon module/écran", "renvoie": "réponse + redirection", "regles": "oriente seulement (le labyrinthe)"},
     {"key": "recherche", "label": "Module recherche", "paths": ["/airports", "/cities", "/destinations/(autocomplete)"], "files": ["routers/recherche.py"],
      "recoit": "intention de recherche brute : slug SEO (paris-los-angeles), texte libre (city name), params URL (from/to/date/cabin/pax)", "comportement": "convertit/normalise → query canonique (origin IATA, destination IATA/hotel_code, date ISO, cabin normalisée, pax total) → délègue au bon module offre (vol / hotel / activités / transferts / séjour)", "declenche": "module vol OU hotel OU activités OU transferts OU séjour selon la query", "renvoie": "query canonique + résultats normalisés du module offre", "regles": "UNE fonction de normalisation par champ (slug, date, cabin, pax) ; jamais de duplication ; jamais de logique métier (pas de fallback prix, pas de cache offres — ça reste dans les modules offre)",

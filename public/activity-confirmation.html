@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f0f">
+<title>Confirmation activité — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="/i18n.js" defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --green:#7dc97d;--green-dim:rgba(125,201,125,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+.header{display:flex;align-items:center;padding:0 32px;height:64px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-hex{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:13px;color:#000;}
+.logo-text{font-size:19px;font-weight:600;color:var(--text);}
+
+.main{padding:120px 28px 80px;max-width:720px;margin:0 auto;}
+.success-mark{width:80px;height:80px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);display:grid;place-items:center;margin:0 auto 24px;color:var(--green);font-size:36px;}
+.title{font-family:'DM Serif Display',serif;font-size:32px;text-align:center;margin-bottom:8px;}
+.title em{font-style:italic;color:var(--gold2);}
+.sub{text-align:center;color:var(--text2);font-size:14px;margin-bottom:36px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:28px;margin-bottom:18px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;margin-bottom:18px;}
+.row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);font-size:13px;}
+.row:first-of-type{border-top:none;}
+.row .l{color:var(--text2);}
+.row .v{color:var(--text);font-weight:500;}
+.row .v.big{font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold2);font-weight:400;}
+.ref{font-family:monospace;background:var(--gold-dim);color:var(--gold2);padding:2px 10px;border-radius:99px;font-size:12px;}
+.actions{display:flex;gap:12px;margin-top:24px;justify-content:center;flex-wrap:wrap;}
+.btn{padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500;font-size:14px;cursor:pointer;font-family:inherit;border:none;}
+.btn-primary{background:var(--gold);color:#000;}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text);}
+.loading{text-align:center;padding:80px 24px;color:var(--text3);}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+<header class="header">
+  <a href="/" class="logo"><div class="logo-hex">AB</div><div class="logo-text">AirBizness</div></a>
+</header>
+<main class="main" id="main"><div class="loading">Chargement…</div></main>
+
+<script>
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+async function load(){
+  const ref = new URLSearchParams(location.search).get('ref');
+  if (!ref){ $('#main').innerHTML = '<div class="loading">Référence manquante</div>'; return; }
+  try {
+    const r = await fetch(`/api/hbx/activity-booking/${ref}`);
+    if (!r.ok) throw new Error('Réservation introuvable');
+    const b = await r.json();
+    render(b);
+  } catch(e){
+    $('#main').innerHTML = `<div class="loading">${esc(e.message)}</div>`;
+  }
+}
+function render(b){
+  const confirmed = b.status === 'confirmed';
+  const date = b.operation_date ? new Date(b.operation_date).toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long', year:'numeric'}) : '—';
+  $('#main').innerHTML = `
+    <div class="success-mark">${confirmed?'✓':'⌛'}</div>
+    <h1 class="title">${confirmed?'Activité <em>confirmée.</em>':'En cours…'}</h1>
+    <p class="sub">${confirmed?`Email envoyé à <b>${esc(b.user_email)}</b>`:'Statut : '+esc(b.status)}</p>
+
+    <div class="card">
+      <div class="card-title">Votre activité</div>
+      <div class="row"><span class="l">Référence</span><span class="ref">${esc(b.airbizness_ref)}</span></div>
+      ${b.hbx_reference?`<div class="row"><span class="l">Confirmation HBX</span><span class="v">${esc(b.hbx_reference)}</span></div>`:''}
+      <div class="row"><span class="l">Activité</span><span class="v">${esc(b.activity_name)}</span></div>
+      <div class="row"><span class="l">Date</span><span class="v">${date}</span></div>
+      <div class="row"><span class="l">Destination</span><span class="v">${esc(b.destination_code)}</span></div>
+      <div class="row"><span class="l">Voyageurs</span><span class="v">${b.adults} adulte${b.adults>1?'s':''}</span></div>
+      <div class="row"><span class="l">Total payé</span><span class="v big">${(b.gross_price||0).toFixed(0)}€</span></div>
+    </div>
+
+    <div class="actions">
+      <a href="/" class="btn btn-primary">Accueil</a>
+      <a href="/activites.html" class="btn btn-secondary">Autres activités</a>
+    </div>
+  `;
+}
+load();
+</script>
+<div id="ab-footer"></div>
+</body>
+</html>

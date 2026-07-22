@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Catalog d'hôtels — AirBizness</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(15,15,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-hex{width:30px;height:30px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:grid;place-items:center;font-size:12px;color:#000;font-weight:600;}
+.logo-text{font-size:18px;font-weight:600;}
+.back{color:var(--text2);font-size:13px;text-decoration:none;}
+
+.hero{padding:84px 24px 22px;background:linear-gradient(180deg,#1a1a1a 0%,var(--bg) 100%);border-bottom:1px solid var(--border);}
+.hero-inner{max-width:1300px;margin:0 auto;}
+.hero-tag{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);margin-bottom:8px;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:30px;line-height:1.1;margin-bottom:6px;}
+.hero-title em{font-style:italic;color:var(--gold2);}
+.hero-sub{color:var(--text2);font-size:14px;margin-bottom:18px;}
+
+.filters{display:flex;gap:10px;flex-wrap:wrap;}
+.filter{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;}
+.filter:hover{border-color:var(--border2);color:var(--gold2);}
+.filter.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:500;}
+.filter select{background:transparent;border:none;color:inherit;font-family:inherit;font-size:13px;outline:none;cursor:pointer;}
+.filter select option{background:var(--bg2);color:var(--text);}
+
+.results{padding:28px 24px 80px;max-width:1300px;margin:0 auto;}
+.res-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;gap:14px;flex-wrap:wrap;}
+.res-title{font-family:'DM Serif Display',serif;font-size:20px;}
+.res-title em{font-style:italic;color:var(--gold2);}
+.res-count{color:var(--text2);font-size:13px;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:border-color .2s,transform .15s;cursor:pointer;}
+.card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.card-img{aspect-ratio:16/10;background:linear-gradient(135deg,#1a1410,#1a1a1a 60%,#1a1f2a);position:relative;overflow:hidden;}
+.card-img img{width:100%;height:100%;object-fit:cover;}
+.card-img-fallback{position:absolute;inset:0;display:grid;place-items:center;font-family:'DM Serif Display',serif;font-size:3.5rem;color:var(--gold);opacity:0.22;}
+.card-stars{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);padding:4px 10px;border-radius:99px;font-size:11px;color:var(--gold2);letter-spacing:0.6px;}
+.card-chain{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);padding:4px 10px;border-radius:99px;font-size:10px;color:var(--text);letter-spacing:1px;text-transform:uppercase;}
+.card-body{padding:18px;flex:1;display:flex;flex-direction:column;}
+.card-name{font-family:'DM Serif Display',serif;font-size:18px;line-height:1.25;margin-bottom:6px;}
+.card-city{font-size:13px;color:var(--text2);margin-bottom:10px;}
+.card-meta{font-size:11px;color:var(--text3);margin-bottom:auto;display:flex;gap:12px;flex-wrap:wrap;}
+.card-meta span{display:inline-flex;align-items:center;gap:4px;}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.card-link{color:var(--gold2);font-size:13px;font-weight:500;}
+
+.pagination{display:flex;justify-content:center;gap:8px;margin-top:32px;}
+.pagination button{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:7px;font-family:inherit;font-size:13px;cursor:pointer;}
+.pagination button:hover{border-color:var(--border2);color:var(--gold2);}
+.pagination button:disabled{opacity:0.3;cursor:not-allowed;}
+
+.loading{padding:80px 20px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center;padding:60px 24px;color:var(--text3);}
+.empty h3{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;}
+</style>
+<script defer src="/shared-chrome.js"></script>
+</head>
+<body>
+<div id="ab-header"></div>
+<div id="ab-bottomnav"></div>
+
+<header class="header">
+  <a href="/" class="logo">
+    <div class="logo-hex">AB</div>
+    <div class="logo-text">AirBizness</div>
+  </a>
+  <a href="/" class="back">← Accueil</a>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Catalog natif</div>
+    <h1 class="hero-title">Hôtels en <em>stock</em></h1>
+    <p class="hero-sub">Browse direct dans notre base — pas d'appel externe. Catalog Hotelbeds Content syncé chez nous.</p>
+
+    <div class="filters">
+      <div class="filter">
+        <select id="dest">
+          <option value="">Toutes destinations</option>
+          <option value="PAR">Paris</option>
+          <option value="MAD">Madrid</option>
+          <option value="LON">Londres</option>
+          <option value="ROM">Rome</option>
+          <option value="BCN">Barcelone</option>
+          <option value="NYC">New York</option>
+          <option value="DXB">Dubaï</option>
+          <option value="TYO">Tokyo</option>
+          <option value="BKK">Bangkok</option>
+          <option value="SIN">Singapour</option>
+        </select>
+      </div>
+      <div class="filter">
+        <select id="stars">
+          <option value="">Toutes catégories</option>
+          <option value="5">5★ uniquement</option>
+          <option value="4">4★ et +</option>
+          <option value="3">3★ et +</option>
+        </select>
+      </div>
+      <button class="filter" id="btn-email" data-on="0">Avec email direct</button>
+    </div>
+  </div>
+</section>
+
+<section class="results">
+  <div class="res-head">
+    <div class="res-title">Hôtels en <em id="dest-lbl">stock</em></div>
+    <div class="res-count" id="res-count">—</div>
+  </div>
+  <div id="grid" class="grid">
+    <div class="loading"><div class="spinner"></div>Chargement…</div>
+  </div>
+  <div class="pagination">
+    <button id="prev" disabled>← Précédent</button>
+    <button id="next" disabled>Suivant →</button>
+  </div>
+</section>
+
+<script>
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+let offset = 0, limit = 24, total = 0, withEmail = false;
+
+function destLabel(){
+  const s = $('#dest');
+  return s.value ? s.options[s.selectedIndex].text : 'stock';
+}
+
+async function load(){
+  $('#grid').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+  $('#res-count').textContent = '—';
+  $('#dest-lbl').textContent = destLabel();
+  const params = new URLSearchParams({offset, limit});
+  if ($('#dest').value) params.set('destination', $('#dest').value);
+  if ($('#stars').value) params.set('min_stars', $('#stars').value);
+  if (withEmail) params.set('has_email', 'true');
+  try {
+    const r = await fetch('/api/hbx/catalog/hotels?' + params);
+    const d = await r.json();
+    total = d.total || 0;
+    render(d.hotels || []);
+    $('#res-count').textContent = total.toLocaleString('fr-FR') + ' hôtel' + (total>1?'s':'') + ' en stock';
+    $('#prev').disabled = offset === 0;
+    $('#next').disabled = offset + limit >= total;
+  } catch(e){
+    $('#grid').innerHTML = `<div class="empty"><h3>Erreur</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function stars(n){ return n ? '★'.repeat(n) : ''; }
+
+function render(items){
+  if (!items.length){
+    $('#grid').innerHTML = `<div class="empty"><h3>Aucun hôtel</h3><p>Modifiez les filtres ou attendez la fin du sync.</p></div>`;
+    return;
+  }
+  $('#grid').innerHTML = items.map(h => {
+    const initial = (h.name || '?').charAt(0).toUpperCase();
+    const img = h.main_image_url
+      ? `<img src="${esc(h.main_image_url)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+         <div class="card-img-fallback" style="display:none;">${esc(initial)}</div>`
+      : `<div class="card-img-fallback" style="display:grid;">${esc(initial)}</div>`;
+    return `<a class="card" href="javascript:void(0)" onclick="showHotel(${h.hotel_code})">
+      <div class="card-img">
+        ${img}
+        ${h.category_stars ? `<div class="card-stars">${stars(h.category_stars)}</div>` : ''}
+        ${h.chain_code ? `<div class="card-chain">${esc(h.chain_code)}</div>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${esc(h.name)}</div>
+        <div class="card-city">${esc(h.city || '')}${h.postal_code ? ', '+esc(h.postal_code) : ''}</div>
+        <div class="card-meta">
+          ${h.latitude ? '<span>📍 GPS</span>' : ''}
+          ${h.email ? '<span>📧 Email</span>' : ''}
+          ${h.phone_main ? '<span>☎️ Tel</span>' : ''}
+          ${h.images_count ? `<span>🖼️ ${h.images_count}</span>` : ''}
+          ${h.facilities_count ? `<span>✨ ${h.facilities_count} équip.</span>` : ''}
+        </div>
+        <div class="card-bottom">
+          <div style="font-size:11px;color:var(--text3);">Code HBX <strong style="color:var(--gold2);">${h.hotel_code}</strong></div>
+          <div class="card-link">Voir →</div>
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function showHotel(code){
+  window.location.href = `/hotel-preview.html?code=${code}`;
+}
+
+$('#dest').addEventListener('change', () => { offset = 0; load(); });
+$('#stars').addEventListener('change', () => { offset = 0; load(); });
+$('#btn-email').addEventListener('click', (e) => {
+  withEmail = !withEmail;
+  e.target.classList.toggle('active', withEmail);
+  offset = 0; load();
+});
+$('#prev').addEventListener('click', () => { offset = Math.max(0, offset-limit); load(); window.scrollTo({top:0,behavior:'smooth'}); });
+$('#next').addEventListener('click', () => { offset += limit; load(); window.scrollTo({top:0,behavior:'smooth'}); });
+
+load();
+</script>
+<div id="ab-footer"></div>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
+<title>Réservation confirmée — AirBizness</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0f0f0f;--bg2:#161616;--bg3:#1e1e1e;--bg4:#252525;
+  --gold:#b8962e;--gold2:#d4ae4a;--gold-dim:rgba(184,150,46,0.12);
+  --text:#f0ece4;--text2:#a09890;--text3:#6a6058;
+  --border:rgba(255,255,255,0.07);--border2:rgba(184,150,46,0.2);
+  --green:#27ae60;--green-dim:rgba(39,174,96,0.13);
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.55;}
+
+.mock-banner{background:rgba(212,174,74,0.08);border-bottom:1px solid var(--border2);color:var(--gold2);text-align:center;padding:9px 16px;font-size:12px;letter-spacing:0.2px;}
+
+.header{display:flex;align-items:center;padding:0 24px;height:60px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-mark{width:44px;height:32px;color:var(--gold2);}
+.logo-mark svg{width:100%;height:100%;display:block;}
+.logo-text{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--text);line-height:1;}
+.logo-text em{color:var(--gold2);font-style:italic;}
+
+.hero{text-align:center;padding:48px 20px 36px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
+.hero-icon{width:74px;height:74px;background:var(--green-dim);border:2px solid var(--green);border-radius:50%;display:grid;place-items:center;margin:0 auto 22px;}
+.hero-icon svg{width:34px;height:34px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:34px;letter-spacing:-0.01em;margin-bottom:8px;}
+.hero-title em{color:var(--gold2);font-style:italic;}
+.hero-sub{font-size:14.5px;color:var(--text2);line-height:1.6;max-width:540px;margin:0 auto 22px;}
+.ref-pill{display:inline-flex;align-items:center;gap:12px;background:var(--gold-dim);border:1px solid var(--border2);padding:11px 22px;border-radius:99px;}
+.ref-label{font-family:'JetBrains Mono','DM Sans',monospace;font-size:10px;color:var(--text3);letter-spacing:0.18em;text-transform:uppercase;}
+.ref-value{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold2);letter-spacing:0.5px;}
+
+.main{padding:32px 0 80px;}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:26px 28px;margin-bottom:16px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:19px;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.card-title::before{content:'';width:3px;height:18px;background:var(--gold2);border-radius:2px;}
+
+.route-block{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--border);}
+.route-pt{text-align:center;flex:0 0 auto;min-width:90px;}
+.route-time{font-family:'DM Serif Display',serif;font-size:30px;line-height:1;color:var(--text);}
+.route-iata{font-size:12px;color:var(--gold2);letter-spacing:0.12em;margin-top:6px;}
+.route-city{font-size:12px;color:var(--text3);margin-top:3px;}
+.route-mid{flex:1;text-align:center;}
+.route-dur{font-size:11px;color:var(--text3);margin-bottom:6px;letter-spacing:0.06em;}
+.route-line{height:1px;background:var(--border);position:relative;margin:0 8px;}
+.route-line::after{content:'';position:absolute;left:50%;top:-3px;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:var(--gold2);}
+.route-stop{font-size:11px;color:var(--gold2);margin-top:6px;}
+
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);font-size:13.5px;gap:18px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--text2);}
+.info-value{color:var(--text);text-align:right;font-weight:500;}
+.info-value strong{color:var(--gold2);font-family:'DM Serif Display',serif;font-size:18px;}
+
+.actions{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
+.btn{padding:13px 22px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;transition:all .15s;}
+.btn-primary{background:var(--gold);color:#000;}
+.btn-primary:hover{background:var(--gold2);}
+.btn-ghost{background:transparent;border-color:var(--border2);color:var(--gold2);}
+.btn-ghost:hover{background:var(--gold-dim);}
+
+.state{padding:80px 20px;text-align:center;color:var(--text3);}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.err{color:#e87a7a;}
+
+@media(max-width:540px){
+  .hero-title{font-size:26px;}
+  .route-time{font-size:24px;}
+  .route-pt{min-width:70px;}
+  .card{padding:20px 18px;}
+}
+</style>
+</head>
+<body>
+
+<div id="mock-banner-slot"></div>
+
+<div class="header">
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg"><text x="45" y="40" text-anchor="middle" font-family="DM Serif Display, Playfair Display, Georgia, serif" font-style="italic" font-weight="400" font-size="48" fill="currentColor" letter-spacing="-1">AB</text><line x1="22" y1="46" x2="68" y2="46" stroke="currentColor" stroke-width="0.6" opacity="0.5"/></svg></div>
+    <div class="logo-text">Air<em>Bizness</em></div>
+  </a>
+</div>
+
+<div id="body-area">
+  <div class="state"><div class="spinner"></div>Récupération de votre réservation…</div>
+</div>
+
+<script>
+const API = '/api';
+const params = new URLSearchParams(location.search);
+const REF = params.get('ref') || '';
+
+const CITIES = {CDG:'Paris',ORY:'Paris Orly',LYS:'Lyon',NCE:'Nice',LHR:'Londres',AMS:'Amsterdam',FRA:'Francfort',MAD:'Madrid',DXB:'Dubai',SIN:'Singapour',JFK:'New York',LAX:'Los Angeles',MIA:'Miami',SFO:'San Francisco',ORD:'Chicago',NRT:'Tokyo',HKG:'Hong Kong',BKK:'Bangkok',SYD:'Sydney',GRU:'São Paulo',DEL:'Delhi',BOM:'Mumbai',DOH:'Doha',ICN:'Séoul',CPT:'Cape Town',NBO:'Nairobi',CMN:'Casablanca',RAK:'Marrakech'};
+
+function fmtPrice(p){ return new Intl.NumberFormat('fr-FR').format(Math.round(p)) + ' €'; }
+function fmtDur(m){ if(!m) return '—'; const h=Math.floor(m/60),mn=m%60; return mn?`${h}h ${mn}`:`${h}h`; }
+function fmtTime(iso){ if(!iso) return '--:--'; return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function arrTime(dep, dur){ if(!dep) return '--:--'; return new Date(new Date(dep).getTime() + (dur||0)*60000).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const BAG_PRICE_CONF = { '15kg': 25, '23kg': 45, '30kg': 65 };
+
+function renderOptionsCard(d){
+  const opts = d.options || {};
+  const pax = Array.isArray(d.passengers) ? d.passengers.length : 1;
+  const lines = [];
+  if (Array.isArray(d.baggage_per_passenger || opts.baggage_per_passenger)) {
+    const bag = d.baggage_per_passenger || opts.baggage_per_passenger;
+    bag.forEach((b, i) => {
+      if (BAG_PRICE_CONF[b]) {
+        lines.push(`<div class="info-row"><div class="info-label">Bagage soute — Voyageur ${i+1}</div><div class="info-value">${escapeHtml(b)} · ${fmtPrice(BAG_PRICE_CONF[b])}</div></div>`);
+      }
+    });
+  }
+  if (d.cabin_premium) lines.push(`<div class="info-row"><div class="info-label">Bagage cabine premium 10 kg</div><div class="info-value">×${pax} · ${fmtPrice(15*pax)}</div></div>`);
+  if (d.flex_ticket)   lines.push(`<div class="info-row"><div class="info-label">Tarif flexible</div><div class="info-value">×${pax} · ${fmtPrice(49*pax)}</div></div>`);
+  if (d.insurance)     lines.push(`<div class="info-row"><div class="info-label">Assurance Multirisque</div><div class="info-value">×${pax} · ${fmtPrice(35*pax)}</div></div>`);
+  // Transfer HBX dynamique
+  const tRk = d.transfer_rate_key || opts.transfer_rate_key;
+  const tPrice = Number(d.transfer_price || opts.transfer_price || 0);
+  const tLabel = d.transfer_label || opts.transfer_label;
+  const tMeta = d.transfer_meta || opts.transfer_meta || {};
+  if (tRk && tPrice > 0){
+    const sub = [tMeta.vehicle, tMeta.operator, tMeta.duration_min?(tMeta.duration_min+' min'):null].filter(Boolean).join(' · ');
+    lines.push(`<div class="info-row"><div class="info-label">Transfert · ${escapeHtml(tLabel||'')}</div><div class="info-value">${fmtPrice(tPrice)}</div></div>`);
+    if (sub) lines.push(`<div class="info-row"><div class="info-label">↳ Véhicule</div><div class="info-value" style="font-size:12px;color:var(--text3);">${escapeHtml(sub)}</div></div>`);
+    if (tMeta.destination_address) lines.push(`<div class="info-row"><div class="info-label">↳ Adresse destination</div><div class="info-value" style="font-size:12px;color:var(--text3);">${escapeHtml(tMeta.destination_address)}</div></div>`);
+    const tRef = d.transfer_booking_ref || (d.raw_offer && d.raw_offer.transfer_booking_ref);
+    if (tRef) lines.push(`<div class="info-row"><div class="info-label">↳ Réf transfert</div><div class="info-value" style="font-family:monospace;font-size:11px;">${escapeHtml(tRef)}</div></div>`);
+  } else if (d.transfer === 'oneway') {
+    lines.push(`<div class="info-row"><div class="info-label">Transfert aéroport</div><div class="info-value">Aller · ${fmtPrice(35)}</div></div>`);
+  } else if (d.transfer === 'roundtrip') {
+    lines.push(`<div class="info-row"><div class="info-label">Transfert aéroport</div><div class="info-value">Aller-retour · ${fmtPrice(60)}</div></div>`);
+  }
+
+  if (!lines.length) return '';
+  const optTotal = Number(d.options_total_eur || 0);
+  return `
+    <div class="card">
+      <div class="card-title">Options &amp; services inclus</div>
+      ${lines.join('')}
+      ${optTotal > 0 ? `<div class="info-row"><div class="info-label">Sous-total options</div><div class="info-value"><strong>${fmtPrice(optTotal)}</strong></div></div>` : ''}
+    </div>`;
+}
+
+async function load(){
+  if (!REF){ renderError('Aucune référence de réservation fournie.'); return; }
+  try {
+    const r = await fetch(API + '/flight/booking/' + encodeURIComponent(REF));
+    if (!r.ok){ throw new Error('HTTP '+r.status); }
+    const data = await r.json();
+    render(data);
+  } catch(e){
+    console.error(e);
+    renderError('Réservation introuvable. Vérifiez le lien ou contactez le support.');
+  }
+}
+
+function renderError(msg){
+  document.getElementById('body-area').innerHTML = `
+    <div class="state err">${msg}<br><br>
+      <a class="btn btn-ghost" href="/" style="display:inline-flex;margin-top:18px;">Retour à l'accueil</a>
+    </div>`;
+}
+
+function render(d){
+  if (d.is_mock){
+    document.getElementById('mock-banner-slot').innerHTML =
+      `<div class="mock-banner">Réservation de démonstration — paiement en mode test, aucun billet réel émis.</div>`;
+  }
+
+  const from = CITIES[d.origin] || d.origin || '?';
+  const to = CITIES[d.destination] || d.destination || '?';
+  const passengers = Array.isArray(d.passengers) ? d.passengers : [];
+  const paxHtml = passengers.length ? passengers.map(p => `
+    <div class="info-row">
+      <div class="info-label">${escapeHtml((p.title||'mr')==='mrs'?'Mme':(p.title==='ms'?'Mlle':'M.'))} ${escapeHtml(p.firstName)} ${escapeHtml(p.lastName)}</div>
+      <div class="info-value" style="color:var(--text3);font-size:12px;font-weight:400;">${escapeHtml(p.dob||'—')} · ${escapeHtml(p.nationality||'—')}</div>
+    </div>`).join('') : '<div class="info-row"><div class="info-label">—</div></div>';
+
+  document.getElementById('body-area').innerHTML = `
+    <section class="hero">
+      <div class="hero-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h1 class="hero-title">Réservation <em>confirmée</em></h1>
+      <p class="hero-sub">Merci pour votre confiance. Vos détails sont ci-dessous, un email récapitulatif arrive sous peu.</p>
+      <div class="ref-pill">
+        <div>
+          <div class="ref-label">PNR</div>
+          <div class="ref-value">${escapeHtml(d.pnr || d.airbizness_ref)}</div>
+        </div>
+      </div>
+    </section>
+    <div class="main"><div class="wrap">
+      <div class="card">
+        <div class="card-title">Votre vol</div>
+        <div class="route-block">
+          <div class="route-pt">
+            <div class="route-time">${fmtTime(d.departure_at)}</div>
+            <div class="route-iata">${escapeHtml(d.origin||'?')}</div>
+            <div class="route-city">${escapeHtml(from)}</div>
+          </div>
+          <div class="route-mid">
+            <div class="route-dur">${fmtDur(d.duration_minutes)}</div>
+            <div class="route-line"></div>
+            <div class="route-stop">Vol direct</div>
+          </div>
+          <div class="route-pt">
+            <div class="route-time">${arrTime(d.departure_at, d.duration_minutes)}</div>
+            <div class="route-iata">${escapeHtml(d.destination||'?')}</div>
+            <div class="route-city">${escapeHtml(to)}</div>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Date</div>
+          <div class="info-value">${fmtDate(d.departure_at)}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Compagnie</div>
+          <div class="info-value">${escapeHtml(d.airline_name||'—')} ${d.airline_code?'· '+escapeHtml(d.airline_code):''}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Cabine</div>
+          <div class="info-value">${escapeHtml(d.cabin_class||'economy')}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Voyageurs</div>
+        ${paxHtml}
+      </div>
+
+      ${renderOptionsCard(d)}
+
+      <div class="card">
+        <div class="card-title">Récapitulatif</div>
+        <div class="info-row">
+          <div class="info-label">Référence AirBizness</div>
+          <div class="info-value">${escapeHtml(d.airbizness_ref)}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">PNR</div>
+          <div class="info-value">${escapeHtml(d.pnr||'—')}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Email</div>
+          <div class="info-value">${escapeHtml(d.user_email||'—')}</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Total payé</div>
+          <div class="info-value"><strong>${fmtPrice(d.total_eur||0)}</strong></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        ${d.is_mock
+          ? '<a class="btn btn-primary" href="javascript:void(0)" onclick="downloadMockTicket()">Télécharger le billet (démo)</a>'
+          : '<a class="btn btn-primary" href="/api/booking/'+encodeURIComponent(d.airbizness_ref)+'/voucher.pdf">Télécharger le billet</a>'}
+        <a class="btn btn-ghost" href="/mes-voyages.html">Mes voyages</a>
+        <a class="btn btn-ghost" href="/">Retour à l'accueil</a>
+      </div>
+    </div></div>
+  `;
+}
+
+function downloadMockTicket(){
+  // PDF placeholder ultra-light pour mock : on télécharge un .txt nommé .pdf-like
+  const blob = new Blob(
+    ['AirBizness — Billet de démonstration\n\nCe billet est un placeholder du mode test.\nAucune réservation réelle n\'a été effectuée.\n'],
+    {type:'text/plain'}
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'AirBizness-DEMO-' + (REF||'ref') + '.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+window.downloadMockTicket = downloadMockTicket;
+
+load();
+</script>
+<script defer src="/cookies.js"></script>
+</body>
+</html>
