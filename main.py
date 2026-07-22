@@ -3287,6 +3287,10 @@ app.include_router(_affiliate.router)
 from routers import seo as _seo
 app.include_router(_seo.router)
 
+# ── RateHawk web (2026-07-22) — dispo LIVE + réservation depuis la page hôtel ──
+from routers import ratehawk_web as _ratehawk_web
+app.include_router(_ratehawk_web.router)
+
 # ── Module TRANSFERTS (2026-06-01) — 6e module effectif migré ──
 from routers import transferts as _transferts
 app.include_router(_transferts.router)

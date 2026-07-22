@@ -875,6 +875,49 @@ def _render_hotel_unified(h: dict, mode: str = "seo") -> str:
             '</div>'
         )
 
+    # ── Bouton « Réserver » RateHawk : disponibilité LIVE depuis la page ──
+    # Hôtel servi par RateHawk (ratehawk_hid) → le CTA interroge l'API en direct
+    # et affiche les VRAIES chambres + tarifs (aucun prix inventé). Le paiement
+    # réel reste câblé au lancement ; ici on montre la dispo live, pas de leurre.
+    _rh_hid = h.get("ratehawk_hid")
+    if _rh_hid:
+        cta_html = (
+            '<div class="cta-card">'
+            '<div class="cta-tag" style="background:rgba(184,150,46,0.18);color:var(--gold2);">RÉSERVER</div>'
+            '<h3>Vérifier la disponibilité</h3>'
+            '<p class="sub">Sélectionnez vos dates — chambres et tarifs en direct.</p>'
+            '<form class="cta-form" id="rh-form" onsubmit="rhRates(event)">'
+            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;">Arrivée</label>'
+            '<input type="date" id="rh-checkin" required>'
+            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Départ</label>'
+            '<input type="date" id="rh-checkout" required>'
+            '<label style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Voyageurs</label>'
+            '<input type="number" id="rh-adults" value="2" min="1" max="9" required>'
+            '<button type="submit">Voir les disponibilités</button>'
+            '</form>'
+            '<div id="rh-results" style="margin-top:14px;"></div>'
+            '<div class="cta-note">Disponibilités et tarifs en temps réel · voucher à votre nom.</div>'
+            '</div>'
+            f'<script>window.__RH_HID__={int(_rh_hid)};</script>'
+            '<style>.rh-room{display:flex;justify-content:space-between;align-items:center;gap:10px;'
+            'padding:10px 12px;margin:6px 0;background:rgba(255,255,255,0.04);border:1px solid rgba(184,150,46,0.25);'
+            'border-radius:8px;font-size:13px}.rh-room b{color:var(--gold2);white-space:nowrap}'
+            '.rh-msg{color:var(--text3);font-size:13px;padding:8px 0}</style>'
+            '<script>'
+            'function rhRates(e){e.preventDefault();'
+            "var ci=document.getElementById('rh-checkin').value,co=document.getElementById('rh-checkout').value,"
+            "ad=document.getElementById('rh-adults').value||2,box=document.getElementById('rh-results');"
+            "if(!ci||!co){return;}box.innerHTML='<div class=\\'rh-msg\\'>Recherche en cours…</div>';"
+            "fetch('/api/ratehawk/hotel/'+window.__RH_HID__+'/rates?checkin='+ci+'&checkout='+co+'&adults='+ad)"
+            '.then(function(r){return r.json();}).then(function(d){'
+            "if(!d.ok||!d.rooms||!d.rooms.length){box.innerHTML='<div class=\\'rh-msg\\'>Aucune disponibilité pour ces dates.</div>';return;}"
+            "var html='';d.rooms.forEach(function(rm){html+='<div class=\\'rh-room\\'><span>'+(rm.room_name||'Chambre')+'</span><b>'+(rm.amount||'')+' '+(rm.currency||'')+'</b></div>';});"
+            'box.innerHTML=html;'
+            "}).catch(function(){box.innerHTML='<div class=\\'rh-msg\\'>Erreur de chargement.</div>';});}"
+            '</script>'
+        )
+        disclaimer_html = ''
+
     # ── Widget comparateur multi-providers (Booking / Expedia / Agoda) ──
     # 3 boutons distincts en URL provider direct (search par nom hôtel + ville).
     # Hotellook gateway abandonné pour ce widget (ne respecte pas utm_source).
